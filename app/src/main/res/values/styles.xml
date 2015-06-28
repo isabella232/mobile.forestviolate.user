@@ -27,11 +27,15 @@
     <style name="AppTheme" parent="Theme.NextGIS.AppCompat.Light">
         <item name="tabTextColor">@color/tabTextColor.Light</item>
         <item name="tabSecondaryTextColor">@color/tabSecondaryTextColor.Light</item>
+        <item name="windowActionBarOverlay">false</item>
+        <item name="windowActionModeOverlay">false</item>
     </style>
 
     <style name="AppTheme.Dark" parent="Theme.NextGIS.AppCompat.Dark">
         <item name="tabTextColor">@color/tabTextColor.Light</item>
         <item name="tabSecondaryTextColor">@color/tabSecondaryTextColor.Dark</item>
+        <item name="windowActionBarOverlay">false</item>
+        <item name="windowActionModeOverlay">false</item>
     </style>
 
 </resources>
