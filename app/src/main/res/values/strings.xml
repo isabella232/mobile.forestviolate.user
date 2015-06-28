@@ -1,0 +1,33 @@
+<!--
+  ~ Project: Forest violations
+  ~ Purpose: Mobile application for registering facts of the forest violations.
+  ~ Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+  ~ ******************************************************************************
+  ~ Copyright (c) 2015-2015. NextGIS, info@nextgis.com
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="app_name">Safe forest</string>
+
+    <string name="title_notes">Notifications</string>
+    <string name="title_map">Map</string>
+    <string name="action_settings">Settings</string>
+    <string name="app_description">The application for see the forest violations notifications, notify about new forest violations and check theirs status.</string>
+    <string name="credits_intro">Credits:</string>
+    <string name="credits"><![CDATA[Some icons used in the application are from <a href=\"http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html\">romannurik.github.io</a>, licensed under a <a href=\"http://creativecommons.org/licenses/by/3.0/\">CC BY 3.0 license</a>]]></string>
+    <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2015]]></string>
+    <string name="action_about">About</string>
+</resources>
