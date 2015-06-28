@@ -43,7 +43,7 @@
         app:tabIndicatorColor="?attr/colorAccent"
         android:elevation="2dp"/>
 
-    <android.support.v4.view.ViewPager
+    <com.nextgis.safeforest.AppViewPager
                                    android:id="@+id/pager"
                                    android:layout_width="match_parent"
                                    android:layout_height="match_parent"
