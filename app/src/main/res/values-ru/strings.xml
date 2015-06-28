@@ -31,4 +31,6 @@
     <string name="credits"><![CDATA[Некоторые иконки использованные в приложении получены с сайта <a href=\"http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html\">romannurik.github.io</a>, <a href=\"http://creativecommons.org/licenses/by/3.0/\">CC BY 3.0 license</a>]]></string>
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2015]]></string>
     <string name="action_about">О программе</string>
+    <string name="topo">Topo</string>
+    <string name="topo_url">http://{a,b,c}.tile.cart.kosmosnimki.ru/rs/{z}/{x}/{y}.png</string>
 </resources>
