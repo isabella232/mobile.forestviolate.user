@@ -23,17 +23,19 @@
   -->
 
 <resources>
-    <color name="actionBarColor.Light">#009688</color>
-    <color name="primary.Light">#00796b</color>
-    <color name="primary_dark.Light">#004d40</color>
-    <color name="accent.Light">#00bfa5</color>
-    <color name="actionBarColor.Dark">#009688</color>
-    <color name="primary.Dark">#00796b</color>
-    <color name="primary_dark.Dark">#004d40</color>
-    <color name="accent.Dark">#00bfa5</color>
     <!--indigo from http://www.google.co.uk/design/spec/style/color.html#color-color-palette -->
-    <color name="tabSecondaryTextColor.Light">#80cbc4</color>
-    <color name="tabSecondaryTextColor.Dark">#80cbc4</color>
+    <!-- Light -->
+    <color name="actionBarColor.Light">#8bc34a</color>
+    <color name="primary.Light">#7cb342</color>
+    <color name="primary_dark.Light">#33691e</color>
+    <color name="accent.Light">#64dd17</color>
+    <color name="tabSecondaryTextColor.Light">#c5e1a5</color>
     <color name="tabTextColor.Light">#ffffff</color>
+    <!-- Dark -->
+    <color name="actionBarColor.Dark">#8bc34a</color>
+    <color name="primary.Dark">#7cb342</color>
+    <color name="primary_dark.Dark">#33691e</color>
+    <color name="accent.Dark">#64dd17</color>
+    <color name="tabSecondaryTextColor.Dark">#c5e1a5</color>
     <color name="tabTextColor.Dark">#ffffff</color>
 </resources>

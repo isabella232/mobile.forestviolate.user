@@ -33,4 +33,7 @@
     <string name="action_about">О программе</string>
     <string name="topo">Topo</string>
     <string name="topo_url">http://{a,b,c}.tile.cart.kosmosnimki.ru/rs/{z}/{x}/{y}.png</string>
+    <string name="violate_type">Forest violate type</string>
+    <string name="contact">Contact</string>
+    <string name="fire">Fire</string>
 </resources>

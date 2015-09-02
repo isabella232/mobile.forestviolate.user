@@ -1,7 +1,3 @@
 <component name="CopyrightManager">
-  <settings default="Forest violations">
-    <module2copyright>
-      <element module="All" copyright="Forest violations" />
-    </module2copyright>
-  </settings>
+  <settings default="" />
 </component>
