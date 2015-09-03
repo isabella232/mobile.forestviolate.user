@@ -36,7 +36,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.datasource.GeoEnvelope;
+import com.nextgis.maplibui.activity.NGWSettingsActivity;
 import com.nextgis.maplibui.service.HTTPLoader;
 import com.nextgis.safeforest.R;
 import com.nextgis.maplibui.fragment.NGWLoginFragment;
@@ -78,8 +80,8 @@ public class LoginFragment extends NGWLoginFragment {
         mPassword.addTextChangedListener(watcher);
 
         mWorkingBorders = new HashMap<>(2);
-        mWorkingBorders.put(getString(R.string.KHA), new GeoEnvelope(130.6, 147.5, 46.2, 62.4));
-        mWorkingBorders.put(getString(R.string.PRI), new GeoEnvelope(130.3, 139.3, 42.5, 48.5));
+        mWorkingBorders.put(getString(R.string.KHA), new GeoEnvelope(14538325.50, 16419624.89, 5812457.49, 8954618.39));
+        mWorkingBorders.put(getString(R.string.PRI), new GeoEnvelope(14504929.65, 15506805.07, 5236173.78, 6190443.81));
         List<String> spinnerArray =  new ArrayList<>(mWorkingBorders.keySet());
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, spinnerArray);
 
@@ -153,14 +155,14 @@ public class LoginFragment extends NGWLoginFragment {
             Loader<String> loader,
             String token)
     {
-        if (loader.getId() == com.nextgis.maplibui.R.id.auth_token_loader) {
+        if (loader.getId() == R.id.auth_token_loader) {
             if (token != null && token.length() > 0) {
                 onTokenReceived(getString(R.string.account_name), token);
             } else {
                 Toast.makeText(getActivity(), R.string.error_login, Toast.LENGTH_SHORT).show();
             }
         }
-        else if(loader.getId() == com.nextgis.maplibui.R.id.non_auth_token_loader){
+        else if(loader.getId() == R.id.non_auth_token_loader){
             onTokenReceived(getString(R.string.account_name), Constants.ANONYMOUS);
         }
     }
@@ -173,6 +175,36 @@ public class LoginFragment extends NGWLoginFragment {
             if( checkEditText(mLogin) && checkEditText(mPassword)) {
                 mSignInButton.setEnabled(true);
             }
+        }
+    }
+
+    public void onTokenReceived(
+            String accountName,
+            String token)
+    {
+        if(token.equals(Constants.ANONYMOUS)){
+            IGISApplication app = (IGISApplication) getActivity().getApplication();
+
+            if (mForNewAccount) {
+                boolean accountAdded = app.addAccount(accountName, mURL.getText().toString(), Constants.ANONYMOUS, Constants.ANONYMOUS, token);
+                if(accountAdded) {
+                    if (null != mOnAddAccountListener) {
+                        mOnAddAccountListener.onAddAccount(app.getAccount(accountName), token, accountAdded);
+                    }
+                }
+                else {
+                    if (null != mOnAddAccountListener) {
+                        mOnAddAccountListener.onAddAccount(null, token, accountAdded);
+                    }
+                }
+
+            } else {
+                // do nothing, guest account cannot be changed
+                getActivity().finish();
+            }
+        }
+        else{
+            super.onTokenReceived(accountName, token);
         }
     }
 }

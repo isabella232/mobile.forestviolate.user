@@ -23,22 +23,31 @@ package com.nextgis.safeforest.fragment;
 
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.nextgis.maplib.api.GpsEventListener;
+import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.util.Constants;
+import com.nextgis.maplib.util.GeoConstants;
+import com.nextgis.maplib.util.LocationUtil;
 import com.nextgis.maplibui.api.MapViewEventListener;
 import com.nextgis.maplibui.mapui.MapViewOverlays;
 import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
@@ -55,9 +64,17 @@ public class MapFragment
     protected FloatingActionButton mivZoomIn;
     protected FloatingActionButton mivZoomOut;
     protected RelativeLayout mMapRelativeLayout;
-    protected View mMainButton;
+
+    protected TextView mStatusSource, mStatusAccuracy, mStatusSpeed, mStatusAltitude,
+            mStatusLatitude, mStatusLongitude;
+    protected FrameLayout mStatusPanel;
+
     protected GpsEventSource mGpsEventSource;
     protected CurrentLocationOverlay mCurrentLocationOverlay;
+
+    protected boolean mShowStatusPanel;
+    protected GeoPoint mCurrentCenter;
+    protected int mCoordinatesFormat;
 
     @Override
     public View onCreateView(
@@ -88,20 +105,6 @@ public class MapFragment
         }
         mMap.invalidate();
 
-        mMainButton = view.findViewById(R.id.action_addviolation);
-
-        if (null != mMainButton) {
-            mMainButton.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-
-                    }
-                });
-        }
-
         mivZoomIn = (FloatingActionButton) view.findViewById(R.id.action_zoom_in);
         if (null != mivZoomIn) {
             mivZoomIn.setOnClickListener(
@@ -131,6 +134,8 @@ public class MapFragment
                         }
                     });
         }
+
+        mStatusPanel = (FrameLayout) view.findViewById(R.id.fl_status_panel);
 
         return view;
     }
@@ -219,26 +224,41 @@ public class MapFragment
         Log.d(Constants.TAG, "KEY_PREF_SHOW_ZOOM_CONTROLS: " + (showControls ? "ON" : "OFF"));
 
         if (null != mMap) {
-            float mMapZoom;
-            try {
-                mMapZoom = prefs.getFloat(SettingsConstants.KEY_PREF_ZOOM_LEVEL, mMap.getMinZoom());
-            } catch (ClassCastException e) {
-                mMapZoom = mMap.getMinZoom();
-            }
+            if(prefs.getBoolean(SettingsConstants.KEY_PREF_MAP_FIRST_VIEW, true)){
+                //zoom to inspector extent
+                float minX = prefs.getFloat(SettingsConstants.KEY_PREF_USERMINX, -2000.0f);
+                float minY = prefs.getFloat(SettingsConstants.KEY_PREF_USERMINY, -2000.0f);
+                float maxX = prefs.getFloat(SettingsConstants.KEY_PREF_USERMAXX, 2000.0f);
+                float maxY = prefs.getFloat(SettingsConstants.KEY_PREF_USERMAXY, 2000.0f);
+                mMap.zoomToExtent(new GeoEnvelope(minX, maxX, minY, maxY));
 
-            double mMapScrollX;
-            double mMapScrollY;
-            try {
-                mMapScrollX = Double.longBitsToDouble(prefs.getLong(SettingsConstants.KEY_PREF_SCROLL_X, 0));
-                mMapScrollY = Double.longBitsToDouble(prefs.getLong(SettingsConstants.KEY_PREF_SCROLL_Y, 0));
-            } catch (ClassCastException e) {
-                mMapScrollX = 0;
-                mMapScrollY = 0;
+                final SharedPreferences.Editor edit = prefs.edit();
+                edit.putBoolean(SettingsConstants.KEY_PREF_MAP_FIRST_VIEW, false);
+                edit.commit();
             }
-            mMap.setZoomAndCenter(mMapZoom, new GeoPoint(mMapScrollX, mMapScrollY));
+            else {
+                float mMapZoom;
+                try {
+                    mMapZoom = prefs.getFloat(SettingsConstants.KEY_PREF_ZOOM_LEVEL, mMap.getMinZoom());
+                } catch (ClassCastException e) {
+                    mMapZoom = mMap.getMinZoom();
+                }
 
+                double mMapScrollX;
+                double mMapScrollY;
+                try {
+                    mMapScrollX = Double.longBitsToDouble(prefs.getLong(SettingsConstants.KEY_PREF_SCROLL_X, 0));
+                    mMapScrollY = Double.longBitsToDouble(prefs.getLong(SettingsConstants.KEY_PREF_SCROLL_Y, 0));
+                } catch (ClassCastException e) {
+                    mMapScrollX = 0;
+                    mMapScrollY = 0;
+                }
+                mMap.setZoomAndCenter(mMapZoom, new GeoPoint(mMapScrollX, mMapScrollY));
+            }
             mMap.addListener(this);
         }
+
+        mCoordinatesFormat = prefs.getInt(SettingsConstants.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);
 
         if (null != mCurrentLocationOverlay) {
             mCurrentLocationOverlay.updateMode(
@@ -249,6 +269,19 @@ public class MapFragment
         if (null != mGpsEventSource) {
             mGpsEventSource.addListener(this);
         }
+
+        mShowStatusPanel = prefs.getBoolean(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL, true);
+
+        if (null != mStatusPanel) {
+            if (mShowStatusPanel) {
+                mStatusPanel.setVisibility(View.VISIBLE);
+                fillStatusPanel(null);
+            } else {
+                mStatusPanel.removeAllViews();
+            }
+        }
+
+        mCurrentCenter = null;
     }
 
     public void refresh()
@@ -260,7 +293,20 @@ public class MapFragment
 
     @Override
     public void onLocationChanged(Location location) {
+        if (location != null) {
+            if (mCurrentCenter == null) {
+                mCurrentCenter = new GeoPoint();
+            }
 
+            mCurrentCenter.setCoordinates(location.getLongitude(), location.getLatitude());
+            mCurrentCenter.setCRS(GeoConstants.CRS_WGS84);
+
+            if (!mCurrentCenter.project(GeoConstants.CRS_WEB_MERCATOR)) {
+                mCurrentCenter = null;
+            }
+        }
+
+        fillStatusPanel(location);
     }
 
     @Override
@@ -315,7 +361,8 @@ public class MapFragment
 
     @Override
     public void onExtentChanged(float zoom, GeoPoint center) {
-
+        setZoomInEnabled(mMap.canZoomIn());
+        setZoomOutEnabled(mMap.canZoomOut());
     }
 
     @Override
@@ -331,5 +378,159 @@ public class MapFragment
     @Override
     public void onLayerDrawStarted() {
 
+    }
+
+
+    protected void setZoomInEnabled(boolean bEnabled)
+    {
+        if (mivZoomIn == null) {
+            return;
+        }
+
+        mivZoomIn.setEnabled(bEnabled);
+    }
+
+
+    protected void setZoomOutEnabled(boolean bEnabled)
+    {
+        if (mivZoomOut == null) {
+            return;
+        }
+        mivZoomOut.setEnabled(bEnabled);
+    }
+
+    protected void fillStatusPanel(Location location)
+    {
+        if (!mShowStatusPanel) //mStatusPanel.getVisibility() == FrameLayout.INVISIBLE)
+        {
+            return;
+        }
+
+        boolean needViewUpdate = true;
+        boolean isCurrentOrientationOneLine =
+                mStatusPanel.getChildCount() > 0 && ((LinearLayout) mStatusPanel.getChildAt(
+                        0)).getOrientation() == LinearLayout.HORIZONTAL;
+
+        View panel;
+        if (!isCurrentOrientationOneLine) {
+            panel = getActivity().getLayoutInflater()
+                    .inflate(R.layout.status_panel_land, mStatusPanel, false);
+            defineTextViews(panel);
+        } else {
+            panel = mStatusPanel.getChildAt(0);
+            needViewUpdate = false;
+        }
+
+        fillTextViews(location);
+
+        if (!isFitOneLine()) {
+            panel = getActivity().getLayoutInflater()
+                    .inflate(R.layout.status_panel, mStatusPanel, false);
+            defineTextViews(panel);
+            fillTextViews(location);
+            needViewUpdate = true;
+        }
+
+        if (needViewUpdate) {
+            mStatusPanel.removeAllViews();
+            panel.getBackground().setAlpha(128);
+            mStatusPanel.addView(panel);
+        }
+    }
+
+
+    protected void fillTextViews(Location location)
+    {
+        if (null == location) {
+            setDefaultTextViews();
+        } else {
+            if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
+                int satellites = location.getExtras().getInt("satellites");
+                if (satellites < GpsEventSource.MIN_SATELLITES_IN_FIX) {
+                    mStatusSource.setText("");
+                    mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
+                            getResources().getDrawable(R.drawable.ic_location), null, null, null);
+                } else {
+                    mStatusSource.setText(satellites + "");
+                    mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
+                            getResources().getDrawable(R.drawable.ic_location), null, null, null);
+                }
+            } else {
+                mStatusSource.setText("");
+                mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
+                        getResources().getDrawable(R.drawable.ic_signal_wifi), null, null, null);
+            }
+
+            mStatusAccuracy.setText(
+                    String.format(
+                            "%.1f %s", location.getAccuracy(), getString(R.string.unit_meter)));
+            mStatusAltitude.setText(
+                    String.format(
+                            "%.1f %s", location.getAltitude(), getString(R.string.unit_meter)));
+            mStatusSpeed.setText(
+                    String.format(
+                            "%.1f %s/%s", location.getSpeed() * 3600 / 1000,
+                            getString(R.string.unit_kilometer), getString(R.string.unit_hour)));
+            mStatusLatitude.setText(
+                    LocationUtil.formatCoordinate(location.getLatitude(), mCoordinatesFormat) +
+                            " " +
+                            getString(R.string.latitude_caption_short));
+            mStatusLongitude.setText(
+                    LocationUtil.formatCoordinate(location.getLongitude(), mCoordinatesFormat) +
+                            " " +
+                            getString(R.string.longitude_caption_short));
+        }
+    }
+
+
+    protected void setDefaultTextViews()
+    {
+        mStatusSource.setCompoundDrawables(null, null, null, null);
+        mStatusSource.setText("");
+        mStatusAccuracy.setText(getString(R.string.n_a));
+        mStatusAltitude.setText(getString(R.string.n_a));
+        mStatusSpeed.setText(getString(R.string.n_a));
+        mStatusLatitude.setText(getString(R.string.n_a));
+        mStatusLongitude.setText(getString(R.string.n_a));
+    }
+
+
+    protected boolean isFitOneLine()
+    {
+        mStatusLongitude.measure(0, 0);
+        mStatusLatitude.measure(0, 0);
+        mStatusAltitude.measure(0, 0);
+        mStatusSpeed.measure(0, 0);
+        mStatusAccuracy.measure(0, 0);
+        mStatusSource.measure(0, 0);
+
+        int totalWidth = mStatusSource.getMeasuredWidth() + mStatusLongitude.getMeasuredWidth() +
+                mStatusLatitude.getMeasuredWidth() + mStatusAccuracy.getMeasuredWidth() +
+                mStatusSpeed.getMeasuredWidth() + mStatusAltitude.getMeasuredWidth();
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        return totalWidth < metrics.widthPixels;
+    }
+
+
+    private void defineTextViews(View panel)
+    {
+        mStatusSource = (TextView) panel.findViewById(R.id.tv_source);
+        mStatusAccuracy = (TextView) panel.findViewById(R.id.tv_accuracy);
+        mStatusSpeed = (TextView) panel.findViewById(R.id.tv_speed);
+        mStatusAltitude = (TextView) panel.findViewById(R.id.tv_altitude);
+        mStatusLatitude = (TextView) panel.findViewById(R.id.tv_latitude);
+        mStatusLongitude = (TextView) panel.findViewById(R.id.tv_longitude);
+    }
+
+    public void locateCurrentPosition()
+    {
+        if (mCurrentCenter != null) {
+            mMap.panTo(mCurrentCenter);
+        } else {
+            Toast.makeText(getActivity(), R.string.error_no_location, Toast.LENGTH_SHORT).show();
+        }
     }
 }

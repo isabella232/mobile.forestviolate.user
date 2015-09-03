@@ -23,19 +23,18 @@
   -->
 
 <resources>
-    <!--indigo from http://www.google.co.uk/design/spec/style/color.html#color-color-palette -->
-    <!-- Light -->
-    <color name="actionBarColor.Light">#8bc34a</color>
-    <color name="primary.Light">#7cb342</color>
-    <color name="primary_dark.Light">#33691e</color>
-    <color name="accent.Light">#64dd17</color>
-    <color name="tabSecondaryTextColor.Light">#c5e1a5</color>
-    <color name="tabTextColor.Light">#ffffff</color>
-    <!-- Dark -->
-    <color name="actionBarColor.Dark">#8bc34a</color>
-    <color name="primary.Dark">#7cb342</color>
-    <color name="primary_dark.Dark">#33691e</color>
-    <color name="accent.Dark">#64dd17</color>
-    <color name="tabSecondaryTextColor.Dark">#c5e1a5</color>
-    <color name="tabTextColor.Dark">#ffffff</color>
+    <color name="actionBarColor">#8bc34a</color>
+    <color name="primary">#7cb342</color>
+    <color name="primary_dark">#33691e</color>
+    <color name="accent">#64dd17</color>
+    <color name="tabSecondaryTextColor">#c5e1a5</color>
+    <color name="tabTextColor">#ffffff</color>
+
+    <color name="color_black">#000000</color>
+    <color name="color_white">#ffffff</color>
+
+    <color name="color_undobar_background">@color/primary_dark</color>
+    <color name="color_undobar_text">@color/color_white</color>
+    <color name="color_undobar_action_text">#ffff00</color>
 </resources>
+

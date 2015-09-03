@@ -43,4 +43,9 @@ public interface Constants {
      * NGW layer keys
      */
     String KEY_CITIZEN_MESSAGES = "citizen_messages";
+
+    /**
+     * Threads
+     */
+    int DOWNLOAD_SEPARATE_THREADS = 10;
 }

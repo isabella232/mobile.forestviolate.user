@@ -46,6 +46,7 @@ public interface SettingsConstants
     String KEY_PREF_SCROLL_X      = "map_scroll_x";
     String KEY_PREF_SCROLL_Y      = "map_scroll_y";
     String KEY_PREF_ZOOM_LEVEL    = "map_zoom_level";
+    String KEY_PREF_MAP_FIRST_VIEW = "map_first_view";
     String KEY_PREF_SHOW_LOCATION = "map_show_loc";
     String KEY_PREF_SHOW_INFO     = "map_show_info";
 

@@ -31,14 +31,13 @@
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2015]]></string>
     <string name="action_about">About</string>
     <string name="topo">Topo</string>
-    <string name="violate_type">Forest violate type</string>
     <string name="contact">Contact</string>
     <string name="name">Name</string>
     <string name="felling">Felling</string>
     <string name="fire">Fire</string>
     <string name="geomixer_fv_tiles">GeoMixer violation tiles</string>
-    <string name="sf_login_title">Forest inspector account</string>
-    <string name="sf_login_description"><![CDATA[Enter your information for account registration on server (registration can be skipped, but the application will have limited functionality). In addition, select the area of work (obligatory input field). After clicking on the \ "Register \" or \ "Skip \" will start the process of getting data to work offline. This process need a lot of traffic, so Wi-Fi connection recommended.]]></string>
+    <string name="sf_login_title">Account</string>
+    <string name="sf_login_description"><![CDATA[Enter your information for account registration on server (registration can be skipped, but the application will have limited functionality). In addition, select the area of work (obligatory input field). As username you must use a valid email address. After clicking on the \ "Register \" or \ "Skip \" will start the process of getting data to work offline. This process need a lot of traffic, so Wi-Fi connection recommended.]]></string>
     <string name="first_run">First run</string>
     <string name="fi_url">Server URL</string>
     <string name="error_init">Failed to initialize</string>
@@ -56,4 +55,25 @@
     <string name="error_wrong_server">The incompatible server</string>
     <string name="done">Done</string>
     <string name="working">Working…</string>
+    <string name="user_email_login">Login (email address)</string>
+    <string name="phone">Phone number</string>
+    <string name="password">Password to message server</string>
+    <string name="downloaded">downloaded</string>
+    <string name="error_unexpected">Unexpected error occurred</string>
+    <string name="of">of</string>
+    <string name="show_status_panel">Status info panel</string>
+    <string name="show_status_panel_summary">Show current status info at bottom panel</string>
+    <string name="show_current_location">Show current location</string>
+    <string name="coordinates_format">Coordinates format</string>
+    <string name="select_coordinates_format">Select coordinates format</string>
+    <string name="coordinates_format_summary">Coordinate text format</string>
+    <string name="keep_screen_on">Keep screen on</string>
+    <string name="keep_screen_on_summary">Do not turn off screen</string>
+    <string name="show_zoom_controls">Show zoom controls</string>
+    <string name="show_zoom_controls_summary">Show zoom in/zoom out control on the map</string>
+    <string name="general">General</string>
+    <string name="click_to_change_account">Change account settings</string>
+    <string name="theme">Application theme</string>
+    <string name="sync_switch">Switch sync on/off</string>
+    <string name="get_citizen_messages">Get messages</string>
 </resources>

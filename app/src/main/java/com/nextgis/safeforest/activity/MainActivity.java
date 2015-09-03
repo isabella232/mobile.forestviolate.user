@@ -25,6 +25,7 @@ import android.accounts.Account;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -45,20 +46,49 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
+import com.nextgis.maplib.api.IProgressor;
+import com.nextgis.maplib.datasource.GeoEnvelope;
+import com.nextgis.maplib.datasource.TileItem;
 import com.nextgis.maplib.datasource.ngw.Connection;
+import com.nextgis.maplib.datasource.ngw.INGWResource;
+import com.nextgis.maplib.datasource.ngw.Resource;
+import com.nextgis.maplib.datasource.ngw.ResourceGroup;
+import com.nextgis.maplib.display.SimpleFeatureRenderer;
+import com.nextgis.maplib.display.SimpleTiledPolygonStyle;
 import com.nextgis.maplib.map.MapBase;
+import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.maplib.util.GeoConstants;
+import com.nextgis.maplib.util.MapUtil;
+import com.nextgis.maplib.util.NGException;
 import com.nextgis.maplibui.fragment.NGWLoginFragment;
+import com.nextgis.maplibui.mapui.NGWVectorLayerUI;
+import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
+import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.adapter.InitStepListAdapter;
 import com.nextgis.safeforest.fragment.LoginFragment;
 import com.nextgis.safeforest.fragment.MapFragment;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.util.Constants;
+import com.nextgis.safeforest.util.SettingsConstants;
 
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAccountListener {
 
@@ -277,7 +307,8 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        if(!mFirsRun)
+            getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -290,6 +321,8 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            final IGISApplication app = (IGISApplication) getApplication();
+            app.showSettings();
             return true;
         }
         else if (id == R.id.action_about) {
@@ -341,6 +374,249 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             }
             return null;
         }
+    }
+
+
+    protected boolean checkServerLayers(INGWResource resource, Map<String, Long> keys){
+        if (resource instanceof Connection) {
+            Connection connection = (Connection) resource;
+            connection.loadChildren();
+        }
+        else if (resource instanceof ResourceGroup) {
+            ResourceGroup resourceGroup = (ResourceGroup) resource;
+            resourceGroup.loadChildren();
+        }
+
+        for(int i = 0; i < resource.getChildrenCount(); ++i){
+            INGWResource childResource = resource.getChild(i);
+
+            if(keys.containsKey(childResource.getKey()) && childResource instanceof Resource) {
+                Resource ngwResource = (Resource) childResource;
+                keys.put(ngwResource.getKey(), ngwResource.getRemoteId());
+            }
+
+            boolean bIsFill = true;
+            for (Map.Entry<String, Long> entry : keys.entrySet()) {
+                if(entry.getValue() <= 0){
+                    bIsFill = false;
+                    break;
+                }
+            }
+
+            if(bIsFill){
+                return true;
+            }
+
+            if(checkServerLayers(childResource, keys)){
+                return true;
+            }
+        }
+
+        boolean bIsFill = true;
+
+        for (Map.Entry<String, Long> entry : keys.entrySet()) {
+            if(entry.getValue() <= 0){
+                bIsFill = false;
+                break;
+            }
+        }
+
+        return bIsFill;
+    }
+
+
+    protected void createBasicLayers(MapBase map, final InitAsyncTask initAsyncTask, final int nStep){
+
+        initAsyncTask.publishProgress(getString(R.string.working), nStep, Constants.STEP_STATE_WORK);
+
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        float minX = prefs.getFloat(SettingsConstants.KEY_PREF_USERMINX, -2000.0f);
+        float minY = prefs.getFloat(SettingsConstants.KEY_PREF_USERMINY, -2000.0f);
+        float maxX = prefs.getFloat(SettingsConstants.KEY_PREF_USERMAXX, 2000.0f);
+        float maxY = prefs.getFloat(SettingsConstants.KEY_PREF_USERMAXY, 2000.0f);
+
+        //add OpenStreetMap layer on application first run
+        String layerName = getString(R.string.osm);
+        String layerURL = SettingsConstantsUI.OSM_URL;
+        final RemoteTMSLayerUI osmLayer =
+                new RemoteTMSLayerUI(getApplicationContext(), map.createLayerStorage());
+        osmLayer.setName(layerName);
+        osmLayer.setURL(layerURL);
+        osmLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
+        osmLayer.setMaxZoom(22);
+        osmLayer.setMinZoom(12.4f);
+        osmLayer.setVisible(true);
+
+        map.addLayer(osmLayer);
+        //mMap.moveLayer(0, osmLayer);
+        GeoEnvelope extent = new GeoEnvelope(minX, maxX, minY, maxY);
+
+        /*
+        if(extent.isInit()) {
+            try {
+                downloadTiles(osmLayer, initAsyncTask, nStep, map.getFullBounds(), extent, 12, 13);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }*/
+
+        String kosmosnimkiLayerName = getString(R.string.topo);
+        String kosmosnimkiLayerURL = SettingsConstants.KOSOSNIMKI_URL;
+        RemoteTMSLayerUI ksLayer =
+                new RemoteTMSLayerUI(getApplicationContext(), map.createLayerStorage());
+        ksLayer.setName(kosmosnimkiLayerName);
+        ksLayer.setURL(kosmosnimkiLayerURL);
+        ksLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
+        ksLayer.setMaxZoom(12.4f);
+        ksLayer.setMinZoom(0);
+        ksLayer.setVisible(true);
+
+        map.addLayer(ksLayer);
+        //mMap.moveLayer(1, ksLayer);
+
+        if(extent.isInit()) {
+            //download
+            try {
+                downloadTiles(ksLayer, initAsyncTask, nStep, extent, 5, 9);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        String mixerLayerName = getString(R.string.geomixer_fv_tiles);
+        String mixerLayerURL = SettingsConstants.VIOLATIONS_URL;
+        RemoteTMSLayerUI mixerLayer =
+                new RemoteTMSLayerUI(getApplicationContext(), map.createLayerStorage());
+        mixerLayer.setName(mixerLayerName);
+        mixerLayer.setURL(mixerLayerURL);
+        mixerLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
+        mixerLayer.setMaxZoom(25);
+        mixerLayer.setMinZoom(0);
+        mixerLayer.setVisible(true);
+
+        map.addLayer(mixerLayer);
+        //mMap.moveLayer(2, mixerLayer);
+
+        //set extent
+        if(map instanceof MapDrawable && extent.isInit()) {
+            ((MapDrawable) map).zoomToExtent(extent);
+        }
+
+        initAsyncTask.publishProgress(getString(R.string.done), nStep, Constants.STEP_STATE_DONE);
+    }
+
+
+    private void downloadTiles(final RemoteTMSLayerUI osmLayer, final InitAsyncTask initAsyncTask, final int nStep, GeoEnvelope loadBounds, int zoomFrom, int zoomTo) throws InterruptedException {
+        //download
+        initAsyncTask.publishProgress(getString(R.string.form_tiles_list), nStep, Constants.STEP_STATE_WORK);
+        final List<TileItem> tilesList = new LinkedList<>();
+        for(int zoom = zoomFrom; zoom < zoomTo + 1; zoom++) {
+            tilesList.addAll(MapUtil.getTileItems(loadBounds, zoom, osmLayer.getTMSType()));
+        }
+
+        int threadCount = Constants.DOWNLOAD_SEPARATE_THREADS;
+        ThreadPoolExecutor threadPool = new ThreadPoolExecutor(
+                threadCount, threadCount, com.nextgis.maplib.util.Constants.KEEP_ALIVE_TIME,
+                com.nextgis.maplib.util.Constants.KEEP_ALIVE_TIME_UNIT,
+                new LinkedBlockingQueue<Runnable>(), new RejectedExecutionHandler()
+        {
+            @Override
+            public void rejectedExecution(
+                    Runnable r,
+                    ThreadPoolExecutor executor)
+            {
+                try {
+                    executor.getQueue().put(r);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    //throw new RuntimeException("Interrupted while submitting task", e);
+                }
+            }
+        });
+
+        int tilesSize = tilesList.size();
+        List<Future> futures = new ArrayList<>(tilesSize);
+
+        for (int i = 0; i < tilesSize; ++i) {
+            if (Thread.currentThread().isInterrupted()) {
+                break;
+            }
+
+            final TileItem tile = tilesList.get(i);
+
+            futures.add(
+                    threadPool.submit(
+                            new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    android.os.Process.setThreadPriority(
+                                            com.nextgis.maplib.util.Constants.DEFAULT_DRAW_THREAD_PRIORITY);
+                                    osmLayer.downloadTile(tile);
+                                }
+                            }));
+        }
+
+        // wait for download ending
+        int nProgressStep = futures.size() / com.nextgis.maplib.util.Constants.DRAW_NOTIFY_STEP_PERCENT;
+        if(nProgressStep == 0)
+            nProgressStep = 1;
+        double percentFract = 100.0 / futures.size();
+
+        for (int i = 0, futuresSize = futures.size(); i < futuresSize; i++) {
+            if (Thread.currentThread().isInterrupted()) {
+                break;
+            }
+
+            try {
+                Future future = futures.get(i);
+                future.get(); // wait for task ending
+
+                if(i % nProgressStep == 0) {
+                    int percent = (int) (i * percentFract);
+                    initAsyncTask.publishProgress(percent + "% " + getString(R.string.downloaded), nStep, Constants.STEP_STATE_WORK);
+                }
+
+            } catch (CancellationException | InterruptedException e) {
+                //e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    private boolean loadCitizenMessages(long resourceId, String accountName, MapBase map, IProgressor progressor) {
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        float minX = prefs.getFloat(SettingsConstants.KEY_PREF_USERMINX, -2000.0f);
+        float minY = prefs.getFloat(SettingsConstants.KEY_PREF_USERMINY, -2000.0f);
+        float maxX = prefs.getFloat(SettingsConstants.KEY_PREF_USERMAXX, 2000.0f);
+        float maxY = prefs.getFloat(SettingsConstants.KEY_PREF_USERMAXY, 2000.0f);
+
+        NGWVectorLayerUI ngwVectorLayer = new NGWVectorLayerUI(getApplicationContext(),
+                map.createLayerStorage(Constants.KEY_CITIZEN_MESSAGES));
+
+        ngwVectorLayer.setName(Constants.KEY_CITIZEN_MESSAGES);
+        ngwVectorLayer.setRemoteId(resourceId);
+        ngwVectorLayer.setServerWhere(String.format(Locale.US, "bbox=%f,%f,%f,%f",
+                minX, minY, maxX, maxY));
+        ngwVectorLayer.setVisible(false);
+        ngwVectorLayer.setAccountName(accountName);
+        ngwVectorLayer.setSyncType(com.nextgis.maplib.util.Constants.SYNC_ALL);
+        ngwVectorLayer.setMinZoom(0);
+        ngwVectorLayer.setMaxZoom(25);
+
+        map.addLayer(ngwVectorLayer);
+
+        try {
+            ngwVectorLayer.createFromNGW(progressor);
+        } catch (NGException | IOException | JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -422,7 +698,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             Connection connection = new Connection("tmp", sLogin, sPassword, sURL);
             publishProgress(getString(R.string.connecting), mStep, Constants.STEP_STATE_WORK);
 
-            if(!connection.connect()){
+            if(!connection.connect(sLogin.equals(Constants.ANONYMOUS))){
                 publishProgress(getString(R.string.error_connect_failed), mStep, Constants.STEP_STATE_ERROR);
 
                 try {
@@ -465,33 +741,9 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             if(isCancelled())
                 return false;
 
-            // step 2: get inspector detail
-            // name, description, bbox
+            // step 2: create base layers
+
             mStep = 1;
-
-            publishProgress(getString(R.string.working), mStep, Constants.STEP_STATE_WORK);
-
-            if(!getInspectorDetail(connection, keys.get(Constants.KEY_INSPECTORS), sLogin)){
-                publishProgress(getString(R.string.error_get_inspector_detail), mStep, Constants.STEP_STATE_ERROR);
-
-                try {
-                    Thread.sleep(nTimeout);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                return false;
-            }
-            else {
-                publishProgress(getString(R.string.done), mStep, Constants.STEP_STATE_DONE);
-            }
-
-            if(isCancelled())
-                return false;
-
-            // step 3: create base layers
-
-            mStep = 2;
             MapBase map = app.getMap();
 
             createBasicLayers(map, this, mStep);
@@ -499,13 +751,13 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             if(isCancelled())
                 return false;
 
-            // step 4: forest cadastre
+            // step 3: citizen messages
 
-            mStep = 3;
+            mStep = 2;
 
             publishProgress(getString(R.string.working), mStep, Constants.STEP_STATE_WORK);
 
-            if (!loadForestCadastre(keys.get(Constants.KEY_CADASTRE), mAccount.name, map, this)){
+            if (!loadCitizenMessages(keys.get(Constants.KEY_CITIZEN_MESSAGES), mAccount.name, map, this)){
                 publishProgress(getString(R.string.error_unexpected), mStep, Constants.STEP_STATE_ERROR);
 
                 try {
@@ -523,208 +775,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             if(isCancelled())
                 return false;
 
-            // step 5: load documents
 
-            mStep = 4;
-
-            publishProgress(getString(R.string.working), mStep, Constants.STEP_STATE_WORK);
-
-            if (!loadDocuments(keys.get(Constants.KEY_DOCUMENTS), mAccount.name, map, this)){
-                publishProgress(getString(R.string.error_unexpected), mStep, Constants.STEP_STATE_ERROR);
-
-                try {
-                    Thread.sleep(nTimeout);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                return false;
-            }
-            else {
-                publishProgress(getString(R.string.done), mStep, Constants.STEP_STATE_DONE);
-            }
-
-            if(isCancelled())
-                return false;
-
-            // step 6: load sheets
-
-            mStep = 5;
-            int nSubStep = 1;
-            int nTotalSubSteps = 7;
-            DocumentsLayer documentsLayer = null;
-
-            for(int i = 0; i < map.getLayerCount(); i++){
-                ILayer layer = map.getLayer(i);
-                if(layer instanceof DocumentsLayer){
-                    documentsLayer = (DocumentsLayer) layer;
-                }
-            }
-
-            publishProgress(getString(R.string.working), mStep, Constants.STEP_STATE_WORK);
-
-            if (!loadLinkedTables(keys.get(Constants.KEY_SHEET), mAccount.name,
-                    Constants.KEY_LAYER_SHEET, documentsLayer, this)){
-                publishProgress(getString(R.string.error_unexpected), mStep, Constants.STEP_STATE_ERROR);
-
-                try {
-                    Thread.sleep(nTimeout);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                return false;
-            }
-
-            if(isCancelled())
-                return false;
-
-            // step 6: load productions
-
-            publishProgress(nSubStep + " " + getString(R.string.of) + " " + nTotalSubSteps, mStep,
-                    Constants.STEP_STATE_WORK);
-            nSubStep++;
-
-            if (!loadLinkedTables(keys.get(Constants.KEY_PRODUCTION), mAccount.name,
-                    Constants.KEY_LAYER_PRODUCTION, documentsLayer, this)){
-                publishProgress(getString(R.string.error_unexpected), mStep, Constants.STEP_STATE_ERROR);
-
-                try {
-                    Thread.sleep(nTimeout);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                return false;
-            }
-
-            if(isCancelled())
-                return false;
-
-            // step 6: load vehicles
-
-            publishProgress(nSubStep + " " + getString(R.string.of) + " " + nTotalSubSteps, mStep,
-                    Constants.STEP_STATE_WORK);
-            nSubStep++;
-
-            if (!loadLinkedTables(keys.get(Constants.KEY_VEHICLES), mAccount.name,
-                    Constants.KEY_LAYER_VEHICLES, documentsLayer, this)){
-                publishProgress(getString(R.string.error_unexpected), mStep, Constants.STEP_STATE_ERROR);
-
-                try {
-                    Thread.sleep(nTimeout);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                return false;
-            }
-
-            if(isCancelled())
-                return false;
-
-            publishProgress(nSubStep + " " + getString(R.string.of) + " " + nTotalSubSteps, mStep,
-                    Constants.STEP_STATE_WORK);
-            nSubStep++;
-
-            if (!loadLookupTables(keys.get(Constants.KEY_VIOLATE_TYPES), mAccount.name,
-                    Constants.KEY_LAYER_VIOLATE_TYPES, documentsLayer, this)){
-                publishProgress(getString(R.string.error_unexpected), mStep, Constants.STEP_STATE_ERROR);
-
-                try {
-                    Thread.sleep(nTimeout);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                return false;
-            }
-
-            if(isCancelled())
-                return false;
-
-            publishProgress(nSubStep + " " + getString(R.string.of) + " " + nTotalSubSteps, mStep,
-                    Constants.STEP_STATE_WORK);
-            nSubStep++;
-
-            if (!loadLookupTables(keys.get(Constants.KEY_SPECIES_TYPES), mAccount.name,
-                    Constants.KEY_LAYER_SPECIES_TYPES, documentsLayer, this)){
-                publishProgress(getString(R.string.error_unexpected), mStep, Constants.STEP_STATE_ERROR);
-
-                try {
-                    Thread.sleep(nTimeout);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                return false;
-            }
-
-            if(isCancelled())
-                return false;
-
-            publishProgress(nSubStep + " " + getString(R.string.of) + " " + nTotalSubSteps, mStep,
-                    Constants.STEP_STATE_WORK);
-            nSubStep++;
-
-            if (!loadLookupTables(keys.get(Constants.KEY_THICKNESS_TYPES), mAccount.name,
-                    Constants.KEY_LAYER_THICKNESS_TYPES, documentsLayer, this)){
-                publishProgress(getString(R.string.error_unexpected), mStep, Constants.STEP_STATE_ERROR);
-
-                try {
-                    Thread.sleep(nTimeout);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                return false;
-            }
-
-            if(isCancelled())
-                return false;
-
-            publishProgress(nSubStep + " " + getString(R.string.of) + " " + nTotalSubSteps, mStep,
-                    Constants.STEP_STATE_WORK);
-
-            if (!loadLookupTables(keys.get(Constants.KEY_FOREST_CAT_TYPES), mAccount.name,
-                    Constants.KEY_LAYER_FOREST_CAT_TYPES, documentsLayer, this)){
-                publishProgress(getString(R.string.error_unexpected), mStep, Constants.STEP_STATE_ERROR);
-
-                try {
-                    Thread.sleep(nTimeout);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                return false;
-            }
-            else {
-                publishProgress(getString(R.string.done), mStep, Constants.STEP_STATE_DONE);
-            }
-
-            if(isCancelled())
-                return false;
-
-            // step 7: load notes
-
-            mStep = 6;
-
-            publishProgress(getString(R.string.working), mStep, Constants.STEP_STATE_WORK);
-
-            if (!loadNotes(keys.get(Constants.KEY_NOTES), mAccount.name, map, this)){
-                publishProgress(getString(R.string.error_unexpected), mStep, Constants.STEP_STATE_ERROR);
-
-                try {
-                    Thread.sleep(nTimeout);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                return false;
-            }
-            else {
-                publishProgress(getString(R.string.done), mStep, Constants.STEP_STATE_DONE);
-            }
 
             //TODO: load additional tables
 
@@ -797,5 +848,4 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             mProgressMessage = message;
         }
     }
-
 }

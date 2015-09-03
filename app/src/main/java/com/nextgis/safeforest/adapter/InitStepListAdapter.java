@@ -29,8 +29,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nextgis.forestinspector.R;
-import com.nextgis.forestinspector.util.Constants;
+import com.nextgis.safeforest.R;
+import com.nextgis.safeforest.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,22 +52,18 @@ public class InitStepListAdapter extends BaseAdapter {
                                       context.getString(R.string.waiting), Constants.STEP_STATE_WAIT);
         mSteps.add(step1);
 
-        // 2. get inspector detail
-        InitStep step2 = new InitStep(context.getString(R.string.get_inspector_details),
+        // 2. create base layers
+        InitStep step2 = new InitStep(context.getString(R.string.create_base_layers),
                 context.getString(R.string.waiting), Constants.STEP_STATE_WAIT);
         mSteps.add(step2);
 
-        // 3. create base layers
-        InitStep step3 = new InitStep(context.getString(R.string.create_base_layers),
+
+        // 3. forest cadastre
+        InitStep step3 = new InitStep(context.getString(R.string.get_citizen_messages),
                 context.getString(R.string.waiting), Constants.STEP_STATE_WAIT);
         mSteps.add(step3);
 
-        // 4. forest cadastre
-        InitStep step4 = new InitStep(context.getString(R.string.get_forest_cadastre),
-                context.getString(R.string.waiting), Constants.STEP_STATE_WAIT);
-        mSteps.add(step4);
-
-        // 5. load documents
+        /*        // 5. load documents
         InitStep step5 = new InitStep(context.getString(R.string.load_documents),
                 context.getString(R.string.waiting), Constants.STEP_STATE_WAIT);
         mSteps.add(step5);
@@ -83,6 +79,7 @@ public class InitStepListAdapter extends BaseAdapter {
         mSteps.add(step7);
 
         // 8. load other offline vector data (scanex points, etc.)
+        */
     }
 
     @Override

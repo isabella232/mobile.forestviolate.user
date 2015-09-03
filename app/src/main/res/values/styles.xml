@@ -26,14 +26,14 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme.Light" parent="Theme.NextGIS.AppCompat.Light">
-        <item name="tabTextColor">@color/tabTextColor.Light</item>
-        <item name="tabSecondaryTextColor">@color/tabSecondaryTextColor.Light</item>
+        <item name="tabTextColor">@color/tabTextColor</item>
+        <item name="tabSecondaryTextColor">@color/tabSecondaryTextColor</item>
         <item name="CoordinatesPickerBackground">@drawable/ic_maps_pin_light</item>
     </style>
 
     <style name="AppTheme.Dark" parent="Theme.NextGIS.AppCompat.Dark">
-        <item name="tabTextColor">@color/tabTextColor.Light</item>
-        <item name="tabSecondaryTextColor">@color/tabSecondaryTextColor.Dark</item>
+        <item name="tabTextColor">@color/tabTextColor</item>
+        <item name="tabSecondaryTextColor">@color/tabSecondaryTextColor</item>
         <item name="CoordinatesPickerBackground">@drawable/ic_maps_pin_dark</item>
     </style>
 
