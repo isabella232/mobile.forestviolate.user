@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextgis.safeforest;
+package com.nextgis.safeforest.activity;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -31,6 +31,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.nextgis.maplibui.activity.NGActivity;
+import com.nextgis.safeforest.R;
 
 
 public class AboutActivity extends NGActivity

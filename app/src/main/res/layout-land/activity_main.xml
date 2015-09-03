@@ -64,6 +64,7 @@
             fab:fab_addButtonPlusIconColor="@android:color/white"
             android:layout_marginRight="16dp"
             android:layout_marginEnd="16dp"
+            fab:fab_expandDirection="left"
             >
 
             <com.getbase.floatingactionbutton.FloatingActionButton

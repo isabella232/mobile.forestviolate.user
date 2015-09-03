@@ -22,7 +22,7 @@
 
 <resources>
     <string name="app_name">Сохрани лес</string>
-
+    <string name="account_name">Сохрани лес</string>
     <string name="title_notes">Сообщения</string>
     <string name="title_map">Карта</string>
     <string name="action_settings">Настройки</string>
@@ -32,8 +32,27 @@
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2015]]></string>
     <string name="action_about">О программе</string>
     <string name="topo">Topo</string>
-    <string name="topo_url">http://{a,b,c}.tile.cart.kosmosnimki.ru/rs/{z}/{x}/{y}.png</string>
     <string name="violate_type">Forest violate type</string>
     <string name="contact">Contact</string>
     <string name="fire">Fire</string>
+    <string name="geomixer_fv_tiles">Лесонарушения растр (GeoMixer)</string>
+    <string name="sf_login_title">Аккаунт лесного инспектора</string>
+    <string name="sf_login_description"><![CDATA[Введите ваши данные для регистрации на сервере учета лесонарушений (регистрацию можно пропустить, при этом, приложение будет иметь ограниченную функциональность). Кроме того, выберите территорию работы (обязательно). После нажатия на кнопку \"Регистрация\" или \"Пропустить\" будет запущен процесс получения данных для работы оффлайн. Данный процесс требует большого количества трафика, поэтому на данном этапе рекомендуется использовать подключение по Wi-Fi.]]></string>
+    <string name="first_run">Первый запуск</string>
+    <string name="fi_url">Адрес сервера</string>
+    <string name="error_init">Ошибка инициализации</string>
+    <string name="initialization">Первоначальная установка</string>
+    <string name="create_base_layers">Создание базовых слоев карты</string>
+    <string name="check_server">Проверка сервера</string>
+    <string name="register">Register</string>
+    <string name="skip">Skip</string>
+    <string name="KHA">KHabarovskij kraj</string>
+    <string name="PRI">Primorskij kraj</string>
+    <string name="sf_region_select">Select working territory (obligatory)</string>
+    <string name="connecting">подключение к серверу…</string>
+    <string name="connected">Подключено</string>
+    <string name="check_tables_exist">Проверка таблиц</string>
+    <string name="error_wrong_server">Неподдерживаемый сервер</string>
+    <string name="done">Выполнено</string>
+    <string name="working">Выполняется…</string>
 </resources>

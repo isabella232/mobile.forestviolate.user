@@ -19,34 +19,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextgis.safeforest;
-
-import android.content.Context;
-import android.support.v4.view.ViewPager;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
+package com.nextgis.safeforest.util;
 
 /**
- * ViewPager without swipe
+ * Constants
  */
-public class AppViewPager extends ViewPager {
-    public AppViewPager(Context context) {
-        super(context);
-    }
+public interface Constants {
 
-    public AppViewPager(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+    String SFTAG = "safe forest";
+    int MAX_DOCUMENTS = 100;
+    String TEMP_DOCUMENT_FEATURE_FOLDER = "temp_document";
+    String ANONYMOUS = "anonymous";
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent event) {
-        // Never allow swiping to switch between pages
-        return false;
-    }
+    /**
+     * State constants
+     */
+    int STEP_STATE_WAIT = 0;
+    int STEP_STATE_WORK = 1;
+    int STEP_STATE_DONE = 2;
+    int STEP_STATE_ERROR = 3;
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        // Never allow swiping to switch between pages
-        return false;
-    }
+    /**
+     * NGW layer keys
+     */
+    String KEY_CITIZEN_MESSAGES = "citizen_messages";
 }

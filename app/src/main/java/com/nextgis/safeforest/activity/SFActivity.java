@@ -18,36 +18,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-apply plugin: 'com.android.application'
 
-android {
-    compileSdkVersion 23
-    buildToolsVersion '23.0.0'
+package com.nextgis.safeforest.activity;
 
-    defaultConfig {
-        applicationId "com.nextgis.safeforest"
-        minSdkVersion 8
-        targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+import com.nextgis.safeforest.R;
+import com.nextgis.maplibui.activity.NGActivity;
+
+public class SFActivity extends NGActivity {
+
+    @Override
+    protected int getThemeId(boolean isDark) {
+        if(isDark)
+            return R.style.AppTheme_Dark;
+        else
+            return R.style.AppTheme_Light;
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                    output.outputFile = new File(output.outputFile.parent, "fvu-" + defaultConfig.versionName + ".apk")
-                }
-            }
-        }
-    }
-}
-
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':maplibui')
-    compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.android.support:appcompat-v7:23.0.0'
-    compile 'com.android.support:design:23.0.0'
 }

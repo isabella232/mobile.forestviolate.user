@@ -21,6 +21,7 @@
 
 package com.nextgis.safeforest;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -33,6 +34,7 @@ import com.nextgis.maplibui.GISApplication;
 import com.nextgis.maplibui.mapui.LayerFactoryUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
+import com.nextgis.safeforest.activity.PreferencesActivity;
 
 import java.io.File;
 
@@ -71,53 +73,29 @@ public class MainApplication extends GISApplication {
     }
 
     /**
-     * @return A authority for sync purposes or empty string in not sync anything
+     * @return A authority for sync purposes or empty string if not sync anything
      */
     @Override
     public String getAuthority() {
-        return null;
+        return com.nextgis.safeforest.util.SettingsConstants.AUTHORITY;
     }
+
 
     /**
      * Show settings Activity
      */
     @Override
     public void showSettings() {
-
+        Intent intentSet = new Intent(this, PreferencesActivity.class);
+        intentSet.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intentSet);
     }
 
     @Override
-    protected void onFirstRun()
-    {
-        //add OpenStreetMap layer on application first run
-        String layerName = getString(R.string.osm);
-        String layerURL = getString(R.string.osm_url);
-        RemoteTMSLayerUI osmLayer =
-                new RemoteTMSLayerUI(getApplicationContext(), mMap.createLayerStorage());
-        osmLayer.setName(layerName);
-        osmLayer.setURL(layerURL);
-        osmLayer.setTMSType(TMSTYPE_OSM);
-        osmLayer.setMaxZoom(22);
-        osmLayer.setMinZoom(12.4f);
-        osmLayer.setVisible(true);
-
-        mMap.addLayer(osmLayer);
-        mMap.moveLayer(0, osmLayer);
-
-        String kosmosnimkiLayerName = getString(R.string.topo);
-        String kosmosnimkiLayerURL = getString(R.string.topo_url);
-        RemoteTMSLayerUI ksLayer =
-                new RemoteTMSLayerUI(getApplicationContext(), mMap.createLayerStorage());
-        ksLayer.setName(kosmosnimkiLayerName);
-        ksLayer.setURL(kosmosnimkiLayerURL);
-        ksLayer.setTMSType(TMSTYPE_OSM);
-        ksLayer.setMaxZoom(12.4f);
-        ksLayer.setMinZoom(0);
-        ksLayer.setVisible(true);
-
-        mMap.addLayer(ksLayer);
-        mMap.moveLayer(1, ksLayer);
-
-        mMap.save();
+    protected int getThemeId(boolean isDark) {
+        if(isDark)
+            return R.style.AppTheme_Dark;
+        else
+            return R.style.AppTheme_Light;
     }
 }

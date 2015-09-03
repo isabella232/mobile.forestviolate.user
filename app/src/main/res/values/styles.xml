@@ -22,20 +22,65 @@
 <resources>
 
     <attr name="tabSecondaryTextColor" format="reference"/>
+    <attr name="CoordinatesPickerBackground" format="reference"/>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.NextGIS.AppCompat.Light">
+    <style name="AppTheme.Light" parent="Theme.NextGIS.AppCompat.Light">
         <item name="tabTextColor">@color/tabTextColor.Light</item>
         <item name="tabSecondaryTextColor">@color/tabSecondaryTextColor.Light</item>
-        <item name="windowActionBarOverlay">false</item>
-        <item name="windowActionModeOverlay">false</item>
+        <item name="CoordinatesPickerBackground">@drawable/ic_maps_pin_light</item>
     </style>
 
     <style name="AppTheme.Dark" parent="Theme.NextGIS.AppCompat.Dark">
         <item name="tabTextColor">@color/tabTextColor.Light</item>
         <item name="tabSecondaryTextColor">@color/tabSecondaryTextColor.Dark</item>
-        <item name="windowActionBarOverlay">false</item>
-        <item name="windowActionModeOverlay">false</item>
+        <item name="CoordinatesPickerBackground">@drawable/ic_maps_pin_dark</item>
+    </style>
+
+    <style name="status_panel">
+        <item name="android:textViewStyle">@style/status_panel_text</item>
+    </style>
+
+    <style name="status_panel_text"
+           parent="android:Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:drawablePadding">2dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Medium</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+
+    <style name="status_panel_text_land"
+           parent="status_panel_text">
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="description_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:layout_margin">5dp</item>
+    </style>
+
+    <style name="normal_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:layout_margin">5dp</item>
+    </style>
+
+    <style name="paragraph_text" parent="normal_text">
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CoordinatesPicker" parent="Base.Widget.AppCompat.Spinner">
+        <item name="android:background">?attr/CoordinatesPickerBackground</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
 
 </resources>

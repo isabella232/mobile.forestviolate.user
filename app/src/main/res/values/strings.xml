@@ -21,7 +21,7 @@
 
 <resources>
     <string name="app_name">Safe forest</string>
-
+    <string name="account_name">Safe forest</string>
     <string name="title_notes">Notifications</string>
     <string name="title_map">Map</string>
     <string name="action_settings">Settings</string>
@@ -31,10 +31,29 @@
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2015]]></string>
     <string name="action_about">About</string>
     <string name="topo">Topo</string>
-    <string name="topo_url">http://{a,b,c}.tile.cart.kosmosnimki.ru/rs/{z}/{x}/{y}.png</string>
     <string name="violate_type">Forest violate type</string>
     <string name="contact">Contact</string>
     <string name="name">Name</string>
     <string name="felling">Felling</string>
     <string name="fire">Fire</string>
+    <string name="geomixer_fv_tiles">GeoMixer violation tiles</string>
+    <string name="sf_login_title">Forest inspector account</string>
+    <string name="sf_login_description"><![CDATA[Enter your information for account registration on server (registration can be skipped, but the application will have limited functionality). In addition, select the area of work (obligatory input field). After clicking on the \ "Register \" or \ "Skip \" will start the process of getting data to work offline. This process need a lot of traffic, so Wi-Fi connection recommended.]]></string>
+    <string name="first_run">First run</string>
+    <string name="fi_url">Server URL</string>
+    <string name="error_init">Failed to initialize</string>
+    <string name="initialization">Initial setup</string>
+    <string name="create_base_layers">Create base layers</string>
+    <string name="check_server">Check server</string>
+    <string name="register">Register</string>
+    <string name="skip">Skip</string>
+    <string name="KHA">KHabarovskij kraj</string>
+    <string name="PRI">Primorskij kraj</string>
+    <string name="sf_region_select">Select working territory (obligatory)</string>
+    <string name="connecting">Connecting to server…</string>
+    <string name="connected">Connected</string>
+    <string name="check_tables_exist">Check tables exist</string>
+    <string name="error_wrong_server">The incompatible server</string>
+    <string name="done">Done</string>
+    <string name="working">Working…</string>
 </resources>

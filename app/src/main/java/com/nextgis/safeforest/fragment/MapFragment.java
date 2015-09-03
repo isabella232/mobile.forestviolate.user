@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextgis.safeforest;
+package com.nextgis.safeforest.fragment;
 
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -43,6 +43,8 @@ import com.nextgis.maplibui.api.MapViewEventListener;
 import com.nextgis.maplibui.mapui.MapViewOverlays;
 import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
+import com.nextgis.safeforest.MainApplication;
+import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.util.SettingsConstants;
 
 public class MapFragment
@@ -258,6 +260,11 @@ public class MapFragment
 
     @Override
     public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onBestLocationChanged(Location location) {
 
     }
 
