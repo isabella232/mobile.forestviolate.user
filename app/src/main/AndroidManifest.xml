@@ -89,6 +89,11 @@
             android:name=".activity.AboutActivity"
             android:label="@string/action_about"
             />
+
+        <activity
+            android:name=".activity.PreferencesActivity"
+            android:label="@string/action_settings"
+            />
     </application>
 
 </manifest>
