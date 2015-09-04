@@ -20,35 +20,49 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextgis.safeforest.util;
+package com.nextgis.safeforest.fragment;
 
-/**
- * Constants
- */
-public interface Constants {
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import com.nextgis.safeforest.R;
+import com.nextgis.safeforest.activity.LoggingActivity;
 
-    String SFTAG = "safe forest";
-    int MAX_DOCUMENTS = 100;
-    String TEMP_DOCUMENT_FEATURE_FOLDER = "temp_document";
-    String ANONYMOUS = "anonymous";
 
-    /**
-     * State constants
-     */
-    int STEP_STATE_WAIT = 0;
-    int STEP_STATE_WORK = 1;
-    int STEP_STATE_DONE = 2;
-    int STEP_STATE_ERROR = 3;
+public class LoggingFragment
+        extends Fragment
+        implements LoggingActivity.OnSaveListener
+{
+    protected EditText mMessage;
 
-    /**
-     * NGW layer keys
-     */
-    String KEY_CITIZEN_MESSAGES = "citizen_messages";
 
-    /**
-     * Threads
-     */
-    int DOWNLOAD_SEPARATE_THREADS = 10;
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
-    String FRAGMENT_LOGGING = "logging";
+
+    @Override
+    public View onCreateView(
+            LayoutInflater inflater,
+            ViewGroup container,
+            Bundle savedInstanceState)
+    {
+        View view = inflater.inflate(R.layout.fragment_logging, null);
+        mMessage = (EditText) view.findViewById(R.id.message);
+
+        return view;
+    }
+
+
+    @Override
+    public void onSave()
+    {
+
+    }
 }
