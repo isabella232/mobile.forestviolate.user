@@ -3,6 +3,7 @@
   ~ Project: Forest violations
   ~ Purpose: Mobile application for registering facts of the forest violations.
   ~ Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+  ~ Author:  NikitaFeodonit, nfeodonit@yandex.com
   ~ ******************************************************************************
   ~ Copyright (c) 2015-2015. NextGIS, info@nextgis.com
   ~
@@ -75,4 +76,7 @@
     <string name="theme">Тема приложения</string>
     <string name="sync_switch">Вкл./выкл. синхронизацию</string>
     <string name="get_citizen_messages">Get messages</string>
+    <string name="message_paragraph">Сообщение</string>
+    <string name="message_hint">Введите текст сообщения</string>
+    <string name="action_logging">Лесозаготовка</string>
 </resources>
