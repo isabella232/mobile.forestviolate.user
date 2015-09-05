@@ -32,8 +32,6 @@
     <string name="action_about">About</string>
     <string name="topo">Topo</string>
     <string name="contact">Contact</string>
-    <string name="name">Name</string>
-    <string name="felling">Felling</string>
     <string name="fire">Fire</string>
     <string name="geomixer_fv_tiles">GeoMixer violation tiles</string>
     <string name="sf_login_title">Account</string>
