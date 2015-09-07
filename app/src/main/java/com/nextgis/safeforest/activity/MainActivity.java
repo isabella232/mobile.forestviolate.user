@@ -605,8 +605,8 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         ngwVectorLayer.setVisible(false);
         ngwVectorLayer.setAccountName(accountName);
         ngwVectorLayer.setSyncType(com.nextgis.maplib.util.Constants.SYNC_ALL);
-        ngwVectorLayer.setMinZoom(0);
-        ngwVectorLayer.setMaxZoom(25);
+        ngwVectorLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
+        ngwVectorLayer.setMaxZoom(GeoConstants.DEFAULT_MAX_ZOOM);
 
         map.addLayer(ngwVectorLayer);
 
