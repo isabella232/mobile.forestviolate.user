@@ -78,7 +78,7 @@
     <string name="get_citizen_messages">Get messages</string>
     <string name="message_paragraph">Сообщение</string>
     <string name="message_hint">Введите текст сообщения</string>
-    <string name="action_logging">Лесозаготовка</string>
+    <string name="action_felling">Лесозаготовка</string>
     <string name="error_create_message">Ошибка создания сообщения</string>
     <string name="action_sync">Синхронизация</string>
 </resources>

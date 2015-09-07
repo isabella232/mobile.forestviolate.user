@@ -87,12 +87,12 @@
                 />
 
             <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/add_logging"
+                android:id="@+id/add_felling"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 fab:fab_colorNormal="?attr/colorPrimary"
                 fab:fab_size="mini"
-                fab:fab_icon="@drawable/ic_logging_dark"
+                fab:fab_icon="@drawable/ic_felling_dark"
                 fab:fab_colorPressed="?attr/colorAccent"
                 />
 

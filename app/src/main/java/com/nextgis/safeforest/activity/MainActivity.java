@@ -46,7 +46,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.IProgressor;
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.TileItem;
@@ -243,13 +242,15 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
                     });
         }
 
-        final View addLogging = findViewById(R.id.add_logging);
-        if (null != addLogging) {
-            addLogging.setOnClickListener(
-                    new View.OnClickListener() {
+        final View addFelling = findViewById(R.id.add_felling);
+        if (null != addFelling) {
+            addFelling.setOnClickListener(
+                    new View.OnClickListener()
+                    {
                         @Override
-                        public void onClick(View v) {
-                            addLogging();
+                        public void onClick(View v)
+                        {
+                            addFelling();
                         }
                     });
         }
@@ -259,7 +260,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
     }
 
-    private void addLogging() {
+    private void addFelling() {
         Intent intent = new Intent(this, MessageActivity.class);
         startActivity(intent);
     }

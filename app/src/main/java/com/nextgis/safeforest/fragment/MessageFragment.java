@@ -83,7 +83,7 @@ public class MessageFragment
         values.put(Constants.FIELD_AUTHOR, "email@email.com");
         values.put(Constants.FIELD_CONTACT, "+79001234567");
         values.put(Constants.FIELD_STATUS, Constants.MSG_STATUS_NEW);
-        values.put(Constants.FIELD_MTYPE, Constants.MSG_TYPE_LOGGING);
+        values.put(Constants.FIELD_MTYPE, Constants.MSG_TYPE_FELLING);
         values.put(Constants.FIELD_MESSAGE, mMessage.getText().toString());
 
 

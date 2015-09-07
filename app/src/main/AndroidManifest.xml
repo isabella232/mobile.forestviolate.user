@@ -101,7 +101,7 @@
 
         <activity
             android:name=".activity.MessageActivity"
-            android:label="@string/action_logging"
+            android:label="@string/action_felling"
             />
 
         <service

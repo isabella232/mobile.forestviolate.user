@@ -70,5 +70,5 @@ public interface Constants
 
     int MSG_TYPE_UNKNOWN = 0;
     int MSG_TYPE_FIRE    = 1;
-    int MSG_TYPE_LOGGING = 2;
+    int MSG_TYPE_FELLING = 2;
 }
