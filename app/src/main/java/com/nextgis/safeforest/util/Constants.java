@@ -25,19 +25,20 @@ package com.nextgis.safeforest.util;
 /**
  * Constants
  */
-public interface Constants {
+public interface Constants
+{
 
-    String SFTAG = "safe forest";
-    int MAX_DOCUMENTS = 100;
+    String SFTAG                        = "safe forest";
+    int    MAX_DOCUMENTS                = 100;
     String TEMP_DOCUMENT_FEATURE_FOLDER = "temp_document";
-    String ANONYMOUS = "anonymous";
+    String ANONYMOUS                    = "anonymous";
 
     /**
      * State constants
      */
-    int STEP_STATE_WAIT = 0;
-    int STEP_STATE_WORK = 1;
-    int STEP_STATE_DONE = 2;
+    int STEP_STATE_WAIT  = 0;
+    int STEP_STATE_WORK  = 1;
+    int STEP_STATE_DONE  = 2;
     int STEP_STATE_ERROR = 3;
 
     /**
@@ -50,5 +51,5 @@ public interface Constants {
      */
     int DOWNLOAD_SEPARATE_THREADS = 10;
 
-    String FRAGMENT_LOGGING = "logging";
+    String FRAGMENT_MESSAGE = "message";
 }

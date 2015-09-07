@@ -72,14 +72,14 @@ public class MessageActivity
         FragmentTransaction ft = fm.beginTransaction();
 
         MessageFragment messageFragment =
-                (MessageFragment) fm.findFragmentByTag(Constants.FRAGMENT_LOGGING);
+                (MessageFragment) fm.findFragmentByTag(Constants.FRAGMENT_MESSAGE);
 
         if (messageFragment == null) {
             messageFragment = new MessageFragment();
             setOnSaveListener(messageFragment);
         }
 
-        ft.replace(R.id.logging_fragment, messageFragment, Constants.FRAGMENT_LOGGING);
+        ft.replace(R.id.logging_fragment, messageFragment, Constants.FRAGMENT_MESSAGE);
         ft.commit();
     }
 
