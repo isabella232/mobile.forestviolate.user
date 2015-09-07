@@ -38,10 +38,9 @@ import android.widget.Toast;
 
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.datasource.GeoEnvelope;
-import com.nextgis.maplibui.activity.NGWSettingsActivity;
+import com.nextgis.maplibui.fragment.NGWLoginFragment;
 import com.nextgis.maplibui.service.HTTPLoader;
 import com.nextgis.safeforest.R;
-import com.nextgis.maplibui.fragment.NGWLoginFragment;
 import com.nextgis.safeforest.util.Constants;
 import com.nextgis.safeforest.util.SettingsConstants;
 
