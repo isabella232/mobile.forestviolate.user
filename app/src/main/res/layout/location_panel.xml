@@ -99,6 +99,7 @@
             android:layout_margin="5dp"
             android:background="?attr/ic_action_refresh"
             android:contentDescription="@string/update_coordinates"
+            android:visibility="gone"
             />
 
     </LinearLayout>

@@ -29,12 +29,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import com.nextgis.safeforest.R;
-import com.nextgis.safeforest.activity.LoggingActivity;
+import com.nextgis.safeforest.activity.MessageActivity;
 
 
-public class LoggingFragment
+public class MessageFragment
         extends Fragment
-        implements LoggingActivity.OnSaveListener
+        implements MessageActivity.OnSaveListener
 {
     protected EditText mMessage;
 

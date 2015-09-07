@@ -30,10 +30,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.api.IGISApplication;
@@ -41,13 +37,13 @@ import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.util.LocationUtil;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.safeforest.R;
-import com.nextgis.safeforest.fragment.LoggingFragment;
+import com.nextgis.safeforest.fragment.MessageFragment;
 import com.nextgis.safeforest.util.Constants;
 
 import java.text.DecimalFormat;
 
 
-public class LoggingActivity
+public class MessageActivity
         extends SFActivity
         implements GpsEventListener
 {
@@ -75,15 +71,15 @@ public class LoggingActivity
         final FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        LoggingFragment loggingFragment =
-                (LoggingFragment) fm.findFragmentByTag(Constants.FRAGMENT_LOGGING);
+        MessageFragment messageFragment =
+                (MessageFragment) fm.findFragmentByTag(Constants.FRAGMENT_LOGGING);
 
-        if (loggingFragment == null) {
-            loggingFragment = new LoggingFragment();
-            setOnSaveListener(loggingFragment);
+        if (messageFragment == null) {
+            messageFragment = new MessageFragment();
+            setOnSaveListener(messageFragment);
         }
 
-        ft.replace(R.id.logging_fragment, loggingFragment, Constants.FRAGMENT_LOGGING);
+        ft.replace(R.id.logging_fragment, messageFragment, Constants.FRAGMENT_LOGGING);
         ft.commit();
     }
 
@@ -94,28 +90,7 @@ public class LoggingActivity
         mLongView = (TextView) findViewById(R.id.longitude_view);
         mAltView = (TextView) findViewById(R.id.altitude_view);
         mAccView = (TextView) findViewById(R.id.accuracy_view);
-
-        final ImageButton refreshLocation = (ImageButton) findViewById(R.id.refresh);
-        refreshLocation.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View view)
-                    {
-                        RotateAnimation rotateAnimation = new RotateAnimation(
-                                0, 360, Animation.RELATIVE_TO_SELF, 0.5f,
-                                Animation.RELATIVE_TO_SELF, 0.5f);
-                        rotateAnimation.setDuration(700);
-                        rotateAnimation.setRepeatCount(0);
-                        refreshLocation.startAnimation(rotateAnimation);
-
-                        if (null != app) {
-                            GpsEventSource gpsEventSource = app.getGpsEventSource();
-                            Location location = gpsEventSource.getLastKnownLocation();
-                            setLocationText(location);
-                        }
-                    }
-                });
+        setLocationText(null);
     }
 
 
@@ -141,7 +116,6 @@ public class LoggingActivity
             if (null != app) {
                 GpsEventSource gpsEventSource = app.getGpsEventSource();
                 gpsEventSource.addListener(this);
-                setLocationText(gpsEventSource.getLastKnownLocation());
             }
         }
         super.onResume();
@@ -192,7 +166,7 @@ public class LoggingActivity
     @Override
     public void onLocationChanged(Location location)
     {
-
+        setLocationText(location);
     }
 
 

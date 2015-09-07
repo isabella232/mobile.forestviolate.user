@@ -47,7 +47,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.nextgis.maplib.api.IGISApplication;
-import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.IProgressor;
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.TileItem;
@@ -55,8 +54,6 @@ import com.nextgis.maplib.datasource.ngw.Connection;
 import com.nextgis.maplib.datasource.ngw.INGWResource;
 import com.nextgis.maplib.datasource.ngw.Resource;
 import com.nextgis.maplib.datasource.ngw.ResourceGroup;
-import com.nextgis.maplib.display.SimpleFeatureRenderer;
-import com.nextgis.maplib.display.SimpleTiledPolygonStyle;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.util.GeoConstants;
@@ -263,7 +260,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     }
 
     private void addLogging() {
-        Intent intent = new Intent(this, LoggingActivity.class);
+        Intent intent = new Intent(this, MessageActivity.class);
         startActivity(intent);
     }
 
