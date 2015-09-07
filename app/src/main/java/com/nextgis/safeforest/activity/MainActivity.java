@@ -444,7 +444,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         osmLayer.setName(layerName);
         osmLayer.setURL(layerURL);
         osmLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
-        osmLayer.setMaxZoom(22);
+        osmLayer.setMaxZoom(20);
         osmLayer.setMinZoom(12.4f);
         osmLayer.setVisible(true);
 
@@ -469,7 +469,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         ksLayer.setURL(kosmosnimkiLayerURL);
         ksLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
         ksLayer.setMaxZoom(12.4f);
-        ksLayer.setMinZoom(0);
+        ksLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
         ksLayer.setVisible(true);
 
         map.addLayer(ksLayer);
@@ -491,8 +491,8 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         mixerLayer.setName(mixerLayerName);
         mixerLayer.setURL(mixerLayerURL);
         mixerLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
-        mixerLayer.setMaxZoom(25);
-        mixerLayer.setMinZoom(0);
+        mixerLayer.setMaxZoom(GeoConstants.DEFAULT_MAX_ZOOM);
+        mixerLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
         mixerLayer.setVisible(true);
 
         map.addLayer(mixerLayer);
