@@ -318,15 +318,22 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            final IGISApplication app = (IGISApplication) getApplication();
-            app.showSettings();
-            return true;
-        }
-        else if (id == R.id.action_about) {
-            Intent intentAbout = new Intent(this, AboutActivity.class);
-            startActivity(intentAbout);
-            return true;
+
+        final MainApplication app = (MainApplication) getApplication();
+
+        switch (id) {
+            case R.id.action_sync:
+                app.runSync();
+                return true;
+
+            case R.id.action_settings:
+                app.showSettings();
+                return true;
+
+            case R.id.action_about:
+                Intent intentAbout = new Intent(this, AboutActivity.class);
+                startActivity(intentAbout);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

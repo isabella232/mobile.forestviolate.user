@@ -21,25 +21,12 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout
+<sync-adapter
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
-
-    <include
-        layout="@layout/actionbar"
-        />
-
-    <include
-        layout="@layout/location_panel"
-        />
-
-    <FrameLayout
-        android:id="@+id/logging_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-
-</LinearLayout>
+    android:contentAuthority="com.nextgis.safeforest.provider"
+    android:accountType="com.nextgis.account"
+    android:userVisible="true"
+    android:supportsUploading="true"
+    android:allowParallelSyncs="false"
+    android:isAlwaysSyncable="true"
+    />

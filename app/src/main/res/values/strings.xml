@@ -78,4 +78,6 @@
     <string name="message_paragraph">Message</string>
     <string name="message_hint">Enter the message text</string>
     <string name="action_logging">Logging</string>
+    <string name="error_create_message">Create message error</string>
+    <string name="action_sync">Synchronization</string>
 </resources>

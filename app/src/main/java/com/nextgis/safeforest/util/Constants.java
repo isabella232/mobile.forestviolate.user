@@ -52,4 +52,23 @@ public interface Constants
     int DOWNLOAD_SEPARATE_THREADS = 10;
 
     String FRAGMENT_MESSAGE = "message";
+
+    String FIELD_MDATE     = "mdate";
+    String FIELD_AUTHOR    = "author";
+    String FIELD_CONTACT   = "contact";
+    String FIELD_STATUS    = "status";
+    String FIELD_MTYPE     = "mtype";
+    String FIELD_MESSAGE   = "message";
+    String FIELD_STMESSAGE = "stmessage";
+
+    int MSG_STATUS_UNKNOWN      = 0;
+    int MSG_STATUS_NEW          = 1;
+    int MSG_STATUS_SENT         = 2;
+    int MSG_STATUS_ACCEPTED     = 3;
+    int MSG_STATUS_NOT_ACCEPTED = 4;
+    int MSG_STATUS_CHECKED      = 5;
+
+    int MSG_TYPE_UNKNOWN = 0;
+    int MSG_TYPE_FIRE    = 1;
+    int MSG_TYPE_LOGGING = 2;
 }

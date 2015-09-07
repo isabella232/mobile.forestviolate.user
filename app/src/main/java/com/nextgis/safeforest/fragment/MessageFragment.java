@@ -22,14 +22,22 @@
 
 package com.nextgis.safeforest.fragment;
 
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
+import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.activity.MessageActivity;
+import com.nextgis.safeforest.util.Constants;
+
+import static com.nextgis.maplib.util.Constants.TAG;
 
 
 public class MessageFragment
@@ -53,7 +61,7 @@ public class MessageFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_logging, null);
+        View view = inflater.inflate(R.layout.fragment_message, null);
         mMessage = (EditText) view.findViewById(R.id.message);
 
         return view;
@@ -63,6 +71,39 @@ public class MessageFragment
     @Override
     public void onSave()
     {
+        saveMessage();
+    }
 
+
+    protected void saveMessage()
+    {
+        ContentValues values = new ContentValues();
+
+        values.put(Constants.FIELD_MDATE, System.currentTimeMillis());
+        values.put(Constants.FIELD_AUTHOR, "email@email.com");
+        values.put(Constants.FIELD_CONTACT, "+79001234567");
+        values.put(Constants.FIELD_STATUS, Constants.MSG_STATUS_NEW);
+        values.put(Constants.FIELD_MTYPE, Constants.MSG_TYPE_LOGGING);
+        values.put(Constants.FIELD_MESSAGE, mMessage.getText().toString());
+
+
+        final MainApplication app = (MainApplication) getActivity().getApplication();
+        Uri uri =
+                Uri.parse("content://" + app.getAuthority() + "/" + Constants.KEY_CITIZEN_MESSAGES);
+        Uri result = app.getContentResolver().insert(uri, values);
+
+        if (result == null) {
+            Log.d(
+                    TAG, "MessageFragment, saveMessage(), Layer: " +
+                         Constants.KEY_CITIZEN_MESSAGES + ", insert FAILED");
+            Toast.makeText(app, R.string.error_create_message, Toast.LENGTH_LONG).show();
+
+        } else {
+            long id = Long.parseLong(result.getLastPathSegment());
+            Log.d(
+                    TAG, "MessageFragment, saveMessage(), Layer: " +
+                         Constants.KEY_CITIZEN_MESSAGES + ", id: " +
+                         id + ", insert result: " + result);
+        }
     }
 }

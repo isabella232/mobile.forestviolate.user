@@ -62,7 +62,7 @@ public class MessageActivity
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_logging);
+        setContentView(R.layout.activity_message);
         setToolbar(R.id.main_toolbar);
 
         final IGISApplication app = (IGISApplication) getApplication();
@@ -79,7 +79,7 @@ public class MessageActivity
             setOnSaveListener(messageFragment);
         }
 
-        ft.replace(R.id.logging_fragment, messageFragment, Constants.FRAGMENT_MESSAGE);
+        ft.replace(R.id.message_fragment, messageFragment, Constants.FRAGMENT_MESSAGE);
         ft.commit();
     }
 
@@ -125,7 +125,7 @@ public class MessageActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        getMenuInflater().inflate(R.menu.logging, menu);
+        getMenuInflater().inflate(R.menu.message, menu);
         return true;
     }
 

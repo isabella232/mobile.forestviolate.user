@@ -21,34 +21,54 @@
 
 package com.nextgis.safeforest;
 
+import android.accounts.Account;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
-
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.maplib.util.NetworkUtil;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.GISApplication;
 import com.nextgis.maplibui.mapui.LayerFactoryUI;
-import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.safeforest.activity.PreferencesActivity;
 
 import java.io.File;
 
 import static com.nextgis.maplib.util.Constants.MAP_EXT;
-import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
+
 
 /**
  * The main application class stored some singleton objects.
  */
-public class MainApplication extends GISApplication {
+public class MainApplication
+        extends GISApplication
+{
+    protected NetworkUtil mNet;
+
 
     @Override
-    public MapBase getMap() {
+    public void onCreate()
+    {
+        // For service debug
+//        android.os.Debug.waitForDebugger();
+
+        super.onCreate();
+
+        mNet = new NetworkUtil(this);
+        getMap();
+    }
+
+
+    @Override
+    public MapBase getMap()
+    {
         if (null != mMap) {
             return mMap;
         }
@@ -59,8 +79,10 @@ public class MainApplication extends GISApplication {
             defaultPath = new File(getFilesDir(), KEY_PREF_MAP);
         }
 
-        String mapPath = sharedPreferences.getString(SettingsConstants.KEY_PREF_MAP_PATH, defaultPath.getPath());
-        String mapName = sharedPreferences.getString(SettingsConstantsUI.KEY_PREF_MAP_NAME, "default");
+        String mapPath = sharedPreferences.getString(
+                SettingsConstants.KEY_PREF_MAP_PATH, defaultPath.getPath());
+        String mapName =
+                sharedPreferences.getString(SettingsConstantsUI.KEY_PREF_MAP_NAME, "default");
 
         File mapFullPath = new File(mapPath, mapName + MAP_EXT);
 
@@ -72,11 +94,13 @@ public class MainApplication extends GISApplication {
         return mMap;
     }
 
+
     /**
      * @return A authority for sync purposes or empty string if not sync anything
      */
     @Override
-    public String getAuthority() {
+    public String getAuthority()
+    {
         return com.nextgis.safeforest.util.SettingsConstants.AUTHORITY;
     }
 
@@ -85,17 +109,54 @@ public class MainApplication extends GISApplication {
      * Show settings Activity
      */
     @Override
-    public void showSettings() {
+    public void showSettings()
+    {
         Intent intentSet = new Intent(this, PreferencesActivity.class);
         intentSet.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intentSet);
     }
 
+
     @Override
-    protected int getThemeId(boolean isDark) {
-        if(isDark)
+    protected int getThemeId(boolean isDark)
+    {
+        if (isDark) {
             return R.style.AppTheme_Dark;
-        else
+        } else {
             return R.style.AppTheme_Light;
+        }
+    }
+
+
+    public boolean isNetworkAvailable()
+    {
+        return mNet.isNetworkAvailable();
+    }
+
+
+    public Account getAccount()
+    {
+        return getAccount(getString(R.string.account_name));
+    }
+
+
+    public boolean runSync()
+    {
+        if (!isNetworkAvailable()) {
+            return false;
+        }
+
+        Account account = getAccount();
+
+        if (null == account) {
+            return false;
+        }
+
+        Bundle settingsBundle = new Bundle();
+        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+
+        ContentResolver.requestSync(account, getAuthority(), settingsBundle);
+        return true;
     }
 }
