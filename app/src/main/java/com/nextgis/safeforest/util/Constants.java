@@ -53,6 +53,7 @@ public interface Constants
 
     String FRAGMENT_MESSAGE = "message";
 
+    String FIELD_ID        = "_id";
     String FIELD_MDATE     = "mdate";
     String FIELD_AUTHOR    = "author";
     String FIELD_CONTACT   = "contact";

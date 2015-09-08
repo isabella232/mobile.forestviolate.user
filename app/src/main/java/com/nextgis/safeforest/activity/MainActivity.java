@@ -45,7 +45,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import com.nextgis.maplib.api.IProgressor;
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.TileItem;
@@ -63,13 +62,13 @@ import com.nextgis.maplibui.mapui.NGWVectorLayerUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.safeforest.MainApplication;
+import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.adapter.InitStepListAdapter;
 import com.nextgis.safeforest.fragment.LoginFragment;
 import com.nextgis.safeforest.fragment.MapFragment;
-import com.nextgis.safeforest.R;
+import com.nextgis.safeforest.fragment.MessageListFragment;
 import com.nextgis.safeforest.util.Constants;
 import com.nextgis.safeforest.util.SettingsConstants;
-
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -360,8 +359,11 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position);
+            if (position == 0) {
+                return new MessageListFragment();
+            } else {
+                return new MapFragment();
+            }
         }
 
         @Override

@@ -23,6 +23,7 @@
 package com.nextgis.safeforest.fragment;
 
 import android.content.ContentValues;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -32,19 +33,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
+import com.nextgis.maplib.api.GpsEventListener;
+import com.nextgis.maplib.api.IGISApplication;
+import com.nextgis.maplib.datasource.GeoMultiPoint;
+import com.nextgis.maplib.datasource.GeoPoint;
+import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.activity.MessageActivity;
 import com.nextgis.safeforest.util.Constants;
 
+import java.io.IOException;
+
+import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.TAG;
+import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
+import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 
 
 public class MessageFragment
         extends Fragment
-        implements MessageActivity.OnSaveListener
+        implements MessageActivity.OnSaveListener, GpsEventListener
 {
     protected EditText mMessage;
+    protected Location mLocation = null;
 
 
     @Override
@@ -69,6 +81,30 @@ public class MessageFragment
 
 
     @Override
+    public void onPause()
+    {
+        IGISApplication app = (IGISApplication) getActivity().getApplication();
+        if (null != app) {
+            GpsEventSource gpsEventSource = app.getGpsEventSource();
+            gpsEventSource.removeListener(this);
+        }
+        super.onPause();
+    }
+
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        IGISApplication app = (IGISApplication) getActivity().getApplication();
+        if (null != app) {
+            GpsEventSource gpsEventSource = app.getGpsEventSource();
+            gpsEventSource.addListener(this);
+        }
+    }
+
+
+    @Override
     public void onSave()
     {
         saveMessage();
@@ -77,6 +113,12 @@ public class MessageFragment
 
     protected void saveMessage()
     {
+        if (null == mLocation) {
+            // TODO: do not close activity
+            Toast.makeText(getContext(), "none location", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         ContentValues values = new ContentValues();
 
         values.put(Constants.FIELD_MDATE, System.currentTimeMillis());
@@ -85,6 +127,19 @@ public class MessageFragment
         values.put(Constants.FIELD_STATUS, Constants.MSG_STATUS_NEW);
         values.put(Constants.FIELD_MTYPE, Constants.MSG_TYPE_FELLING);
         values.put(Constants.FIELD_MESSAGE, mMessage.getText().toString());
+
+        try {
+            GeoPoint pt = new GeoPoint(mLocation.getLongitude(), mLocation.getLatitude());
+            pt.setCRS(CRS_WGS84);
+            pt.project(CRS_WEB_MERCATOR);
+            GeoMultiPoint mpt = new GeoMultiPoint();
+            mpt.add(pt);
+            values.put(FIELD_GEOM, mpt.toBlob());
+            Log.d(TAG, "MessageFragment, saveMessage(), pt: " + pt.toString());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
         final MainApplication app = (MainApplication) getActivity().getApplication();
@@ -105,5 +160,26 @@ public class MessageFragment
                          Constants.KEY_CITIZEN_MESSAGES + ", id: " +
                          id + ", insert result: " + result);
         }
+    }
+
+
+    @Override
+    public void onLocationChanged(Location location)
+    {
+        mLocation = location;
+    }
+
+
+    @Override
+    public void onBestLocationChanged(Location location)
+    {
+
+    }
+
+
+    @Override
+    public void onGpsStatusChanged(int event)
+    {
+
     }
 }
