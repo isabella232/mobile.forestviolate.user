@@ -43,7 +43,7 @@ import com.nextgis.safeforest.util.Constants;
 import java.text.DecimalFormat;
 
 
-public class MessageActivity
+public class CreateMessageActivity
         extends SFActivity
         implements GpsEventListener
 {

@@ -23,14 +23,17 @@
 package com.nextgis.safeforest.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.nextgis.safeforest.R;
+import com.nextgis.safeforest.activity.ViewMessageActivity;
 import com.nextgis.safeforest.util.Constants;
 
 import java.text.SimpleDateFormat;
@@ -41,7 +44,9 @@ import java.util.Locale;
 
 public class MessageCursorAdapter
         extends CursorAdapter
+        implements AdapterView.OnItemClickListener
 {
+    protected Context mContext;
     protected LayoutInflater mInflater;
 
     protected int mDateColumn;
@@ -58,6 +63,7 @@ public class MessageCursorAdapter
     {
         super(context, cursor, flags);
 
+        mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         setColumns(cursor);
     }
@@ -119,5 +125,24 @@ public class MessageCursorAdapter
             mTypeColumn = cursor.getColumnIndex(Constants.FIELD_MTYPE);
             mMessageColumn = cursor.getColumnIndex(Constants.FIELD_MESSAGE);
         }
+    }
+
+
+    @Override
+    public void onItemClick(
+            AdapterView<?> parent,
+            View view,
+            int position,
+            long id)
+    {
+        Cursor cursor = (Cursor) getItem(position);
+
+        if (null == cursor) {
+            return;
+        }
+
+        Intent intent = new Intent(mContext, ViewMessageActivity.class);
+        intent.putExtra(Constants.FIELD_ID, id);
+        mContext.startActivity(intent);
     }
 }

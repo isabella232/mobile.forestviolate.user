@@ -77,7 +77,7 @@ public class MessageListFragment
 
         ListView list = (ListView) rootView.findViewById(R.id.message_list);
         list.setAdapter(mAdapter);
-//        list.setOnItemClickListener(mAdapter);
+        list.setOnItemClickListener(mAdapter);
 
         return rootView;
     }

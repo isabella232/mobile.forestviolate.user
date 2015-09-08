@@ -100,8 +100,13 @@
             />
 
         <activity
-            android:name=".activity.MessageActivity"
+            android:name=".activity.CreateMessageActivity"
             android:label="@string/action_felling"
+            />
+
+        <activity
+            android:name=".activity.ViewMessageActivity"
+            android:label="@string/action_view_message"
             />
 
         <service

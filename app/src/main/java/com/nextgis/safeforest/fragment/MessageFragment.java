@@ -40,7 +40,7 @@ import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
-import com.nextgis.safeforest.activity.MessageActivity;
+import com.nextgis.safeforest.activity.CreateMessageActivity;
 import com.nextgis.safeforest.util.Constants;
 
 import java.io.IOException;
@@ -53,7 +53,7 @@ import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 
 public class MessageFragment
         extends Fragment
-        implements MessageActivity.OnSaveListener, GpsEventListener
+        implements CreateMessageActivity.OnSaveListener, GpsEventListener
 {
     protected EditText mMessage;
     protected Location mLocation = null;

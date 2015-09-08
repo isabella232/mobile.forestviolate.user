@@ -260,7 +260,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     }
 
     private void addFelling() {
-        Intent intent = new Intent(this, MessageActivity.class);
+        Intent intent = new Intent(this, CreateMessageActivity.class);
         startActivity(intent);
     }
 
