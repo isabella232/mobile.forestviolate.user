@@ -75,10 +75,25 @@
     <string name="theme">Application theme</string>
     <string name="sync_switch">Switch sync on/off</string>
     <string name="get_citizen_messages">Get messages</string>
+    <string name="date_paragraph">Date</string>
+    <string name="author_paragraph">Author</string>
+    <string name="status_paragraph">Status</string>
+    <string name="type_paragraph">Type</string>
     <string name="message_paragraph">Message</string>
+    <string name="stmessage_paragraph">Manager\'s message</string>
+    <string name="coordinates_paragraph">Coordinates</string>
     <string name="message_hint">Enter the message text</string>
     <string name="action_felling">Felling</string>
     <string name="action_view_message">View a message</string>
     <string name="error_create_message">Create message error</string>
     <string name="action_sync">Synchronization</string>
+    <string name="unknown_message_status">Unknown message</string>
+    <string name="new_message_status">New message</string>
+    <string name="sent_message_status">Sent message</string>
+    <string name="accepted_message_status">Accepted message</string>
+    <string name="not_accepted_message_status">Not accepted message</string>
+    <string name="checked_message_status">Checked message</string>
+    <string name="unknown_message_type">Unknown type</string>
+    <string name="fire_message_type">Fire</string>
+    <string name="felling_message_type">Illegal felling</string>
 </resources>

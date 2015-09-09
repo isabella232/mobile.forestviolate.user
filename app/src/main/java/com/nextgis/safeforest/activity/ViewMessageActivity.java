@@ -22,8 +22,37 @@
 
 package com.nextgis.safeforest.activity;
 
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import com.nextgis.safeforest.R;
+import com.nextgis.safeforest.fragment.ViewMessageFragment;
+import com.nextgis.safeforest.util.Constants;
+
+
 public class ViewMessageActivity
         extends SFActivity
 {
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_view_message);
+        setToolbar(R.id.main_toolbar);
+
+        final FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
+        ViewMessageFragment viewMessageFragment =
+                (ViewMessageFragment) fm.findFragmentByTag(Constants.FRAGMENT_VIEW_MESSAGE);
+
+        if (viewMessageFragment == null) {
+            viewMessageFragment = new ViewMessageFragment();
+        }
+
+        ft.replace(
+                R.id.view_message_fragment, viewMessageFragment, Constants.FRAGMENT_VIEW_MESSAGE);
+        ft.commit();
+    }
 }

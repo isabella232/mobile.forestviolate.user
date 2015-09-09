@@ -37,7 +37,7 @@ import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.util.LocationUtil;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.safeforest.R;
-import com.nextgis.safeforest.fragment.MessageFragment;
+import com.nextgis.safeforest.fragment.CreateMessageFragment;
 import com.nextgis.safeforest.util.Constants;
 
 import java.text.DecimalFormat;
@@ -62,7 +62,7 @@ public class CreateMessageActivity
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_message);
+        setContentView(R.layout.activity_create_message);
         setToolbar(R.id.main_toolbar);
 
         final IGISApplication app = (IGISApplication) getApplication();
@@ -71,15 +71,17 @@ public class CreateMessageActivity
         final FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        MessageFragment messageFragment =
-                (MessageFragment) fm.findFragmentByTag(Constants.FRAGMENT_MESSAGE);
+        CreateMessageFragment createMessageFragment =
+                (CreateMessageFragment) fm.findFragmentByTag(Constants.FRAGMENT_CREATE_MESSAGE);
 
-        if (messageFragment == null) {
-            messageFragment = new MessageFragment();
-            setOnSaveListener(messageFragment);
+        if (createMessageFragment == null) {
+            createMessageFragment = new CreateMessageFragment();
+            setOnSaveListener(createMessageFragment);
         }
 
-        ft.replace(R.id.message_fragment, messageFragment, Constants.FRAGMENT_MESSAGE);
+        ft.replace(
+                R.id.create_message_fragment, createMessageFragment,
+                Constants.FRAGMENT_CREATE_MESSAGE);
         ft.commit();
     }
 

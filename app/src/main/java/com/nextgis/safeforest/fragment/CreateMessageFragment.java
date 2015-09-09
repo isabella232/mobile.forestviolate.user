@@ -51,7 +51,7 @@ import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 
 
-public class MessageFragment
+public class CreateMessageFragment
         extends Fragment
         implements CreateMessageActivity.OnSaveListener, GpsEventListener
 {
@@ -73,7 +73,7 @@ public class MessageFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_message, null);
+        View view = inflater.inflate(R.layout.fragment_create_message, null);
         mMessage = (EditText) view.findViewById(R.id.message);
 
         return view;

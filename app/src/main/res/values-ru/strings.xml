@@ -76,10 +76,25 @@
     <string name="theme">Тема приложения</string>
     <string name="sync_switch">Вкл./выкл. синхронизацию</string>
     <string name="get_citizen_messages">Get messages</string>
+    <string name="date_paragraph">Дата</string>
+    <string name="author_paragraph">Автор</string>
+    <string name="status_paragraph">Статус</string>
+    <string name="type_paragraph">Тип</string>
     <string name="message_paragraph">Сообщение</string>
+    <string name="stmessage_paragraph">Сообщение диспетчера</string>
+    <string name="coordinates_paragraph">Координаты</string>
     <string name="message_hint">Введите текст сообщения</string>
     <string name="action_felling">Лесозаготовка</string>
     <string name="action_view_message">Просмотр сообщения</string>
     <string name="error_create_message">Ошибка создания сообщения</string>
     <string name="action_sync">Синхронизация</string>
+    <string name="unknown_message_status">Неизвестный статус</string>
+    <string name="new_message_status">Новое сообщение</string>
+    <string name="sent_message_status">Отправленное сообщение</string>
+    <string name="accepted_message_status">Принятое сообщение</string>
+    <string name="not_accepted_message_status">Не принятое сообщение</string>
+    <string name="checked_message_status">Проверенное сообщение</string>
+    <string name="unknown_message_type">Неизвестный тип</string>
+    <string name="fire_message_type">Пожар</string>
+    <string name="felling_message_type">Незаконная рубка</string>
 </resources>

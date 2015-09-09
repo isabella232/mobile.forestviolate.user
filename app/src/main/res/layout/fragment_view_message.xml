@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Project: Forest violations
+  ~ Purpose: Mobile application for registering facts of the forest violations.
+  ~ Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+  ~ Author:  NikitaFeodonit, nfeodonit@yandex.com
+  ~ ******************************************************************************
+  ~ Copyright (c) 2015-2015. NextGIS, info@nextgis.com
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:text="@string/date_paragraph"
+                style="@style/paragraph_text"
+                />
+
+            <TextView
+                android:id="@+id/date"
+                style="@style/message_view_text"
+                />
+
+            <TextView
+                android:text="@string/author_paragraph"
+                style="@style/paragraph_text"
+                />
+
+            <TextView
+                android:id="@+id/author"
+                style="@style/message_view_text"
+                />
+
+            <TextView
+                android:text="@string/status_paragraph"
+                style="@style/paragraph_text"
+                />
+
+            <TextView
+                android:id="@+id/status"
+                style="@style/message_view_text"
+                />
+
+            <TextView
+                android:text="@string/type_paragraph"
+                style="@style/paragraph_text"
+                />
+
+            <TextView
+                android:id="@+id/type"
+                style="@style/message_view_text"
+                />
+
+            <TextView
+                android:text="@string/message_paragraph"
+                style="@style/paragraph_text"
+                />
+
+            <TextView
+                android:id="@+id/message"
+                style="@style/message_view_text"
+                />
+
+            <TextView
+                android:text="@string/stmessage_paragraph"
+                style="@style/paragraph_text"
+                />
+
+            <TextView
+                android:id="@+id/stmessage"
+                style="@style/message_view_text"
+                />
+
+            <TextView
+                android:text="@string/coordinates_paragraph"
+                style="@style/paragraph_text"
+                />
+
+            <TextView
+                android:id="@+id/coordinates"
+                style="@style/message_view_text"
+                />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
