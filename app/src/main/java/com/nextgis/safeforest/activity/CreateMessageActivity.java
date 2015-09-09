@@ -155,7 +155,6 @@ public class CreateMessageActivity
         if (null != mOnSaveListener) {
             mOnSaveListener.onSave();
         }
-        finish();
     }
 
 

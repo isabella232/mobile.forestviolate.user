@@ -27,6 +27,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,7 @@ import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.activity.CreateMessageActivity;
+import com.nextgis.safeforest.dialog.UserDataDialog;
 import com.nextgis.safeforest.util.Constants;
 
 import java.io.IOException;
@@ -57,6 +59,9 @@ public class CreateMessageFragment
 {
     protected EditText mMessage;
     protected Location mLocation = null;
+
+    protected String mEmailText;
+    protected String mContactsText;
 
 
     @Override
@@ -107,7 +112,39 @@ public class CreateMessageFragment
     @Override
     public void onSave()
     {
-        saveMessage();
+        final UserDataDialog dialog = new UserDataDialog();
+        // TODO: set from a app var for the temporary storing
+//        dialog.setEmailText(app.getEmailText());
+//        dialog.setContactsText(app.getContactsText());
+        dialog.setOnPositiveClickedListener(
+                new UserDataDialog.OnPositiveClickedListener()
+                {
+                    @Override
+                    public void onPositiveClicked()
+                    {
+                        mEmailText = dialog.getEmailText();
+                        mContactsText = dialog.getContactsText();
+
+                        // TODO: toast strings to res
+
+                        if (TextUtils.isEmpty(mEmailText)) {
+                            Toast.makeText(getContext(), "e-mail is empty", Toast.LENGTH_LONG)
+                                    .show();
+                            return;
+                        }
+
+                        if (TextUtils.isEmpty(mContactsText)) {
+                            Toast.makeText(getContext(), "contacts is empty", Toast.LENGTH_LONG)
+                                    .show();
+                            return;
+                        }
+
+                        saveMessage();
+                        getActivity().finish();
+                    }
+                });
+        dialog.setKeepInstance(true);
+        dialog.show(getActivity().getSupportFragmentManager(), Constants.FRAGMENT_USER_DATA_DIALOG);
     }
 
 
@@ -115,6 +152,7 @@ public class CreateMessageFragment
     {
         if (!com.nextgis.maplib.util.Constants.DEBUG_MODE && null == mLocation) {
             // TODO: do not close activity
+            // TODO: toast string to res
             Toast.makeText(getContext(), "none location", Toast.LENGTH_LONG).show();
             return;
         }
@@ -122,14 +160,10 @@ public class CreateMessageFragment
         ContentValues values = new ContentValues();
 
         values.put(Constants.FIELD_MDATE, System.currentTimeMillis());
-        if(com.nextgis.maplib.util.Constants.DEBUG_MODE) {
-            values.put(Constants.FIELD_AUTHOR, "email@email.com");
-            values.put(Constants.FIELD_CONTACT, "+79001234567");
-        }
-        else{
-            // TODO: 09.09.15 release this
-        }
+        values.put(Constants.FIELD_AUTHOR, mEmailText);
+        values.put(Constants.FIELD_CONTACT, mContactsText);
         values.put(Constants.FIELD_STATUS, Constants.MSG_STATUS_NEW);
+        // TODO: type by button type
         values.put(Constants.FIELD_MTYPE, Constants.MSG_TYPE_FELLING);
         values.put(Constants.FIELD_MESSAGE, mMessage.getText().toString());
 
@@ -163,6 +197,7 @@ public class CreateMessageFragment
                     TAG, "MessageFragment, saveMessage(), Layer: " +
                          Constants.KEY_CITIZEN_MESSAGES + ", insert FAILED");
             Toast.makeText(app, R.string.error_create_message, Toast.LENGTH_LONG).show();
+            // TODO: not close activity
 
         } else {
             long id = Long.parseLong(result.getLastPathSegment());

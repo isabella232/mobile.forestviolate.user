@@ -83,7 +83,11 @@
     <string name="message_paragraph">Сообщение</string>
     <string name="stmessage_paragraph">Сообщение диспетчера</string>
     <string name="coordinates_paragraph">Координаты</string>
+    <string name="email_paragraph">Электроная почта (e-mail)</string>
+    <string name="contacts_paragraph">ФИО, телефон</string>
     <string name="message_hint">Введите текст сообщения</string>
+    <string name="email_hint">Введите e-mail</string>
+    <string name="contacts_hint">Введите ФИО, телефон</string>
     <string name="action_felling">Лесозаготовка</string>
     <string name="action_view_message">Просмотр сообщения</string>
     <string name="error_create_message">Ошибка создания сообщения</string>
@@ -97,4 +101,5 @@
     <string name="unknown_message_type">Неизвестный тип</string>
     <string name="fire_message_type">Пожар</string>
     <string name="felling_message_type">Незаконная рубка</string>
+    <string name="user_contact_info">Контактные данные</string>
 </resources>
