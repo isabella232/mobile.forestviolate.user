@@ -113,7 +113,7 @@ public class MessageFragment
 
     protected void saveMessage()
     {
-        if (null == mLocation) {
+        if (!com.nextgis.maplib.util.Constants.DEBUG_MODE && null == mLocation) {
             // TODO: do not close activity
             Toast.makeText(getContext(), "none location", Toast.LENGTH_LONG).show();
             return;
@@ -122,14 +122,25 @@ public class MessageFragment
         ContentValues values = new ContentValues();
 
         values.put(Constants.FIELD_MDATE, System.currentTimeMillis());
-        values.put(Constants.FIELD_AUTHOR, "email@email.com");
-        values.put(Constants.FIELD_CONTACT, "+79001234567");
+        if(com.nextgis.maplib.util.Constants.DEBUG_MODE) {
+            values.put(Constants.FIELD_AUTHOR, "email@email.com");
+            values.put(Constants.FIELD_CONTACT, "+79001234567");
+        }
+        else{
+            // TODO: 09.09.15 release this
+        }
         values.put(Constants.FIELD_STATUS, Constants.MSG_STATUS_NEW);
         values.put(Constants.FIELD_MTYPE, Constants.MSG_TYPE_FELLING);
         values.put(Constants.FIELD_MESSAGE, mMessage.getText().toString());
 
         try {
-            GeoPoint pt = new GeoPoint(mLocation.getLongitude(), mLocation.getLatitude());
+            GeoPoint pt;
+            if(com.nextgis.maplib.util.Constants.DEBUG_MODE) {
+               pt = new GeoPoint(0, 0);
+            }
+            else {
+                pt = new GeoPoint(mLocation.getLongitude(), mLocation.getLatitude());
+            }
             pt.setCRS(CRS_WGS84);
             pt.project(CRS_WEB_MERCATOR);
             GeoMultiPoint mpt = new GeoMultiPoint();

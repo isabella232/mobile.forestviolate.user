@@ -27,6 +27,7 @@ import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SyncResult;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -49,6 +50,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.nextgis.maplib.api.IGISApplication;
+import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.IProgressor;
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.TileItem;
@@ -58,6 +60,7 @@ import com.nextgis.maplib.datasource.ngw.Resource;
 import com.nextgis.maplib.datasource.ngw.ResourceGroup;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.MapUtil;
 import com.nextgis.maplib.util.NGException;
@@ -366,7 +369,12 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
         switch (id) {
             case R.id.action_sync:
-                app.runSync();
+                new Thread() {
+                    @Override
+                    public void run() {
+                        testSync();
+                    }
+                }.start();
                 return true;
 
             case R.id.action_settings:
@@ -380,6 +388,20 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void testSync()
+    {
+        IGISApplication application = (IGISApplication) getApplication();
+        MapBase map = application.getMap();
+        NGWVectorLayer ngwVectorLayer;
+        for (int i = 0; i < map.getLayerCount(); i++) {
+            ILayer layer = map.getLayer(i);
+            if (layer instanceof NGWVectorLayer) {
+                ngwVectorLayer = (NGWVectorLayer) layer;
+                ngwVectorLayer.sync(application.getAuthority(), new SyncResult());
+            }
+        }
     }
 
     @Override
