@@ -50,22 +50,6 @@ import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
 public class MainApplication
         extends GISApplication
 {
-    protected NetworkUtil mNet;
-
-
-    @Override
-    public void onCreate()
-    {
-        // For service debug
-//        android.os.Debug.waitForDebugger();
-
-        super.onCreate();
-
-        mNet = new NetworkUtil(this);
-        getMap();
-    }
-
-
     @Override
     public MapBase getMap()
     {
@@ -125,38 +109,5 @@ public class MainApplication
         } else {
             return R.style.AppTheme_Light;
         }
-    }
-
-
-    public boolean isNetworkAvailable()
-    {
-        return mNet.isNetworkAvailable();
-    }
-
-
-    public Account getAccount()
-    {
-        return getAccount(getString(R.string.account_name));
-    }
-
-
-    public boolean runSync()
-    {
-        if (!isNetworkAvailable()) {
-            return false;
-        }
-
-        Account account = getAccount();
-
-        if (null == account) {
-            return false;
-        }
-
-        Bundle settingsBundle = new Bundle();
-        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-
-        ContentResolver.requestSync(account, getAuthority(), settingsBundle);
-        return true;
     }
 }

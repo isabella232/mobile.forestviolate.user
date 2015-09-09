@@ -23,9 +23,11 @@
 package com.nextgis.safeforest.activity;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SyncResult;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -36,6 +38,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -45,6 +48,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.nextgis.maplib.api.IGISApplication;
+import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.IProgressor;
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.TileItem;
@@ -54,6 +60,7 @@ import com.nextgis.maplib.datasource.ngw.Resource;
 import com.nextgis.maplib.datasource.ngw.ResourceGroup;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.MapUtil;
 import com.nextgis.maplib.util.NGException;
@@ -170,6 +177,44 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         setToolbar(R.id.main_toolbar);
         setTitle(getText(R.string.initialization));
 
+        IGISApplication app = (IGISApplication) getApplication();
+        //set properties from account
+        String auth = app.getAccountUserData(account, KEY_IS_AUTHORIZED);
+        final SharedPreferences.Editor edit =
+                PreferenceManager.getDefaultSharedPreferences(this).edit();
+
+        if(auth.equals(Constants.ANONYMOUS)) {
+            edit.putBoolean(KEY_IS_AUTHORIZED, false);
+        }
+        else {
+            edit.putBoolean(KEY_IS_AUTHORIZED, true);
+        }
+
+        String sMinX = app.getAccountUserData(account, SettingsConstants.KEY_PREF_USERMINX);
+        if(!TextUtils.isEmpty(sMinX)){
+            float minX = Float.parseFloat(sMinX);
+            edit.putFloat(SettingsConstants.KEY_PREF_USERMINX, minX);
+        }
+
+        String sMinY = app.getAccountUserData(account, SettingsConstants.KEY_PREF_USERMINY);
+        if(!TextUtils.isEmpty(sMinY)){
+            float minY = Float.parseFloat(sMinY);
+            edit.putFloat(SettingsConstants.KEY_PREF_USERMINY, minY);
+        }
+
+        String sMaxX = app.getAccountUserData(account, SettingsConstants.KEY_PREF_USERMAXX);
+        if(!TextUtils.isEmpty(sMaxX)){
+            float maxX = Float.parseFloat(sMaxX);
+            edit.putFloat(SettingsConstants.KEY_PREF_USERMAXX, maxX);
+        }
+
+        String sMaxY = app.getAccountUserData(account, SettingsConstants.KEY_PREF_USERMAXY);
+        if(!TextUtils.isEmpty(sMaxY)){
+            float maxY = Float.parseFloat(sMaxY);
+            edit.putFloat(SettingsConstants.KEY_PREF_USERMAXY, maxY);
+        }
+        edit.commit();
+
         mAdapter = new InitStepListAdapter(this);
 
         ListView list = (ListView) findViewById(R.id.stepsList);
@@ -272,19 +317,20 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     public void onAddAccount(Account account, String token, boolean accountAdded) {
         if(accountAdded) {
 
-            final SharedPreferences.Editor edit =
-                    PreferenceManager.getDefaultSharedPreferences(this).edit();
+            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            float minX = prefs.getFloat(SettingsConstants.KEY_PREF_USERMINX, -2000.0f);
+            float minY = prefs.getFloat(SettingsConstants.KEY_PREF_USERMINY, -2000.0f);
+            float maxX = prefs.getFloat(SettingsConstants.KEY_PREF_USERMAXX, 2000.0f);
+            float maxY = prefs.getFloat(SettingsConstants.KEY_PREF_USERMAXY, 2000.0f);
 
-            if(token.equals(Constants.ANONYMOUS)) {
-                edit.putBoolean(KEY_IS_AUTHORIZED, false);
-            }
-            else {
-                edit.putBoolean(KEY_IS_AUTHORIZED, false);
-            }
-            edit.commit();
+            final MainApplication app = (MainApplication) getApplication();
+            app.setUserData(account.name, KEY_IS_AUTHORIZED, token);
+            app.setUserData(account.name, SettingsConstants.KEY_PREF_USERMINX, "" + minX);
+            app.setUserData(account.name, SettingsConstants.KEY_PREF_USERMINY, "" + minY);
+            app.setUserData(account.name, SettingsConstants.KEY_PREF_USERMAXX, "" + maxX);
+            app.setUserData(account.name, SettingsConstants.KEY_PREF_USERMAXY, "" + maxY);
 
             //free any map data here
-            final MainApplication app = (MainApplication) getApplication();
             MapBase map = app.getMap();
 
             // delete all layers from map if any
@@ -323,7 +369,12 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
         switch (id) {
             case R.id.action_sync:
-                app.runSync();
+                new Thread() {
+                    @Override
+                    public void run() {
+                        testSync();
+                    }
+                }.start();
                 return true;
 
             case R.id.action_settings:
@@ -337,6 +388,20 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void testSync()
+    {
+        IGISApplication application = (IGISApplication) getApplication();
+        MapBase map = application.getMap();
+        NGWVectorLayer ngwVectorLayer;
+        for (int i = 0; i < map.getLayerCount(); i++) {
+            ILayer layer = map.getLayer(i);
+            if (layer instanceof NGWVectorLayer) {
+                ngwVectorLayer = (NGWVectorLayer) layer;
+                ngwVectorLayer.sync(application.getAuthority(), new SyncResult());
+            }
+        }
     }
 
     @Override
