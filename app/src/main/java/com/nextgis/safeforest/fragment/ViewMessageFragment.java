@@ -34,6 +34,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.nextgis.maplib.datasource.GeoGeometryFactory;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
 import com.nextgis.maplib.datasource.GeoPoint;
@@ -94,7 +95,7 @@ public class ViewMessageFragment
         MainApplication app = (MainApplication) getActivity().getApplicationContext();
 
         Uri uri = Uri.parse(
-                "content://" + app.getAuthority() + "/" + Constants.KEY_CITIZEN_MESSAGES);
+                "content://" + app.getAuthority() + "/" + Constants.KEY_CITIZEN_MESSAGES + "/" + mMessageId);
 
         String[] projection = {
                 Constants.FIELD_MDATE,
