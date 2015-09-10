@@ -22,6 +22,10 @@
 
 package com.nextgis.safeforest.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -64,6 +68,18 @@ public class MessageListFragment
         setRetainInstance(true);
 
         mAdapter = new MessageCursorAdapter(getContext(), null, 0);
+
+        // register events from layers modify in services or other applications
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_DELETE);
+        intentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_DELETE_ALL);
+        intentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_INSERT);
+        intentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_UPDATE);
+        intentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_UPDATE_ALL);
+        intentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_UPDATE_FIELDS);
+        intentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_FEATURE_ID_CHANGE);
+
+        getContext().registerReceiver(new VectorLayerNotifyReceiver(), intentFilter);
     }
 
 
@@ -126,5 +142,34 @@ public class MessageListFragment
     public void onLoaderReset(Loader<Cursor> loader)
     {
         mAdapter.changeCursor(null);
+    }
+
+
+    public class VectorLayerNotifyReceiver
+            extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(
+                Context context,
+                Intent intent)
+        {
+            // extreme logging commented
+            //Log.d(TAG, "Receive notify: " + intent.getAction());
+
+            if(!intent.hasExtra(com.nextgis.maplib.util.Constants.NOTIFY_LAYER_NAME))
+                return;
+
+            switch (intent.getAction()) {
+                case com.nextgis.maplib.util.Constants.NOTIFY_DELETE:
+                case com.nextgis.maplib.util.Constants.NOTIFY_DELETE_ALL:
+                case com.nextgis.maplib.util.Constants.NOTIFY_INSERT:
+                case com.nextgis.maplib.util.Constants.NOTIFY_UPDATE:
+                case com.nextgis.maplib.util.Constants.NOTIFY_UPDATE_ALL:
+                case com.nextgis.maplib.util.Constants.NOTIFY_UPDATE_FIELDS:
+                case com.nextgis.maplib.util.Constants.NOTIFY_FEATURE_ID_CHANGE:
+                    mAdapter.notifyDataSetChanged();
+                    break;
+            }
+        }
     }
 }
