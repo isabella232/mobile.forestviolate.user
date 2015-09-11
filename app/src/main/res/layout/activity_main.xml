@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 fab:fab_colorNormal="?attr/colorPrimary"
                 fab:fab_size="mini"
-                fab:fab_icon="@drawable/ic_phone_dark"
+                fab:fab_icon="@drawable/ic_outgoing_call_dark"
                 fab:fab_colorPressed="?attr/colorAccent"
                 />
 
@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 fab:fab_colorNormal="?attr/colorPrimary"
                 fab:fab_size="mini"
-                fab:fab_icon="@drawable/ic_felling_dark"
+                fab:fab_icon="@drawable/ic_axe_dark"
                 fab:fab_colorPressed="?attr/colorAccent"
                 />
 

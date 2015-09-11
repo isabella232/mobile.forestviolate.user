@@ -90,6 +90,7 @@ public class MessageCursorAdapter
         }
 
         ImageView typeIcon = (ImageView) view.findViewById(R.id.type_icon);
+        typeIcon.setImageResource(R.drawable.ic_axe_light);
 
         TextView author = (TextView) view.findViewById(R.id.author);
         author.setText(cursor.getString(mAuthorColumn));
@@ -105,6 +106,7 @@ public class MessageCursorAdapter
         date.setText(sdf.format(d));
 
         ImageView stateIcon = (ImageView) view.findViewById(R.id.state_icon);
+        stateIcon.setImageResource(R.drawable.ic_new_mail_light);
     }
 
 
