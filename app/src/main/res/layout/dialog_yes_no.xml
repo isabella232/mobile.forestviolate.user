@@ -28,6 +28,8 @@
     android:orientation="vertical"
     >
 
+    <!-- TODO: correct styles for dark theme -->
+
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"

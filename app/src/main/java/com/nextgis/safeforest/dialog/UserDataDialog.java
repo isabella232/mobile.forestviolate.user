@@ -53,6 +53,7 @@ public class UserDataDialog
         mContacts.setText(mContactsText);
 
         setTitle(R.string.user_contact_info);
+        // TODO: change icon
         setIcon(R.drawable.ic_phone_dark);
         setView(view);
         setPositiveText(R.string.ok);
