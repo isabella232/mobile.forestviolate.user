@@ -63,12 +63,19 @@ public class CreateMessageFragment
     protected String mEmailText;
     protected String mContactsText;
 
+    protected int mMessageType = Constants.MSG_TYPE_UNKNOWN;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
+        Bundle extras = getActivity().getIntent().getExtras();
+        if (null != extras) {
+            mMessageType = extras.getInt(Constants.FIELD_MTYPE);
+        }
     }
 
 
@@ -163,16 +170,14 @@ public class CreateMessageFragment
         values.put(Constants.FIELD_AUTHOR, mEmailText);
         values.put(Constants.FIELD_CONTACT, mContactsText);
         values.put(Constants.FIELD_STATUS, Constants.MSG_STATUS_NEW);
-        // TODO: type by button type
-        values.put(Constants.FIELD_MTYPE, Constants.MSG_TYPE_FELLING);
+        values.put(Constants.FIELD_MTYPE, mMessageType);
         values.put(Constants.FIELD_MESSAGE, mMessage.getText().toString());
 
         try {
             GeoPoint pt;
-            if(com.nextgis.maplib.util.Constants.DEBUG_MODE) {
-               pt = new GeoPoint(0, 0);
-            }
-            else {
+            if (com.nextgis.maplib.util.Constants.DEBUG_MODE) {
+                pt = new GeoPoint(0, 0);
+            } else {
                 pt = new GeoPoint(mLocation.getLongitude(), mLocation.getLatitude());
             }
             pt.setCRS(CRS_WGS84);

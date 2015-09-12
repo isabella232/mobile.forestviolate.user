@@ -46,9 +46,10 @@ public class MessageCursorAdapter
         extends CursorAdapter
         implements AdapterView.OnItemClickListener
 {
-    protected Context mContext;
+    protected Context        mContext;
     protected LayoutInflater mInflater;
 
+    protected int mIdColumn;
     protected int mDateColumn;
     protected int mAuthorColumn;
     protected int mStatusColumn;
@@ -90,7 +91,18 @@ public class MessageCursorAdapter
         }
 
         ImageView typeIcon = (ImageView) view.findViewById(R.id.type_icon);
-        typeIcon.setImageResource(R.drawable.ic_axe_light);
+        int type = cursor.getInt(mTypeColumn);
+        switch (type) {
+            case Constants.MSG_TYPE_UNKNOWN:
+            default:
+                break;
+            case Constants.MSG_TYPE_FIRE:
+                typeIcon.setImageResource(R.drawable.ic_fire_light);
+                break;
+            case Constants.MSG_TYPE_FELLING:
+                typeIcon.setImageResource(R.drawable.ic_axe_light);
+                break;
+        }
 
         TextView author = (TextView) view.findViewById(R.id.author);
         author.setText(cursor.getString(mAuthorColumn));
@@ -98,15 +110,22 @@ public class MessageCursorAdapter
         TextView message = (TextView) view.findViewById(R.id.message);
         message.setText(cursor.getString(mMessageColumn));
 
-        TextView date = (TextView) view.findViewById(R.id.date);
+        TextView dateView = (TextView) view.findViewById(R.id.date);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(cursor.getLong(mDateColumn));
-        Date d = calendar.getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yy", Locale.US);
-        date.setText(sdf.format(d));
+        Date date = calendar.getTime();
+        Locale locale = mContext.getResources().getConfiguration().locale;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yy", locale);
+        dateView.setText(sdf.format(date));
 
+        // TODO: get status from database
         ImageView stateIcon = (ImageView) view.findViewById(R.id.state_icon);
-        stateIcon.setImageResource(R.drawable.ic_new_mail_light);
+        int id = cursor.getInt(mIdColumn);
+        if (id >= com.nextgis.maplib.util.Constants.MIN_LOCAL_FEATURE_ID) {
+            stateIcon.setImageResource(R.drawable.ic_new_mail_light);
+        } else {
+            stateIcon.setImageResource(R.drawable.ic_sent_mail_light);
+        }
     }
 
 
@@ -121,6 +140,7 @@ public class MessageCursorAdapter
     protected void setColumns(Cursor cursor)
     {
         if (null != cursor) {
+            mIdColumn = cursor.getColumnIndex(Constants.FIELD_ID);
             mDateColumn = cursor.getColumnIndex(Constants.FIELD_MDATE);
             mAuthorColumn = cursor.getColumnIndex(Constants.FIELD_AUTHOR);
             mStatusColumn = cursor.getColumnIndex(Constants.FIELD_STATUS);

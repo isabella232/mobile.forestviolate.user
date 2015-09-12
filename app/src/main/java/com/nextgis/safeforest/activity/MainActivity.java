@@ -23,7 +23,6 @@
 package com.nextgis.safeforest.activity;
 
 import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -48,7 +47,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.IProgressor;
@@ -301,11 +299,14 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     }
 
     private void addFire() {
-
+        Intent intent = new Intent(this, CreateMessageActivity.class);
+        intent.putExtra(Constants.FIELD_MTYPE, Constants.MSG_TYPE_FIRE);
+        startActivity(intent);
     }
 
     private void addFelling() {
         Intent intent = new Intent(this, CreateMessageActivity.class);
+        intent.putExtra(Constants.FIELD_MTYPE, Constants.MSG_TYPE_FELLING);
         startActivity(intent);
     }
 
