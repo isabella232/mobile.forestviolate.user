@@ -675,7 +675,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         ngwVectorLayer.setRemoteId(resourceId);
         ngwVectorLayer.setServerWhere(String.format(Locale.US, "bbox=%f,%f,%f,%f",
                 minX, minY, maxX, maxY));
-        ngwVectorLayer.setVisible(false);
+        ngwVectorLayer.setVisible(true);
         ngwVectorLayer.setAccountName(accountName);
         ngwVectorLayer.setSyncType(com.nextgis.maplib.util.Constants.SYNC_ALL);
         ngwVectorLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
