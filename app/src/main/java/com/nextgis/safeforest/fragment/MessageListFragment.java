@@ -3,6 +3,7 @@
  * Purpose: Mobile application for registering facts of the forest violations.
  * Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
  * Author:  NikitaFeodonit, nfeodonit@yandex.com
+ * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
  * Copyright (c) 2015-2015. NextGIS, info@nextgis.com
  *
@@ -36,11 +37,17 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
+
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.adapter.MessageCursorAdapter;
 import com.nextgis.safeforest.util.Constants;
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ObjectAnimator;
+import com.nineoldandroids.view.ViewHelper;
 
 
 public class MessageListFragment
@@ -94,6 +101,57 @@ public class MessageListFragment
         ListView list = (ListView) rootView.findViewById(R.id.message_list);
         list.setAdapter(mAdapter);
         list.setOnItemClickListener(mAdapter);
+        list.setOnScrollListener(new AbsListView.OnScrollListener() {
+            private int mLastFirstVisibleItem;
+            private int mScrollState;
+            private boolean mIsHidden = false;
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                mScrollState = scrollState;
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                FloatingActionsMenu fab = (FloatingActionsMenu) getActivity().findViewById(R.id.multiple_actions);
+                float from = 0, to = 0;
+                boolean needAnimation = false;
+
+                switch (mScrollState) {
+                    case SCROLL_STATE_FLING:
+                    case SCROLL_STATE_TOUCH_SCROLL:
+                        if (mLastFirstVisibleItem < firstVisibleItem && !mIsHidden) {
+                            from = 1;
+                            to = 0;
+                            mIsHidden = true;
+                            needAnimation = true;
+                        }
+
+                        if (mLastFirstVisibleItem > firstVisibleItem && mIsHidden) {
+                            from = 0;
+                            to = 1;
+                            mIsHidden = false;
+                            needAnimation = true;
+                        }
+
+                        break;
+                }
+
+                if (needAnimation) {
+                    fab.collapse();
+                    ViewHelper.setPivotX(fab, fab.getWidth() / 2);
+                    ViewHelper.setPivotY(fab, fab.getHeight() - fab.getWidth() / 2);
+                    AnimatorSet set = new AnimatorSet();
+                    set.playTogether(
+                            ObjectAnimator.ofFloat(fab, "scaleX", from, to),
+                            ObjectAnimator.ofFloat(fab, "scaleY", from, to)
+                            );
+                    set.setDuration(300).start();
+                }
+
+                mLastFirstVisibleItem = firstVisibleItem;
+            }
+        });
 
         return rootView;
     }
