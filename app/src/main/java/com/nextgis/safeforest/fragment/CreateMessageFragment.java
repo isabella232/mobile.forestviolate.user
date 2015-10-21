@@ -166,7 +166,7 @@ public class CreateMessageFragment
 
         ContentValues values = new ContentValues();
 
-        values.put(Constants.FIELD_MDATE, System.currentTimeMillis());
+        values.put(Constants.FIELD_MDATE, mLocation.getTime());
         values.put(Constants.FIELD_AUTHOR, mEmailText);
         values.put(Constants.FIELD_CONTACT, mContactsText);
         values.put(Constants.FIELD_STATUS, Constants.MSG_STATUS_NEW);
