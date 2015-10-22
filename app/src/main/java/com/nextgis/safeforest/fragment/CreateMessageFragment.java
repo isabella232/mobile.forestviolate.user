@@ -42,6 +42,7 @@ import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.activity.CreateMessageActivity;
+import com.nextgis.safeforest.activity.SFActivity;
 import com.nextgis.safeforest.dialog.UserDataDialog;
 import com.nextgis.safeforest.util.Constants;
 
@@ -75,6 +76,19 @@ public class CreateMessageFragment
         Bundle extras = getActivity().getIntent().getExtras();
         if (null != extras) {
             mMessageType = extras.getInt(Constants.FIELD_MTYPE);
+            int textResId = R.string.new_message_status;
+
+            switch (mMessageType) {
+                case Constants.MSG_TYPE_FELLING:
+                    textResId = R.string.action_felling;
+                    break;
+                case Constants.MSG_TYPE_FIRE:
+                    textResId = R.string.fire;
+                    break;
+            }
+
+            //noinspection ConstantConditions
+            ((SFActivity) getActivity()).getSupportActionBar().setTitle(textResId);
         }
     }
 
@@ -132,16 +146,14 @@ public class CreateMessageFragment
                         mEmailText = dialog.getEmailText();
                         mContactsText = dialog.getContactsText();
 
-                        // TODO: toast strings to res
-
                         if (TextUtils.isEmpty(mEmailText)) {
-                            Toast.makeText(getContext(), "e-mail is empty", Toast.LENGTH_LONG)
+                            Toast.makeText(getContext(), R.string.email_hint, Toast.LENGTH_LONG)
                                     .show();
                             return;
                         }
 
                         if (TextUtils.isEmpty(mContactsText)) {
-                            Toast.makeText(getContext(), "contacts is empty", Toast.LENGTH_LONG)
+                            Toast.makeText(getContext(), R.string.contacts_hint, Toast.LENGTH_LONG)
                                     .show();
                             return;
                         }
@@ -159,8 +171,7 @@ public class CreateMessageFragment
     {
         if (!com.nextgis.maplib.util.Constants.DEBUG_MODE && null == mLocation) {
             // TODO: do not close activity
-            // TODO: toast string to res
-            Toast.makeText(getContext(), "none location", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), R.string.error_no_location, Toast.LENGTH_LONG).show();
             return;
         }
 
