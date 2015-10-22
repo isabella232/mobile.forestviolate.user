@@ -51,7 +51,6 @@ public interface Constants
      */
     int DOWNLOAD_SEPARATE_THREADS = 10;
 
-    String FRAGMENT_CREATE_MESSAGE   = "create_message";
     String FRAGMENT_VIEW_MESSAGE     = "view_message";
     String FRAGMENT_USER_DATA_DIALOG = "user_data_dialog";
 

@@ -4,6 +4,7 @@
   ~ Purpose: Mobile application for registering facts of the forest violations.
   ~ Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
   ~ Author:  NikitaFeodonit, nfeodonit@yandex.com
+  ~ Author:  Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
   ~ Copyright (c) 2015-2015. NextGIS, info@nextgis.com
   ~
@@ -23,23 +24,32 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <include
-        layout="@layout/actionbar"
-        />
+        layout="@layout/actionbar"/>
 
-    <include
-        layout="@layout/location_panel"
-        />
-
-    <FrameLayout
-        android:id="@+id/create_message_fragment"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabs"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="36dp"
+        android:background="?attr/colorPrimary"
+        android:gravity="bottom"
+        app:elevation="2dp"
+        app:tabIndicatorColor="?attr/colorAccent"
+        app:tabIndicatorHeight="4dp"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="?attr/tabTextColor"
+        app:tabTextColor="?attr/tabSecondaryTextColor"/>
+
+    <com.nextgis.safeforest.util.AppViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity"/>
 
 </LinearLayout>

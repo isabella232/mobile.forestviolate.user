@@ -26,6 +26,8 @@
     <string name="account_name">Сохрани лес</string>
     <string name="title_notes">Сообщения</string>
     <string name="title_map">Карта</string>
+    <string name="title_current_location">Текущее местоположение</string>
+    <string name="title_orientation">По ориентировке</string>
     <string name="action_settings">Настройки</string>
     <string name="app_description">Приложение для просмотра уведомлений о лесонарушениях, вводе информации о лесонарушении и отслеживания его статуса.</string>
     <string name="credits_intro">Лицензии:</string>

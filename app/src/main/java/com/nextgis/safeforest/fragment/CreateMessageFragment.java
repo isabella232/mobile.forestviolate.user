@@ -3,6 +3,7 @@
  * Purpose: Mobile application for registering facts of the forest violations.
  * Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
  * Author:  NikitaFeodonit, nfeodonit@yandex.com
+ * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
  * Copyright (c) 2015-2015. NextGIS, info@nextgis.com
  *
@@ -23,30 +24,31 @@
 package com.nextgis.safeforest.fragment;
 
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
+
 import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.location.GpsEventSource;
-import com.nextgis.safeforest.MainApplication;
+import com.nextgis.maplib.util.LocationUtil;
+import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.safeforest.R;
-import com.nextgis.safeforest.activity.CreateMessageActivity;
-import com.nextgis.safeforest.activity.SFActivity;
-import com.nextgis.safeforest.dialog.UserDataDialog;
 import com.nextgis.safeforest.util.Constants;
+import com.nextgis.safeforest.util.IMessage;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.TAG;
@@ -56,40 +58,21 @@ import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 
 public class CreateMessageFragment
         extends Fragment
-        implements CreateMessageActivity.OnSaveListener, GpsEventListener
+        implements IMessage, GpsEventListener
 {
     protected EditText mMessage;
     protected Location mLocation = null;
 
-    protected String mEmailText;
-    protected String mContactsText;
-
-    protected int mMessageType = Constants.MSG_TYPE_UNKNOWN;
-
+    protected TextView mLatView;
+    protected TextView mLongView;
+    protected TextView mAltView;
+    protected TextView mAccView;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
-        Bundle extras = getActivity().getIntent().getExtras();
-        if (null != extras) {
-            mMessageType = extras.getInt(Constants.FIELD_MTYPE);
-            int textResId = R.string.new_message_status;
-
-            switch (mMessageType) {
-                case Constants.MSG_TYPE_FELLING:
-                    textResId = R.string.action_felling;
-                    break;
-                case Constants.MSG_TYPE_FIRE:
-                    textResId = R.string.fire;
-                    break;
-            }
-
-            //noinspection ConstantConditions
-            ((SFActivity) getActivity()).getSupportActionBar().setTitle(textResId);
-        }
     }
 
 
@@ -99,8 +82,13 @@ public class CreateMessageFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_create_message, null);
+        View view = inflater.inflate(R.layout.fragment_create_message, container, false);
         mMessage = (EditText) view.findViewById(R.id.message);
+        mLatView = (TextView) getActivity().findViewById(R.id.latitude_view);
+        mLongView = (TextView) getActivity().findViewById(R.id.longitude_view);
+        mAltView = (TextView) getActivity().findViewById(R.id.altitude_view);
+        mAccView = (TextView) getActivity().findViewById(R.id.accuracy_view);
+        setLocationText(null);
 
         return view;
     }
@@ -131,57 +119,67 @@ public class CreateMessageFragment
 
 
     @Override
-    public void onSave()
-    {
-        final UserDataDialog dialog = new UserDataDialog();
-        // TODO: set from a app var for the temporary storing
-//        dialog.setEmailText(app.getEmailText());
-//        dialog.setContactsText(app.getContactsText());
-        dialog.setOnPositiveClickedListener(
-                new UserDataDialog.OnPositiveClickedListener()
-                {
-                    @Override
-                    public void onPositiveClicked()
-                    {
-                        mEmailText = dialog.getEmailText();
-                        mContactsText = dialog.getContactsText();
-
-                        if (TextUtils.isEmpty(mEmailText)) {
-                            Toast.makeText(getContext(), R.string.email_hint, Toast.LENGTH_LONG)
-                                    .show();
-                            return;
-                        }
-
-                        if (TextUtils.isEmpty(mContactsText)) {
-                            Toast.makeText(getContext(), R.string.contacts_hint, Toast.LENGTH_LONG)
-                                    .show();
-                            return;
-                        }
-
-                        saveMessage();
-                        getActivity().finish();
-                    }
-                });
-        dialog.setKeepInstance(true);
-        dialog.show(getActivity().getSupportFragmentManager(), Constants.FRAGMENT_USER_DATA_DIALOG);
+    public void onLocationChanged(Location location) {
+        setLocationText(mLocation);
     }
 
 
-    protected void saveMessage()
+    @Override
+    public void onBestLocationChanged(Location location) {
+    }
+
+
+    @Override
+    public void onGpsStatusChanged(int event) {
+    }
+
+
+    protected void setLocationText(Location location)
     {
-        if (!com.nextgis.maplib.util.Constants.DEBUG_MODE && null == mLocation) {
-            // TODO: do not close activity
-            Toast.makeText(getContext(), R.string.error_no_location, Toast.LENGTH_LONG).show();
+        mLocation = location;
+
+        if (null == mLatView || null == mLongView || null == mAccView || null == mAltView) {
             return;
         }
 
+        String latAppendix, longAppendix, altAppendix, accAppendix;
+        if (null == location) {
+            latAppendix = longAppendix = altAppendix = accAppendix = getString(R.string.n_a);
+        } else {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+            int nFormat = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_SECONDS);
+            DecimalFormat df = new DecimalFormat("0.0");
+
+            latAppendix = LocationUtil.formatLatitude(location.getLatitude(), nFormat, getResources());
+            longAppendix = LocationUtil.formatLongitude(location.getLongitude(), nFormat, getResources());
+            altAppendix = df.format(location.getAltitude()) + " " + getString(R.string.unit_meter);
+            accAppendix = df.format(location.getAccuracy()) + " " + getString(R.string.unit_meter);
+        }
+
+        mLatView.setText(getLocationText(R.string.latitude_caption_short, latAppendix));
+        mLongView.setText(getLocationText(R.string.longitude_caption_short, longAppendix));
+        mAltView.setText(getLocationText(R.string.altitude_caption_short, altAppendix));
+        mAccView.setText(getLocationText(R.string.accuracy_caption_short, accAppendix));
+    }
+
+    protected String getLocationText(int itemResId, String value) {
+        return getString(itemResId) + value;
+    }
+
+    @Override
+    public boolean isValidData() {
+        return mLocation != null;
+    }
+    @Override
+    public int getErrorToastResId() {
+        return isValidData() ? 0 : R.string.error_no_location;
+    }
+
+    @Override
+    public ContentValues getMessageData() {
         ContentValues values = new ContentValues();
 
         values.put(Constants.FIELD_MDATE, mLocation.getTime());
-        values.put(Constants.FIELD_AUTHOR, mEmailText);
-        values.put(Constants.FIELD_CONTACT, mContactsText);
-        values.put(Constants.FIELD_STATUS, Constants.MSG_STATUS_NEW);
-        values.put(Constants.FIELD_MTYPE, mMessageType);
         values.put(Constants.FIELD_MESSAGE, mMessage.getText().toString());
 
         try {
@@ -202,46 +200,6 @@ public class CreateMessageFragment
             e.printStackTrace();
         }
 
-
-        final MainApplication app = (MainApplication) getActivity().getApplication();
-        Uri uri =
-                Uri.parse("content://" + app.getAuthority() + "/" + Constants.KEY_CITIZEN_MESSAGES);
-        Uri result = app.getContentResolver().insert(uri, values);
-
-        if (result == null) {
-            Log.d(
-                    TAG, "MessageFragment, saveMessage(), Layer: " +
-                         Constants.KEY_CITIZEN_MESSAGES + ", insert FAILED");
-            Toast.makeText(app, R.string.error_create_message, Toast.LENGTH_LONG).show();
-            // TODO: not close activity
-
-        } else {
-            long id = Long.parseLong(result.getLastPathSegment());
-            Log.d(
-                    TAG, "MessageFragment, saveMessage(), Layer: " +
-                         Constants.KEY_CITIZEN_MESSAGES + ", id: " +
-                         id + ", insert result: " + result);
-        }
-    }
-
-
-    @Override
-    public void onLocationChanged(Location location)
-    {
-        mLocation = location;
-    }
-
-
-    @Override
-    public void onBestLocationChanged(Location location)
-    {
-
-    }
-
-
-    @Override
-    public void onGpsStatusChanged(int event)
-    {
-
+        return values;
     }
 }

@@ -4,6 +4,7 @@
   ~ Purpose: Mobile application for registering facts of the forest violations.
   ~ Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
   ~ Author:  NikitaFeodonit, nfeodonit@yandex.com
+  ~ Author:  Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
   ~ Copyright (c) 2015-2015. NextGIS, info@nextgis.com
   ~
@@ -21,40 +22,37 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/location_panel"/>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
             <TextView
                 style="@style/paragraph_text"
-                android:text="@string/message_paragraph"
-                />
+                android:text="@string/message_paragraph"/>
 
             <EditText
                 android:id="@+id/message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start|top"
-                android:minLines="3"
                 android:hint="@string/message_hint"
-                />
+                android:minLines="3"/>
 
         </LinearLayout>
-
     </ScrollView>
-
-</RelativeLayout>
+</LinearLayout>
