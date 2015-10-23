@@ -24,7 +24,5 @@ package com.nextgis.safeforest.util;
 import android.content.ContentValues;
 
 public interface IMessage {
-    ContentValues getMessageData();
-    int getErrorToastResId();
-    boolean isValidData();
+    ContentValues getMessageData() throws RuntimeException;
 }

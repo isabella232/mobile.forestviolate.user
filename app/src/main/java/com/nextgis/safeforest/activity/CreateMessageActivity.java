@@ -157,32 +157,29 @@ public class CreateMessageActivity
 
 
     protected void saveMessage() {
-        int currentTab = mViewPager.getCurrentItem();
-        if (mSectionsPagerAdapter.isValidData(currentTab)) {
-            // TODO: do not close activity
-            Toast.makeText(this, mSectionsPagerAdapter.getErrorToastResId(currentTab), Toast.LENGTH_LONG).show();
-            return;
-        }
+        try {
+            final MainApplication app = (MainApplication) getApplication();
 
-        final MainApplication app = (MainApplication) getApplication();
+            ContentValues values = mSectionsPagerAdapter.getMessageData(mViewPager.getCurrentItem());
+            values.put(Constants.FIELD_MTYPE, mMessageType);
+            values.put(Constants.FIELD_STATUS, Constants.MSG_STATUS_NEW);
+            values.put(Constants.FIELD_AUTHOR, mEmailText); // TODO authorized user values
+            values.put(Constants.FIELD_CONTACT, mContactsText);
 
-        ContentValues values = mSectionsPagerAdapter.getMessageData(currentTab);
-        values.put(Constants.FIELD_MTYPE, mMessageType);
-        values.put(Constants.FIELD_STATUS, Constants.MSG_STATUS_NEW);
-        values.put(Constants.FIELD_AUTHOR, mEmailText); // TODO authorized user values
-        values.put(Constants.FIELD_CONTACT, mContactsText);
+            Uri uri = Uri.parse("content://" + app.getAuthority() + "/" + Constants.KEY_CITIZEN_MESSAGES);
+            Uri result = app.getContentResolver().insert(uri, values);
 
-        Uri uri = Uri.parse("content://" + app.getAuthority() + "/" + Constants.KEY_CITIZEN_MESSAGES);
-        Uri result = app.getContentResolver().insert(uri, values);
-
-        if (result == null) {
-            Log.d(TAG, "MessageFragment, saveMessage(), Layer: " + Constants.KEY_CITIZEN_MESSAGES + ", insert FAILED");
-            Toast.makeText(app, R.string.error_create_message, Toast.LENGTH_LONG).show();
-            // TODO: not close activity
-        } else {
-            long id = Long.parseLong(result.getLastPathSegment());
-            Log.d(TAG, "MessageFragment, saveMessage(), Layer: " + Constants.KEY_CITIZEN_MESSAGES
-                    + ", id: " + id + ", insert result: " + result);
+            if (result == null) {
+                Log.d(TAG, "MessageFragment, saveMessage(), Layer: " + Constants.KEY_CITIZEN_MESSAGES + ", insert FAILED");
+                Toast.makeText(app, R.string.error_create_message, Toast.LENGTH_LONG).show();
+                // TODO: not close activity
+            } else {
+                long id = Long.parseLong(result.getLastPathSegment());
+                Log.d(TAG, "MessageFragment, saveMessage(), Layer: " + Constants.KEY_CITIZEN_MESSAGES
+                        + ", id: " + id + ", insert result: " + result);
+            }
+        } catch (RuntimeException e) {
+            Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -227,27 +224,13 @@ public class CreateMessageActivity
             return getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + position);
         }
 
-        public ContentValues getMessageData(int position) {
+        public ContentValues getMessageData(int position) throws RuntimeException {
             Fragment page = getFragmentByTag(position);
 
             if (page != null && page instanceof IMessage)
                 return ((IMessage) page).getMessageData();
             else
                 return new ContentValues();
-        }
-
-        public boolean isValidData(int position) {
-            Fragment page = getFragmentByTag(position);
-            return page != null && page instanceof IMessage && ((IMessage) page).isValidData();
-        }
-
-        public int getErrorToastResId(int position) {
-            Fragment page = getFragmentByTag(position);
-
-            if (page != null && page instanceof IMessage)
-                return ((IMessage) page).getErrorToastResId();
-            else
-                return 0;
         }
     }
 

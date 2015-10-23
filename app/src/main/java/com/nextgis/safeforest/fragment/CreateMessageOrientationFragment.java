@@ -61,16 +61,6 @@ public class CreateMessageOrientationFragment
     }
 
     @Override
-    public boolean isValidData() {
-        return true;
-    }
-
-    @Override
-    public int getErrorToastResId() {
-        return 0;
-    }
-
-    @Override
     public ContentValues getMessageData()
     {
         ContentValues values = new ContentValues();

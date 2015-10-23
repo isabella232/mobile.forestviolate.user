@@ -84,10 +84,10 @@ public class CreateMessageFragment
     {
         View view = inflater.inflate(R.layout.fragment_create_message, container, false);
         mMessage = (EditText) view.findViewById(R.id.message);
-        mLatView = (TextView) getActivity().findViewById(R.id.latitude_view);
-        mLongView = (TextView) getActivity().findViewById(R.id.longitude_view);
-        mAltView = (TextView) getActivity().findViewById(R.id.altitude_view);
-        mAccView = (TextView) getActivity().findViewById(R.id.accuracy_view);
+        mLatView = (TextView) view.findViewById(R.id.latitude_view);
+        mLongView = (TextView) view.findViewById(R.id.longitude_view);
+        mAltView = (TextView) view.findViewById(R.id.altitude_view);
+        mAccView = (TextView) view.findViewById(R.id.accuracy_view);
         setLocationText(null);
 
         return view;
@@ -163,20 +163,14 @@ public class CreateMessageFragment
     }
 
     protected String getLocationText(int itemResId, String value) {
-        return getString(itemResId) + value;
-    }
-
-    @Override
-    public boolean isValidData() {
-        return mLocation != null;
-    }
-    @Override
-    public int getErrorToastResId() {
-        return isValidData() ? 0 : R.string.error_no_location;
+        return getString(itemResId) + ": " + value;
     }
 
     @Override
     public ContentValues getMessageData() {
+        if (mLocation == null)
+            throw new RuntimeException(getString(R.string.error_no_location));
+
         ContentValues values = new ContentValues();
 
         values.put(Constants.FIELD_MDATE, mLocation.getTime());
