@@ -2,6 +2,7 @@
  * Project: Forest violations
  * Purpose: Mobile application for registering facts of the forest violations.
  * Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+ * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
  * Copyright (c) 2015-2015. NextGIS, info@nextgis.com
  *
@@ -104,7 +105,7 @@ public class InitStepListAdapter extends BaseAdapter {
         View v = convertView;
         if (null == v) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
-            v = inflater.inflate(R.layout.row_initstep, null);
+            v = inflater.inflate(R.layout.row_initstep, parent, false);
         }
 
         InitStep item = (InitStep) getItem(position);
@@ -134,14 +135,29 @@ public class InitStepListAdapter extends BaseAdapter {
         return v;
     }
 
+    public void setMessage(int step, int state, String message) {
+        InitStep initStep = (InitStep) getItem(step);
+        initStep.setState(state);
+        initStep.setStepDescription(message);
+        notifyDataSetChanged();
+    }
+
     public class InitStep {
-        public String mStepName;
-        public String mStepDescription;
-        public int mState; //0 - wait, 1 - working, 2 - finished, 3 - error
+        protected String mStepName;
+        protected String mStepDescription;
+        protected int mState; //0 - wait, 1 - working, 2 - finished, 3 - error
 
         public InitStep(String stepName, String stepDescription, int state) {
             mStepDescription = stepDescription;
             mStepName = stepName;
+            mState = state;
+        }
+
+        public void setStepDescription(String stepDescription) {
+            mStepDescription = stepDescription;
+        }
+
+        public void setState(int state) {
             mState = state;
         }
     }

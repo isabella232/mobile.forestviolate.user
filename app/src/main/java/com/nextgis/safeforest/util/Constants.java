@@ -3,6 +3,7 @@
  * Purpose: Mobile application for registering facts of the forest violations.
  * Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
  * Author:  NikitaFeodonit, nfeodonit@yandex.com
+ * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
  * Copyright (c) 2015-2015. NextGIS, info@nextgis.com
  *
@@ -41,15 +42,23 @@ public interface Constants
     int STEP_STATE_DONE  = 2;
     int STEP_STATE_ERROR = 3;
 
+    // STATUS
+    String KEY_STEP = "sync_step";
+    String KEY_STATE = "sync_state";
+    String KEY_MESSAGE = "sync_message";
+
     /**
      * NGW layer keys
      */
     String KEY_CITIZEN_MESSAGES = "citizen_messages";
+    String KEY_IS_AUTHORIZED = "is_authorised";
 
     /**
      * Threads
      */
     int DOWNLOAD_SEPARATE_THREADS = 10;
+
+    String BROADCAST_MESSAGE = "sync_message";
 
     String FRAGMENT_VIEW_MESSAGE     = "view_message";
     String FRAGMENT_USER_DATA_DIALOG = "user_data_dialog";
