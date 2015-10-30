@@ -38,7 +38,7 @@
     <string name="fire">Fire</string>
     <string name="geomixer_fv_tiles">GeoMixer violation tiles</string>
     <string name="sf_login_title">Account</string>
-    <string name="sf_login_description"><![CDATA[Enter your information for account registration on server (registration can be skipped, but the application will have limited functionality). In addition, select the area of work (obligatory input field). As username you must use a valid email address. After clicking on the \ "Register \" or \ "Skip \" will start the process of getting data to work offline. This process need a lot of traffic, so Wi-Fi connection recommended.]]></string>
+    <string name="sf_login_description"><![CDATA[Enter your information for account registration on server (registration can be skipped, but the application will have limited functionality). As username you must use a valid email address. Clicking \ "Register \" or \ "Skip \" will start the selection of working area and the process of getting data to work offline. This process need a lot of traffic, so Wi-Fi connection recommended.]]></string>
     <string name="first_run">First run</string>
     <string name="fi_url">Server URL</string>
     <string name="error_init">Failed to initialize</string>
@@ -47,9 +47,8 @@
     <string name="check_server">Check server</string>
     <string name="register">Register</string>
     <string name="skip">Skip</string>
-    <string name="KHA">KHabarovskij kraj</string>
-    <string name="PRI">Primorskij kraj</string>
-    <string name="sf_region_select">Select working territory (obligatory)</string>
+    <string name="sf_region_select">Select working territory</string>
+    <string name="sf_getting_regions">Fetching regions</string>
     <string name="connecting">Connecting to server…</string>
     <string name="connected">Connected</string>
     <string name="check_tables_exist">Check tables exist</string>

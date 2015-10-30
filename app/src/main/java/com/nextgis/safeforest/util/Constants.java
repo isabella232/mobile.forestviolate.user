@@ -51,6 +51,7 @@ public interface Constants
      * NGW layer keys
      */
     String KEY_CITIZEN_MESSAGES = "citizen_messages";
+    String KEY_FV_REGIONS = "fv_regions";
     String KEY_IS_AUTHORIZED = "is_authorised";
 
     /**
@@ -71,6 +72,7 @@ public interface Constants
     String FIELD_MTYPE     = "mtype";
     String FIELD_MESSAGE   = "message";
     String FIELD_STMESSAGE = "stmessage";
+    String FIELD_NAME      = "NAME_";
 
     int MSG_STATUS_UNKNOWN      = 0;
     int MSG_STATUS_NEW          = 1;

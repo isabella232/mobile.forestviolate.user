@@ -21,42 +21,29 @@
 
 package com.nextgis.safeforest.fragment;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.nextgis.maplib.api.IGISApplication;
-import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplibui.fragment.NGWLoginFragment;
 import com.nextgis.maplibui.service.HTTPLoader;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.util.Constants;
-import com.nextgis.safeforest.util.SettingsConstants;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * The login fragment to the forest violations server
  */
 public class LoginFragment extends NGWLoginFragment {
 
-    protected Map<String, GeoEnvelope> mWorkingBorders;
     protected Button   mSkipButton;
-    protected Spinner mRegion;
 
     @Override
     public View onCreateView(
@@ -77,16 +64,6 @@ public class LoginFragment extends NGWLoginFragment {
         mURL.addTextChangedListener(watcher);
         mLogin.addTextChangedListener(watcher);
         mPassword.addTextChangedListener(watcher);
-
-        mWorkingBorders = new HashMap<>(2);
-        mWorkingBorders.put(getString(R.string.KHA), new GeoEnvelope(14538325.50, 16419624.89, 5812457.49, 8954618.39));
-        mWorkingBorders.put(getString(R.string.PRI), new GeoEnvelope(14504929.65, 15506805.07, 5236173.78, 6190443.81));
-        List<String> spinnerArray =  new ArrayList<>(mWorkingBorders.keySet());
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, spinnerArray);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mRegion = (Spinner) view.findViewById(R.id.region_select_spinner);
-        mRegion.setAdapter(adapter);
 
         return view;
     }
@@ -113,16 +90,6 @@ public class LoginFragment extends NGWLoginFragment {
     @Override
     public void onClick(View v)
     {
-        final SharedPreferences.Editor edit =
-                PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
-        String region = (String) mRegion.getSelectedItem();
-        GeoEnvelope env = mWorkingBorders.get(region);
-        edit.putFloat(SettingsConstants.KEY_PREF_USERMINX, (float) env.getMinX());
-        edit.putFloat(SettingsConstants.KEY_PREF_USERMINY, (float) env.getMinY());
-        edit.putFloat(SettingsConstants.KEY_PREF_USERMAXX, (float) env.getMaxX());
-        edit.putFloat(SettingsConstants.KEY_PREF_USERMAXY, (float) env.getMaxY());
-        edit.commit();
-
         if (v == mSignInButton) {
             getLoaderManager().restartLoader(R.id.auth_token_loader, null, this);
         }

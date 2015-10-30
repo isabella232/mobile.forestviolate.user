@@ -52,11 +52,12 @@ import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplibui.fragment.NGWLoginFragment;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
-import com.nextgis.safeforest.fragment.InitialSyncFragment;
+import com.nextgis.safeforest.fragment.RegionSyncFragment;
 import com.nextgis.safeforest.fragment.LoginFragment;
 import com.nextgis.safeforest.fragment.MapFragment;
 import com.nextgis.safeforest.fragment.MessageListFragment;
 import com.nextgis.safeforest.util.Constants;
+import com.nextgis.safeforest.util.MapUtil;
 import com.nextgis.safeforest.util.SettingsConstants;
 
 import java.util.Locale;
@@ -99,7 +100,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         } else {
             MapBase map = app.getMap();
             map.load();
-            if (map.getLayerCount() <= 0 || currentView == CURRENT_VIEW.INITIAL.ordinal()) {
+            if (!hasBasicLayers(map) || currentView == CURRENT_VIEW.INITIAL.ordinal()) {
                 Log.d(Constants.SFTAG, "Account " + getString(R.string.account_name) + " created. Run second step.");
                 mFirstRun = true;
                 createSecondStartView();
@@ -111,6 +112,9 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         }
     }
 
+    protected boolean hasBasicLayers(MapBase map) {
+        return MapUtil.hasLayer(map, Constants.KEY_FV_REGIONS) && MapUtil.hasLayer(map, Constants.KEY_CITIZEN_MESSAGES);
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -146,12 +150,12 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         setTitle(getText(R.string.initialization));
 
         FragmentManager fm = getSupportFragmentManager();
-        InitialSyncFragment initialSyncFragment = (InitialSyncFragment) fm.findFragmentByTag("NGWInitialSync");
+        RegionSyncFragment initialSyncFragment = (RegionSyncFragment) fm.findFragmentByTag("NGWRegionSync");
 
         if (initialSyncFragment == null) {
-            initialSyncFragment = new InitialSyncFragment();
+            initialSyncFragment = new RegionSyncFragment();
             FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(com.nextgis.maplibui.R.id.login_frame, initialSyncFragment, "NGWInitialSync");
+            ft.replace(com.nextgis.maplibui.R.id.login_frame, initialSyncFragment, "NGWRegionSync");
             ft.commit();
         }
     }

@@ -127,8 +127,7 @@
         </service>
 
         <service
-            android:name=".util.InitialSyncService"
-            android:process=":initial_sync">
+            android:name=".util.RegionSyncService">
         </service>
 
         <provider

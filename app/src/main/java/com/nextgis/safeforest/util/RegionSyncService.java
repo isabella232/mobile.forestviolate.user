@@ -32,13 +32,9 @@ import com.nextgis.maplib.api.IProgressor;
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.TileItem;
 import com.nextgis.maplib.datasource.ngw.Connection;
-import com.nextgis.maplib.datasource.ngw.INGWResource;
-import com.nextgis.maplib.datasource.ngw.Resource;
-import com.nextgis.maplib.datasource.ngw.ResourceGroup;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.util.GeoConstants;
-import com.nextgis.maplib.util.MapUtil;
 import com.nextgis.maplib.util.NGException;
 import com.nextgis.maplibui.mapui.NGWVectorLayerUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
@@ -62,7 +58,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 
-public class InitialSyncService extends Service {
+public class RegionSyncService extends Service {
     public static final String ACTION_START = "START_INITIAL_SYNC";
     public static final String ACTION_STOP = "STOP_INITIAL_SYNC";
 
@@ -82,7 +78,7 @@ public class InitialSyncService extends Service {
         switch (intent.getAction()) {
             case ACTION_START:
                 if (!mIsRunning)
-                    startSync();
+                    startSync(intent.getBooleanExtra(Constants.KEY_FV_REGIONS, false));
                 break;
             case ACTION_STOP:
                 stopSync();
@@ -92,8 +88,8 @@ public class InitialSyncService extends Service {
         return START_STICKY;
     }
 
-    private void startSync() {
-        mThread = new InitialSync();
+    private void startSync(boolean isRegionsOnly) {
+        mThread = new InitialSync(isRegionsOnly);
         mIsRunning = true;
         mThread.start();
     }
@@ -119,11 +115,31 @@ public class InitialSyncService extends Service {
     }
 
     class InitialSync extends Thread implements IProgressor {
-        protected Account mAccount;
-        protected int mMaxProgress;
-        protected String mProgressMessage;
-        protected int mStep;
+        protected Map<String, Long> mKeys = new HashMap<>();
         protected Intent mMessageIntent;
+        protected Account mAccount;
+        protected MapBase mMap;
+
+        protected String mProgressMessage;
+        protected int mMaxProgress;
+        protected int mStep;
+        protected boolean mIsRegionsOnly;
+        protected float mMinX, mMinY, mMaxX, mMaxY;
+
+        public InitialSync(boolean isRegionsOnly) {
+            mIsRegionsOnly = isRegionsOnly;
+
+            if (isRegionsOnly)
+                mKeys.put(Constants.KEY_FV_REGIONS, -1L);
+            else
+                mKeys.put(Constants.KEY_CITIZEN_MESSAGES, -1L);
+
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(RegionSyncService.this);
+            mMinX = prefs.getFloat(SettingsConstants.KEY_PREF_USERMINX, -2000.0f);
+            mMinY = prefs.getFloat(SettingsConstants.KEY_PREF_USERMINY, -2000.0f);
+            mMaxX = prefs.getFloat(SettingsConstants.KEY_PREF_USERMAXX, 2000.0f);
+            mMaxY = prefs.getFloat(SettingsConstants.KEY_PREF_USERMAXY, 2000.0f);
+        }
 
         public void run() {
             mMessageIntent = new Intent(Constants.BROADCAST_MESSAGE);
@@ -134,6 +150,7 @@ public class InitialSyncService extends Service {
             final String sLogin = app.getAccountLogin(mAccount);
             final String sPassword = app.getAccountPassword(mAccount);
             final String sURL = app.getAccountUrl(mAccount);
+            mMap = app.getMap();
 
             if (null == sURL || null == sPassword || null == sLogin) {
                 return;
@@ -155,10 +172,7 @@ public class InitialSyncService extends Service {
             // step 1: find keys
             publishProgress(getString(R.string.check_tables_exist), Constants.STEP_STATE_WORK);
 
-            Map<String, Long> keys = new HashMap<>();
-            keys.put(Constants.KEY_CITIZEN_MESSAGES, -1L);
-
-            if (!checkServerLayers(connection, keys)) {
+            if (!MapUtil.checkServerLayers(connection, mKeys)) {
                 publishProgress(getString(R.string.error_wrong_server), Constants.STEP_STATE_ERROR);
                 return;
             } else {
@@ -170,29 +184,18 @@ public class InitialSyncService extends Service {
 
             // step 2: create base layers
             mStep = 1;
-            MapBase map = app.getMap();
-            createBasicLayers(map);
 
-            if (isCanceled())
-                return;
-
-            // step 3: citizen messages
-            mStep = 2;
-            publishProgress(getString(R.string.working), Constants.STEP_STATE_WORK);
-
-            if (!loadCitizenMessages(keys.get(Constants.KEY_CITIZEN_MESSAGES), mAccount.name, map)) {
-                publishProgress(getString(R.string.error_unexpected), Constants.STEP_STATE_ERROR);
-                return;
-            } else {
-                publishProgress(getString(R.string.done), Constants.STEP_STATE_DONE);
-            }
+            if (mIsRegionsOnly)
+                loadRegions();
+            else
+                loadRegion();
 
             if (isCanceled())
                 return;
 
             //TODO: load additional tables
 
-            map.save();
+            mMap.save();
 
             mStep++;
             publishProgress(null, Constants.STEP_STATE_DONE);
@@ -205,60 +208,76 @@ public class InitialSyncService extends Service {
             sendBroadcast(mMessageIntent);
         }
 
-        protected boolean checkServerLayers(INGWResource resource, Map<String, Long> keys) {
-            if (resource instanceof Connection) {
-                Connection connection = (Connection) resource;
-                connection.loadChildren();
-            } else if (resource instanceof ResourceGroup) {
-                ResourceGroup resourceGroup = (ResourceGroup) resource;
-                resourceGroup.loadChildren();
+        protected void loadRegions() {
+            NGWVectorLayerUI ngwVectorLayer = new NGWVectorLayerUI(getApplicationContext(), mMap.createLayerStorage(Constants.KEY_FV_REGIONS));
+            ngwVectorLayer.setName(Constants.KEY_FV_REGIONS);
+            ngwVectorLayer.setRemoteId(mKeys.get(Constants.KEY_FV_REGIONS));
+            ngwVectorLayer.setAccountName(mAccount.name);
+            ngwVectorLayer.setSyncType(com.nextgis.maplib.util.Constants.SYNC_ALL);
+            ngwVectorLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
+            ngwVectorLayer.setMaxZoom(GeoConstants.DEFAULT_MAX_ZOOM);
+
+            try {
+                ngwVectorLayer.createFromNGW(this);
+                mMap.addLayer(ngwVectorLayer);
+            } catch (NGException | IOException | JSONException e) {
+                e.printStackTrace();
+                ngwVectorLayer.delete();
+                ngwVectorLayer = null;
             }
 
-            for (int i = 0; i < resource.getChildrenCount(); ++i) {
-                INGWResource childResource = resource.getChild(i);
+            if (ngwVectorLayer == null) {
+                publishProgress(getString(R.string.error_unexpected), Constants.STEP_STATE_ERROR);
+            } else {
+                publishProgress(getString(R.string.done), Constants.STEP_STATE_DONE);
+            }
+        }
 
-                if (keys.containsKey(childResource.getKey()) && childResource instanceof Resource) {
-                    Resource ngwResource = (Resource) childResource;
-                    keys.put(ngwResource.getKey(), ngwResource.getRemoteId());
-                }
+        protected void loadRegion() {
+            createBasicLayers(mMap);
 
-                boolean bIsFill = true;
-                for (Map.Entry<String, Long> entry : keys.entrySet()) {
-                    if (entry.getValue() <= 0) {
-                        bIsFill = false;
-                        break;
-                    }
-                }
+            if (isCanceled())
+                return;
 
-                if (bIsFill) {
-                    return true;
-                }
+            // step 3: citizen messages
+            mStep = 2;
+            publishProgress(getString(R.string.working), Constants.STEP_STATE_WORK);
 
-                if (checkServerLayers(childResource, keys)) {
-                    return true;
-                }
+            if (!loadCitizenMessages(mKeys.get(Constants.KEY_CITIZEN_MESSAGES), mAccount.name, mMap)) {
+                publishProgress(getString(R.string.error_unexpected), Constants.STEP_STATE_ERROR);
+            } else {
+                publishProgress(getString(R.string.done), Constants.STEP_STATE_DONE);
+            }
+        }
+
+        private boolean loadCitizenMessages(long resourceId, String accountName, MapBase map) {
+            NGWVectorLayerUI ngwVectorLayer = new NGWVectorLayerUI(getApplicationContext(),
+                    map.createLayerStorage(Constants.KEY_CITIZEN_MESSAGES));
+
+            ngwVectorLayer.setName(Constants.KEY_CITIZEN_MESSAGES);
+            ngwVectorLayer.setRemoteId(resourceId);
+            ngwVectorLayer.setServerWhere(String.format(Locale.US, "bbox=%f,%f,%f,%f",
+                    mMinX, mMinY, mMaxX, mMaxY));
+            ngwVectorLayer.setVisible(true);
+            ngwVectorLayer.setAccountName(accountName);
+            ngwVectorLayer.setSyncType(com.nextgis.maplib.util.Constants.SYNC_ALL);
+            ngwVectorLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
+            ngwVectorLayer.setMaxZoom(GeoConstants.DEFAULT_MAX_ZOOM);
+
+            map.addLayer(ngwVectorLayer);
+
+            try {
+                ngwVectorLayer.createFromNGW(this);
+            } catch (NGException | IOException | JSONException e) {
+                e.printStackTrace();
+                return false;
             }
 
-            boolean bIsFill = true;
-
-            for (Map.Entry<String, Long> entry : keys.entrySet()) {
-                if (entry.getValue() <= 0) {
-                    bIsFill = false;
-                    break;
-                }
-            }
-
-            return bIsFill;
+            return true;
         }
 
         protected void createBasicLayers(MapBase map) {
             publishProgress(getString(R.string.working), Constants.STEP_STATE_WORK);
-
-            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(InitialSyncService.this);
-            float minX = prefs.getFloat(SettingsConstants.KEY_PREF_USERMINX, -2000.0f);
-            float minY = prefs.getFloat(SettingsConstants.KEY_PREF_USERMINY, -2000.0f);
-            float maxX = prefs.getFloat(SettingsConstants.KEY_PREF_USERMAXX, 2000.0f);
-            float maxY = prefs.getFloat(SettingsConstants.KEY_PREF_USERMAXY, 2000.0f);
 
             //add OpenStreetMap layer on application first run
             String layerName = getString(R.string.osm);
@@ -274,7 +293,7 @@ public class InitialSyncService extends Service {
 
             map.addLayer(osmLayer);
             //mMap.moveLayer(0, osmLayer);
-            GeoEnvelope extent = new GeoEnvelope(minX, maxX, minY, maxY);
+            GeoEnvelope extent = new GeoEnvelope(mMinX, mMaxX, mMinY, mMaxY);
 
         /*
         if(extent.isInit()) {
@@ -302,7 +321,7 @@ public class InitialSyncService extends Service {
             if (extent.isInit()) {
                 //download
                 try {
-                    downloadTiles(ksLayer, extent, 9, 9);
+                    downloadTiles(ksLayer, extent, 5, 9);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -335,7 +354,7 @@ public class InitialSyncService extends Service {
             publishProgress(getString(R.string.form_tiles_list), Constants.STEP_STATE_WORK);
             final List<TileItem> tilesList = new LinkedList<>();
             for (int zoom = zoomFrom; zoom < zoomTo + 1; zoom++) {
-                tilesList.addAll(MapUtil.getTileItems(loadBounds, zoom, osmLayer.getTMSType()));
+                tilesList.addAll(com.nextgis.maplib.util.MapUtil.getTileItems(loadBounds, zoom, osmLayer.getTMSType()));
             }
 
             int threadCount = Constants.DOWNLOAD_SEPARATE_THREADS;
@@ -404,38 +423,6 @@ public class InitialSyncService extends Service {
                     e.printStackTrace();
                 }
             }
-        }
-
-        private boolean loadCitizenMessages(long resourceId, String accountName, MapBase map) {
-            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(InitialSyncService.this);
-            float minX = prefs.getFloat(SettingsConstants.KEY_PREF_USERMINX, -2000.0f);
-            float minY = prefs.getFloat(SettingsConstants.KEY_PREF_USERMINY, -2000.0f);
-            float maxX = prefs.getFloat(SettingsConstants.KEY_PREF_USERMAXX, 2000.0f);
-            float maxY = prefs.getFloat(SettingsConstants.KEY_PREF_USERMAXY, 2000.0f);
-
-            NGWVectorLayerUI ngwVectorLayer = new NGWVectorLayerUI(getApplicationContext(),
-                    map.createLayerStorage(Constants.KEY_CITIZEN_MESSAGES));
-
-            ngwVectorLayer.setName(Constants.KEY_CITIZEN_MESSAGES);
-            ngwVectorLayer.setRemoteId(resourceId);
-            ngwVectorLayer.setServerWhere(String.format(Locale.US, "bbox=%f,%f,%f,%f",
-                    minX, minY, maxX, maxY));
-            ngwVectorLayer.setVisible(true);
-            ngwVectorLayer.setAccountName(accountName);
-            ngwVectorLayer.setSyncType(com.nextgis.maplib.util.Constants.SYNC_ALL);
-            ngwVectorLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
-            ngwVectorLayer.setMaxZoom(GeoConstants.DEFAULT_MAX_ZOOM);
-
-            map.addLayer(ngwVectorLayer);
-
-            try {
-                ngwVectorLayer.createFromNGW(this);
-            } catch (NGException | IOException | JSONException e) {
-                e.printStackTrace();
-                return false;
-            }
-
-            return true;
         }
 
         @Override
