@@ -57,7 +57,8 @@ public class MessageListFragment
     private static final int LIST_LOADER = 12321;
 
     protected MessageCursorAdapter mAdapter;
-
+    protected BroadcastReceiver mReceiver;
+    protected IntentFilter mIntentFilter;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
@@ -77,18 +78,29 @@ public class MessageListFragment
         mAdapter = new MessageCursorAdapter(getContext(), null, 0);
 
         // register events from layers modify in services or other applications
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_DELETE);
-        intentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_DELETE_ALL);
-        intentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_INSERT);
-        intentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_UPDATE);
-        intentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_UPDATE_ALL);
-        intentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_UPDATE_FIELDS);
-        intentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_FEATURE_ID_CHANGE);
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_DELETE);
+        mIntentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_DELETE_ALL);
+        mIntentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_INSERT);
+        mIntentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_UPDATE);
+        mIntentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_UPDATE_ALL);
+        mIntentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_UPDATE_FIELDS);
+        mIntentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_FEATURE_ID_CHANGE);
 
-        getContext().registerReceiver(new VectorLayerNotifyReceiver(), intentFilter);
+        mReceiver = new VectorLayerNotifyReceiver();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getContext().registerReceiver(mReceiver, mIntentFilter);
+    }
+
+    @Override
+    public void onPause() {
+        getContext().unregisterReceiver(mReceiver);
+        super.onPause();
+    }
 
     @Override
     public View onCreateView(
