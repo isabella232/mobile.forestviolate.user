@@ -28,6 +28,8 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SyncResult;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
@@ -37,6 +39,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,13 +52,14 @@ import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.NGWVectorLayer;
+import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplibui.fragment.NGWLoginFragment;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
-import com.nextgis.safeforest.fragment.RegionSyncFragment;
 import com.nextgis.safeforest.fragment.LoginFragment;
 import com.nextgis.safeforest.fragment.MapFragment;
 import com.nextgis.safeforest.fragment.MessageListFragment;
+import com.nextgis.safeforest.fragment.RegionSyncFragment;
 import com.nextgis.safeforest.util.Constants;
 import com.nextgis.safeforest.util.MapUtil;
 import com.nextgis.safeforest.util.SettingsConstants;
@@ -239,7 +243,23 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     }
 
     private void call() {
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        VectorLayer regions = (VectorLayer) MapBase.getInstance().getLayerByName(Constants.KEY_FV_REGIONS);
+        String region = prefs.getLong(SettingsConstants.KEY_PREF_REGION, -1L) + "";
+        Cursor phone = regions.query(new String[]{Constants.FIELD_PHONE}, Constants.FIELD_ID + " = ?",
+                new String[]{region}, null, null);
 
+        if (phone.moveToFirst()) {
+            String number = phone.getString(0).trim();
+
+            if (!TextUtils.isEmpty(number)) {
+                Uri call = Uri.parse("tel:" + number);
+                Intent dialerIntent = new Intent(Intent.ACTION_DIAL, call);
+                startActivity(dialerIntent);
+            } else
+                Toast.makeText(this, R.string.region_has_no_phone, Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(this, R.string.no_region_selected, Toast.LENGTH_SHORT).show();
     }
 
     @Override

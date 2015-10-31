@@ -102,4 +102,6 @@
     <string name="fire_message_type">Fire</string>
     <string name="felling_message_type">Illegal felling</string>
     <string name="user_contact_info">Contact info</string>
+    <string name="no_region_selected">Region is not selected</string>
+    <string name="region_has_no_phone">No phone for this region</string>
 </resources>

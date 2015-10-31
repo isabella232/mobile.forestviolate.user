@@ -73,6 +73,7 @@ public interface Constants
     String FIELD_MESSAGE   = "message";
     String FIELD_STMESSAGE = "stmessage";
     String FIELD_NAME      = "NAME_";
+    String FIELD_PHONE     = "PHONE";
 
     int MSG_STATUS_UNKNOWN      = 0;
     int MSG_STATUS_NEW          = 1;

@@ -215,7 +215,8 @@ public class RegionSyncFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 VectorLayer regions = (VectorLayer) MapBase.getInstance().getLayerByName(Constants.KEY_FV_REGIONS);
-                                GeoGeometry geometry = regions.getGeometryForId(data.getLong(1));
+                                long id = data.getLong(1);
+                                GeoGeometry geometry = regions.getGeometryForId(id);
 
                                 SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(activity).edit();
                                 GeoEnvelope env = geometry.getEnvelope();
@@ -223,6 +224,7 @@ public class RegionSyncFragment extends Fragment {
                                 edit.putFloat(SettingsConstants.KEY_PREF_USERMINY, (float) env.getMinY());
                                 edit.putFloat(SettingsConstants.KEY_PREF_USERMAXX, (float) env.getMaxX());
                                 edit.putFloat(SettingsConstants.KEY_PREF_USERMAXY, (float) env.getMaxY());
+                                edit.putLong(SettingsConstants.KEY_PREF_REGION, id);
                                 edit.commit();
 
                                 if (callback != null)
