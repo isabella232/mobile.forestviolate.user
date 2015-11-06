@@ -35,6 +35,9 @@ public interface SettingsConstants
     String KEY_PREF_USERMAXX = "user_maxx";
     String KEY_PREF_USERMAXY = "user_maxy";
     String KEY_PREF_REGION   = "user_region";
+    String KEY_PREF_REGION_NAME   = "user_region_name";
+    String KEY_PREF_CHANGE_REGION        = "change_region";
+    String KEY_PREF_CHANGE_ACCOUNt       = "change_account";
 
     /**
      * map preference

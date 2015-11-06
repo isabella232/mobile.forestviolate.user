@@ -32,9 +32,11 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -45,6 +47,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
@@ -52,14 +55,14 @@ import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoGeometry;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.VectorLayer;
+import com.nextgis.maplib.util.NetworkUtil;
 import com.nextgis.maplibui.activity.NGActivity;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
-import com.nextgis.safeforest.activity.SFActivity;
 import com.nextgis.safeforest.adapter.InitStepListAdapter;
 import com.nextgis.safeforest.util.Constants;
-import com.nextgis.safeforest.util.RegionSyncService;
 import com.nextgis.safeforest.util.MapUtil;
+import com.nextgis.safeforest.util.RegionSyncService;
 import com.nextgis.safeforest.util.SettingsConstants;
 
 import java.util.Locale;
@@ -72,8 +75,8 @@ public class RegionSyncFragment extends Fragment {
 
     protected boolean mIsRegionSet;
 
-    interface onRegionReceive {
-        void onRegionChosen();
+    public interface onRegionReceive {
+        void onRegionChosen(String regionName);
     }
 
     @Override
@@ -98,10 +101,17 @@ public class RegionSyncFragment extends Fragment {
     }
 
     protected static void startSyncService(Activity activity, boolean isRegionsOnly) {
-        Intent syncIntent = new Intent(activity, RegionSyncService.class);
-        syncIntent.setAction(RegionSyncService.ACTION_START);
-        syncIntent.putExtra(Constants.KEY_FV_REGIONS, isRegionsOnly);
-        activity.startService(syncIntent);
+        NetworkUtil networkUtil = new NetworkUtil(activity);
+
+        if (networkUtil.isNetworkAvailable()) {
+            Intent syncIntent = new Intent(activity, RegionSyncService.class);
+            syncIntent.setAction(RegionSyncService.ACTION_START);
+            syncIntent.putExtra(Constants.KEY_FV_REGIONS, isRegionsOnly);
+
+            DeleteLayersTask prepare = new DeleteLayersTask(activity, syncIntent);
+            prepare.execute();
+        } else
+            Toast.makeText(activity, R.string.error_network_unavailable, Toast.LENGTH_SHORT).show();
     }
 
     protected static void stopSyncService(Activity activity) {
@@ -119,9 +129,9 @@ public class RegionSyncFragment extends Fragment {
         getActivity().registerReceiver(mSyncStatusReceiver, intentFilter);
 
         if (!mIsRegionSet)
-            createChooseRegionDialog((SFActivity) getActivity(), new onRegionReceive() {
+            createChooseRegionDialog(getActivity(), new onRegionReceive() {
                 @Override
-                public void onRegionChosen() {
+                public void onRegionChosen(String regionName) {
                     mIsRegionSet = true;
                     startSyncService(getActivity(), false);
                 }
@@ -138,8 +148,7 @@ public class RegionSyncFragment extends Fragment {
     public View onCreateView(
             LayoutInflater inflater,
             ViewGroup container,
-            Bundle savedInstanceState)
-    {
+            Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_initial_sync, container, false);
 
         ListView list = (ListView) view.findViewById(R.id.stepsList);
@@ -173,7 +182,7 @@ public class RegionSyncFragment extends Fragment {
         return view;
     }
 
-    public static void createChooseRegionDialog(final SFActivity activity, final onRegionReceive callback) {
+    public static void createChooseRegionDialog(final FragmentActivity activity, final onRegionReceive callback) {
         final ProgressDialog waitDownload = new ProgressDialog(activity);
         waitDownload.setMessage(activity.getString(R.string.sf_getting_regions));
         waitDownload.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -200,7 +209,18 @@ public class RegionSyncFragment extends Fragment {
             @Override
             public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
                 waitDownload.dismiss();
+                final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                long regionId = preferences.getLong(SettingsConstants.KEY_PREF_REGION, 0);
                 int defaultPosition = 0;
+
+                if (data.moveToFirst())
+                    do {
+                        if (data.getLong(1) == regionId) {
+                            defaultPosition = data.getPosition();
+                            break;
+                        }
+                    } while (data.moveToNext());
+
                 data.moveToPosition(defaultPosition);
                 AlertDialog.Builder dialog = new AlertDialog.Builder(activity, R.style.AppCompatDialog);
                 dialog.setTitle(R.string.sf_region_select)
@@ -215,20 +235,22 @@ public class RegionSyncFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 VectorLayer regions = (VectorLayer) MapBase.getInstance().getLayerByName(Constants.KEY_FV_REGIONS);
+                                String regionName = data.getString(0);
                                 long id = data.getLong(1);
                                 GeoGeometry geometry = regions.getGeometryForId(id);
 
-                                SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(activity).edit();
+                                SharedPreferences.Editor edit = preferences.edit();
                                 GeoEnvelope env = geometry.getEnvelope();
                                 edit.putFloat(SettingsConstants.KEY_PREF_USERMINX, (float) env.getMinX());
                                 edit.putFloat(SettingsConstants.KEY_PREF_USERMINY, (float) env.getMinY());
                                 edit.putFloat(SettingsConstants.KEY_PREF_USERMAXX, (float) env.getMaxX());
                                 edit.putFloat(SettingsConstants.KEY_PREF_USERMAXY, (float) env.getMaxY());
+                                edit.putString(SettingsConstants.KEY_PREF_REGION_NAME, regionName);
                                 edit.putLong(SettingsConstants.KEY_PREF_REGION, id);
                                 edit.commit();
 
                                 if (callback != null)
-                                    callback.onRegionChosen();
+                                    callback.onRegionChosen(regionName);
                             }
                         });
                 dialog.show().setCanceledOnTouchOutside(false);
@@ -259,6 +281,37 @@ public class RegionSyncFragment extends Fragment {
             activity.registerReceiver(regionsReceiver, intentFilter);
         } else {
             activity.getSupportLoaderManager().restartLoader(LOADER_ID_REGIONS, null, callbacks);
+        }
+    }
+
+    protected static class DeleteLayersTask extends AsyncTask<Void, Void, Void> {
+        private Activity mActivity;
+        private Intent mIntent;
+
+        public DeleteLayersTask(Activity activity, Intent intent) {
+            mActivity = activity;
+            mIntent = intent;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            MapBase map = MapBase.getInstance();
+            for (int i = 0; i < map.getLayerCount(); i++) {
+                ILayer layer = map.getLayer(i);
+                if (!layer.getName().equals(Constants.KEY_FV_REGIONS)) {
+                    map.removeLayer(layer);
+                    layer.delete();
+                    i--;
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            mActivity.startService(mIntent);
         }
     }
 }

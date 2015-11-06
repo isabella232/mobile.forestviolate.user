@@ -51,6 +51,7 @@
     <string name="skip">Пропустить</string>
     <string name="sf_region_select">Выберите территорию</string>
     <string name="sf_getting_regions">Загрузка регионов</string>
+    <string name="sync_region">Синхронизация региона</string>
     <string name="connecting">подключение к серверу…</string>
     <string name="connected">Подключено</string>
     <string name="check_tables_exist">Проверка таблиц</string>

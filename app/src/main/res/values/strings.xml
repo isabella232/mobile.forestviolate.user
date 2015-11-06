@@ -49,6 +49,7 @@
     <string name="skip">Skip</string>
     <string name="sf_region_select">Select working territory</string>
     <string name="sf_getting_regions">Fetching regions</string>
+    <string name="sync_region">Syncing region</string>
     <string name="connecting">Connecting to server…</string>
     <string name="connected">Connected</string>
     <string name="check_tables_exist">Check tables exist</string>

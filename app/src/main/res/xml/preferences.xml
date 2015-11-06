@@ -30,6 +30,9 @@
             android:defaultValue="light"
             android:entries="@array/theme"
             android:entryValues="@array/theme_val"/>
+        <Preference
+            android:title="@string/sf_region_select"
+            android:key="change_region"/>
         <CheckBoxPreference
             android:title="@string/sync_switch"
             android:key="sync_periodically"

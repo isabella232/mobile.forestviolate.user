@@ -25,7 +25,6 @@ import android.accounts.Account;
 import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.CheckBoxPreference;
@@ -33,6 +32,7 @@ import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
+import android.view.MenuItem;
 
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
@@ -68,12 +68,63 @@ public class PreferencesActivity extends SFActivity {
         ft.commit();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home && isRegionSyncStarted())
+            return getSupportFragmentManager().popBackStackImmediate();
+        else
+            return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isRegionSyncStarted())
+            getSupportFragmentManager().popBackStack();
+        else
+            super.onBackPressed();
+    }
+
+    protected boolean isRegionSyncStarted() {
+        return getSupportFragmentManager().getBackStackEntryCount() > 0;
+    }
+
     public static class PreferenceFragment extends PreferenceFragmentCompat {
 
         @Override
         public void onCreatePreferences(Bundle bundle, String s) {
             addPreferencesFromResource(R.xml.preferences);
             final SFActivity activity = (SFActivity) getActivity();
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+            final Preference changeRegion = findPreference(SettingsConstants.KEY_PREF_CHANGE_REGION);
+            changeRegion.setSummary(preferences.getString(SettingsConstants.KEY_PREF_REGION_NAME, null));
+            changeRegion.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(final Preference preference) {
+                    RegionSyncFragment.createChooseRegionDialog(activity, new RegionSyncFragment.onRegionReceive() {
+                        @Override
+                        public void onRegionChosen(String regionName) {
+                            preference.setSummary(regionName);
+
+                            FragmentManager fm = activity.getSupportFragmentManager();
+                            RegionSyncFragment regionSyncFragment = (RegionSyncFragment)
+                                    fm.findFragmentByTag(com.nextgis.safeforest.util.Constants.FRAGMENT_SYNC_REGION);
+
+                            if (regionSyncFragment == null)
+                                regionSyncFragment = new RegionSyncFragment();
+
+                            FragmentTransaction ft = fm.beginTransaction();
+                            ft.replace(R.id.container, regionSyncFragment,
+                                    com.nextgis.safeforest.util.Constants.FRAGMENT_SYNC_REGION);
+                            ft.addToBackStack(null).commit();
+
+                            //noinspection ConstantConditions
+                            activity.getSupportActionBar().setTitle(R.string.sync_region);
+                        }
+                    });
+                    return true;
+                }
+            });
 
             final CheckBoxPreference syncSwitch = (CheckBoxPreference) findPreference(SettingsConstantsUI.KEY_PREF_SYNC_PERIODICALLY);
             if(null != syncSwitch){

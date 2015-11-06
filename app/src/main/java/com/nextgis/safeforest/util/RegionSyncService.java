@@ -106,6 +106,10 @@ public class RegionSyncService extends Service {
     @Override
     public void onDestroy() {
         mIsRunning = false;
+
+        if (mThread != null && mThread.isAlive())
+            mThread.interrupt();
+
         super.onDestroy();
     }
 
@@ -142,63 +146,68 @@ public class RegionSyncService extends Service {
         }
 
         public void run() {
-            mMessageIntent = new Intent(Constants.BROADCAST_MESSAGE);
-            // step 1: connect to server
-            mStep = 0;
-            final MainApplication app = (MainApplication) getApplication();
-            mAccount = app.getAccount(getString(R.string.account_name));
-            final String sLogin = app.getAccountLogin(mAccount);
-            final String sPassword = app.getAccountPassword(mAccount);
-            final String sURL = app.getAccountUrl(mAccount);
-            mMap = app.getMap();
+            while (!isCanceled()) {
+                mMessageIntent = new Intent(Constants.BROADCAST_MESSAGE);
+                // step 1: connect to server
+                mStep = 0;
+                final MainApplication app = (MainApplication) getApplication();
+                mAccount = app.getAccount(getString(R.string.account_name));
+                final String sLogin = app.getAccountLogin(mAccount);
+                final String sPassword = app.getAccountPassword(mAccount);
+                final String sURL = app.getAccountUrl(mAccount);
+                mMap = app.getMap();
 
-            if (null == sURL || null == sPassword || null == sLogin) {
-                return;
+                if (null == sURL || null == sPassword || null == sLogin) {
+                    break;
+                }
+
+                Connection connection = new Connection("tmp", sLogin, sPassword, sURL);
+                publishProgress(getString(R.string.connecting), Constants.STEP_STATE_WORK);
+
+                if (!connection.connect(sLogin.equals(Constants.ANONYMOUS))) {
+                    publishProgress(getString(R.string.error_connect_failed), Constants.STEP_STATE_ERROR);
+                    break;
+                } else {
+                    publishProgress(getString(R.string.connected), Constants.STEP_STATE_WORK);
+                }
+
+                if (isCanceled())
+                    break;
+
+                // step 1: find keys
+                publishProgress(getString(R.string.check_tables_exist), Constants.STEP_STATE_WORK);
+
+                if (!MapUtil.checkServerLayers(connection, mKeys)) {
+                    publishProgress(getString(R.string.error_wrong_server), Constants.STEP_STATE_ERROR);
+                    break;
+                } else {
+                    publishProgress(getString(R.string.done), Constants.STEP_STATE_DONE);
+                }
+
+                if (isCanceled())
+                    break;
+
+                // step 2: create base layers
+                mStep = 1;
+
+                if (mIsRegionsOnly)
+                    loadRegions();
+                else
+                    loadRegion();
+
+                if (isCanceled())
+                    break;
+
+                //TODO: load additional tables
+
+                mMap.save();
+
+                mStep++;
+                publishProgress(null, Constants.STEP_STATE_DONE);
+                mIsRunning = false;
             }
 
-            Connection connection = new Connection("tmp", sLogin, sPassword, sURL);
-            publishProgress(getString(R.string.connecting), Constants.STEP_STATE_WORK);
-
-            if (!connection.connect(sLogin.equals(Constants.ANONYMOUS))) {
-                publishProgress(getString(R.string.error_connect_failed), Constants.STEP_STATE_ERROR);
-                return;
-            } else {
-                publishProgress(getString(R.string.connected), Constants.STEP_STATE_WORK);
-            }
-
-            if (isCanceled())
-                return;
-
-            // step 1: find keys
-            publishProgress(getString(R.string.check_tables_exist), Constants.STEP_STATE_WORK);
-
-            if (!MapUtil.checkServerLayers(connection, mKeys)) {
-                publishProgress(getString(R.string.error_wrong_server), Constants.STEP_STATE_ERROR);
-                return;
-            } else {
-                publishProgress(getString(R.string.done), Constants.STEP_STATE_DONE);
-            }
-
-            if (isCanceled())
-                return;
-
-            // step 2: create base layers
-            mStep = 1;
-
-            if (mIsRegionsOnly)
-                loadRegions();
-            else
-                loadRegion();
-
-            if (isCanceled())
-                return;
-
-            //TODO: load additional tables
-
-            mMap.save();
-
-            mStep++;
-            publishProgress(null, Constants.STEP_STATE_DONE);
+            mIsRunning = false;
         }
 
         public final void publishProgress(String message, int state) {
@@ -432,7 +441,7 @@ public class RegionSyncService extends Service {
 
         @Override
         public boolean isCanceled() {
-            return !mIsRunning;
+            return !mIsRunning || isInterrupted();
         }
 
         @Override

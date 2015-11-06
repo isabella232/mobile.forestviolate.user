@@ -154,14 +154,14 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         setTitle(getText(R.string.initialization));
 
         FragmentManager fm = getSupportFragmentManager();
-        RegionSyncFragment initialSyncFragment = (RegionSyncFragment) fm.findFragmentByTag("NGWRegionSync");
+        RegionSyncFragment initialSyncFragment = (RegionSyncFragment) fm.findFragmentByTag(Constants.FRAGMENT_SYNC_REGION);
 
-        if (initialSyncFragment == null) {
+        if (initialSyncFragment == null)
             initialSyncFragment = new RegionSyncFragment();
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(com.nextgis.maplibui.R.id.login_frame, initialSyncFragment, "NGWRegionSync");
-            ft.commit();
-        }
+
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(com.nextgis.maplibui.R.id.login_frame, initialSyncFragment, Constants.FRAGMENT_SYNC_REGION);
+        ft.commit();
     }
 
 
