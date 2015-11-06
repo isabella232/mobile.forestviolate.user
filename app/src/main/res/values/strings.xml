@@ -87,6 +87,7 @@
     <string name="location_current">Current</string>
     <string name="location_from_map">Map</string>
     <string name="location_from_compass">Compass</string>
+    <string name="location_getting_current">Getting current location…</string>
     <string name="stmessage_paragraph">Manager\'s message</string>
     <string name="coordinates_paragraph">Coordinates</string>
     <string name="email_paragraph">E-mail</string>

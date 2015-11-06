@@ -23,8 +23,11 @@
 
 package com.nextgis.safeforest.activity;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -37,12 +40,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nextgis.maplib.datasource.GeoMultiPoint;
+import com.nextgis.maplib.datasource.GeoPoint;
+import com.nextgis.maplib.location.AccurateLocationTaker;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.dialog.UserDataDialog;
 import com.nextgis.safeforest.util.Constants;
 
+import java.io.IOException;
+
+import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.TAG;
+import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
+import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 
 
 public class CreateMessageActivity
@@ -144,14 +155,12 @@ public class CreateMessageActivity
                         mContactsText = dialog.getContactsText();
 
                         if (TextUtils.isEmpty(mEmailText)) {
-                            Toast.makeText(CreateMessageActivity.this, R.string.email_hint, Toast.LENGTH_LONG)
-                                    .show();
+                            Toast.makeText(CreateMessageActivity.this, R.string.email_hint, Toast.LENGTH_LONG).show();
                             return;
                         }
 
                         if (TextUtils.isEmpty(mContactsText)) {
-                            Toast.makeText(CreateMessageActivity.this, R.string.contacts_hint, Toast.LENGTH_LONG)
-                                    .show();
+                            Toast.makeText(CreateMessageActivity.this, R.string.contacts_hint, Toast.LENGTH_LONG).show();
                             return;
                         }
 
@@ -194,6 +203,7 @@ public class CreateMessageActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.location_current:
+                getCurrentLocation();
                 break;
             case R.id.location_map:
                 break;
@@ -201,4 +211,56 @@ public class CreateMessageActivity
                 break;
         }
     }
+
+    protected void getCurrentLocation() {
+        final ProgressDialog progress = new ProgressDialog(this);
+        progress.setIndeterminate(true);
+        progress.setCanceledOnTouchOutside(false);
+        progress.setMessage(getString(R.string.location_getting_current));
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+        final AccurateLocationTaker locationTaker = new AccurateLocationTaker(this,
+                Constants.MAX_LOCATION_MEASURES, Constants.MAX_LOCATION_TIME, Constants.MAX_LOCATION_TIME, null);
+        locationTaker.setOnGetAccurateLocationListener(new AccurateLocationTaker.OnGetAccurateLocationListener() {
+            @Override
+            public void onGetAccurateLocation(Location accurateLocation, Long... values) {
+                progress.dismiss();
+
+                if (accurateLocation == null) {
+                    Toast.makeText(CreateMessageActivity.this, R.string.error_no_location, Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                mValues.put(Constants.FIELD_MDATE, accurateLocation.getTime());
+
+                try {
+                    GeoPoint pt;
+                    if (com.nextgis.maplib.util.Constants.DEBUG_MODE) {
+                        pt = new GeoPoint(0, 0);
+                    } else {
+                        pt = new GeoPoint(accurateLocation.getLongitude(), accurateLocation.getLatitude());
+                    }
+                    pt.setCRS(CRS_WGS84);
+                    pt.project(CRS_WEB_MERCATOR);
+                    GeoMultiPoint mpt = new GeoMultiPoint();
+                    mpt.add(pt);
+                    mValues.put(FIELD_GEOM, mpt.toBlob());
+                    Log.d(TAG, "MessageActivity, saveMessage(), current point: " + pt.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        progress.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                locationTaker.cancelTaking();
+            }
+        });
+
+        progress.show();
+        locationTaker.startTaking();
+    }
+
 }

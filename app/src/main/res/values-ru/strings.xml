@@ -88,6 +88,7 @@
     <string name="location_current">Текущее</string>
     <string name="location_from_map">Карта</string>
     <string name="location_from_compass">Ориентировка</string>
+    <string name="location_getting_current">Определение местоположения…</string>
     <string name="stmessage_paragraph">Сообщение диспетчера</string>
     <string name="coordinates_paragraph">Координаты</string>
     <string name="email_paragraph">Электроная почта (e-mail)</string>

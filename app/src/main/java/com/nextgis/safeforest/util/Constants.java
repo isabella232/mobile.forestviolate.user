@@ -87,4 +87,7 @@ public interface Constants
     int MSG_TYPE_UNKNOWN = 0;
     int MSG_TYPE_FIRE    = 1;
     int MSG_TYPE_FELLING = 2;
+
+    int MAX_LOCATION_MEASURES = 5;
+    long MAX_LOCATION_TIME = 30000L;
 }
