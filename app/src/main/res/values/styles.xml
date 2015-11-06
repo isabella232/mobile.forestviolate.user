@@ -30,12 +30,14 @@
         <item name="tabTextColor">@color/tabTextColor</item>
         <item name="tabSecondaryTextColor">@color/tabSecondaryTextColor</item>
         <item name="CoordinatesPickerBackground">@drawable/ic_maps_pin_light</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
 
     <style name="AppTheme.Dark" parent="Theme.NextGIS.AppCompat.Dark">
         <item name="tabTextColor">@color/tabTextColor</item>
         <item name="tabSecondaryTextColor">@color/tabSecondaryTextColor</item>
         <item name="CoordinatesPickerBackground">@drawable/ic_maps_pin_dark</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
 
     <style name="status_panel">

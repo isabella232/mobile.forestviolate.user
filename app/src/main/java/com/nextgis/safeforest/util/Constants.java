@@ -61,6 +61,8 @@ public interface Constants
 
     String BROADCAST_MESSAGE = "sync_message";
 
+    String FRAGMENT_SYNC_REGION      = "ngw_sync_region";
+    String FRAGMENT_PREFERENCES      = "sf_preferences";
     String FRAGMENT_VIEW_MESSAGE     = "view_message";
     String FRAGMENT_USER_DATA_DIALOG = "user_data_dialog";
 

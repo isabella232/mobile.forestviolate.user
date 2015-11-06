@@ -38,7 +38,7 @@ public class ViewMessageActivity
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_view_message);
+        setContentView(R.layout.activity_fragment);
         setToolbar(R.id.main_toolbar);
 
         final FragmentManager fm = getSupportFragmentManager();
@@ -51,8 +51,7 @@ public class ViewMessageActivity
             viewMessageFragment = new ViewMessageFragment();
         }
 
-        ft.replace(
-                R.id.view_message_fragment, viewMessageFragment, Constants.FRAGMENT_VIEW_MESSAGE);
+        ft.replace(R.id.container, viewMessageFragment, Constants.FRAGMENT_VIEW_MESSAGE);
         ft.commit();
     }
 }
