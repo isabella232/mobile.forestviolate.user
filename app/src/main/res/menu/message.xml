@@ -4,6 +4,7 @@
   ~ Purpose: Mobile application for registering facts of the forest violations.
   ~ Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
   ~ Author:  NikitaFeodonit, nfeodonit@yandex.com
+  ~ Author:  Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
   ~ Copyright (c) 2015-2015. NextGIS, info@nextgis.com
   ~
@@ -23,23 +24,12 @@
 
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/action_save"
-        android:title="@string/save"
-        android:orderInCategory="100"
         android:icon="@drawable/ic_action_apply_dark"
-        app:showAsAction="always"
-        />
-
-    <item
-        android:id="@+id/action_cancel"
-        android:title="@string/cancel"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_action_cancel_dark"
-        app:showAsAction="always"
-        />
-
+        android:title="@string/save"
+        app:showAsAction="always"/>
 </menu>

@@ -24,60 +24,44 @@
 package com.nextgis.safeforest.activity;
 
 import android.content.ContentValues;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.dialog.UserDataDialog;
-import com.nextgis.safeforest.fragment.CreateMessageFragment;
-import com.nextgis.safeforest.fragment.CreateMessageOrientationFragment;
 import com.nextgis.safeforest.util.Constants;
-import com.nextgis.safeforest.util.IMessage;
-
-import java.util.Locale;
 
 import static com.nextgis.maplib.util.Constants.TAG;
 
 
 public class CreateMessageActivity
-        extends SFActivity {
-    protected ViewPager mViewPager;
-    protected SectionsPagerAdapter mSectionsPagerAdapter;
-
+        extends SFActivity implements View.OnClickListener {
+    protected ContentValues mValues;
     protected String mEmailText;
     protected String mContactsText;
 
     protected int mMessageType = Constants.MSG_TYPE_UNKNOWN;
+    protected EditText mMessage;
+    protected TextView mLocationCurrent, mLocationMap, mLocationCompass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mValues = new ContentValues(); // TODO save / restore state
         setContentView(R.layout.activity_create_message);
         setToolbar(R.id.main_toolbar);
-
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
-
-        if (tabLayout.getTabCount() < mSectionsPagerAdapter.getCount()) {
-            for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-                tabLayout.addTab(tabLayout.newTab().setText(mSectionsPagerAdapter.getPageTitle(i)));
-            }
-        }
 
         Bundle extras = getIntent().getExtras();
         if (null != extras) {
@@ -96,6 +80,33 @@ public class CreateMessageActivity
             //noinspection ConstantConditions
             getSupportActionBar().setTitle(textResId);
         }
+
+        mMessage = (EditText) findViewById(R.id.message);
+
+        mLocationCurrent = (TextView) findViewById(R.id.location_current);
+        mLocationCurrent.setOnClickListener(this);
+        Drawable drawable = getResources().getDrawable(R.drawable.ic_place_black_48dp);
+        tintIcon(drawable);
+        mLocationCurrent.setCompoundDrawables(null, drawable, null, null);
+
+        mLocationMap = (TextView) findViewById(R.id.location_map);
+        mLocationMap.setOnClickListener(this);
+        drawable = getResources().getDrawable(R.drawable.ic_map_black_48dp);
+        tintIcon(drawable);
+        mLocationMap.setCompoundDrawables(null, drawable, null, null);
+
+        mLocationCompass = (TextView) findViewById(R.id.location_compass);
+        mLocationCompass.setOnClickListener(this);
+        drawable = getResources().getDrawable(R.drawable.ic_compass);
+        tintIcon(drawable);
+        mLocationCompass.setCompoundDrawables(null, drawable, null, null);
+    }
+
+
+    protected void tintIcon(Drawable drawable) {
+        DrawableCompat.wrap(drawable);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        DrawableCompat.setTint(drawable, getResources().getColor(R.color.accent));
     }
 
 
@@ -113,9 +124,6 @@ public class CreateMessageActivity
         switch (itemId) {
             case R.id.action_save:
                 onSave();
-                return true;
-            case R.id.action_cancel:
-                finish();
                 return true;
         }
 
@@ -160,14 +168,13 @@ public class CreateMessageActivity
         try {
             final MainApplication app = (MainApplication) getApplication();
 
-            ContentValues values = mSectionsPagerAdapter.getMessageData(mViewPager.getCurrentItem());
-            values.put(Constants.FIELD_MTYPE, mMessageType);
-            values.put(Constants.FIELD_STATUS, Constants.MSG_STATUS_NEW);
-            values.put(Constants.FIELD_AUTHOR, mEmailText); // TODO authorized user values
-            values.put(Constants.FIELD_CONTACT, mContactsText);
+            mValues.put(Constants.FIELD_MTYPE, mMessageType);
+            mValues.put(Constants.FIELD_STATUS, Constants.MSG_STATUS_NEW);
+            mValues.put(Constants.FIELD_AUTHOR, mEmailText); // TODO authorized user values
+            mValues.put(Constants.FIELD_CONTACT, mContactsText);
 
             Uri uri = Uri.parse("content://" + app.getAuthority() + "/" + Constants.KEY_CITIZEN_MESSAGES);
-            Uri result = app.getContentResolver().insert(uri, values);
+            Uri result = app.getContentResolver().insert(uri, mValues);
 
             if (result == null) {
                 Log.d(TAG, "MessageFragment, saveMessage(), Layer: " + Constants.KEY_CITIZEN_MESSAGES + ", insert FAILED");
@@ -183,55 +190,15 @@ public class CreateMessageActivity
         }
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            if (position == 0) {
-                return new CreateMessageFragment();
-            } else {
-                return new CreateMessageOrientationFragment();
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return 2;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            Locale l = Locale.getDefault();
-            switch (position) {
-                case 0:
-                    return getString(R.string.title_current_location).toUpperCase(l);
-                case 1:
-                    return getString(R.string.title_orientation).toUpperCase(l);
-            }
-            return null;
-        }
-
-        protected Fragment getFragmentByTag(int position) {
-            return getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + position);
-        }
-
-        public ContentValues getMessageData(int position) throws RuntimeException {
-            Fragment page = getFragmentByTag(position);
-
-            if (page != null && page instanceof IMessage)
-                return ((IMessage) page).getMessageData();
-            else
-                return new ContentValues();
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.location_current:
+                break;
+            case R.id.location_map:
+                break;
+            case R.id.location_compass:
+                break;
         }
     }
-
 }

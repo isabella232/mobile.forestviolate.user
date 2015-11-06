@@ -24,8 +24,6 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -33,23 +31,52 @@
     <include
         layout="@layout/actionbar"/>
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tabs"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="36dp"
-        android:background="?attr/colorPrimary"
-        android:gravity="bottom"
-        app:elevation="2dp"
-        app:tabIndicatorColor="?attr/colorAccent"
-        app:tabIndicatorHeight="4dp"
-        app:tabMode="fixed"
-        app:tabSelectedTextColor="?attr/tabTextColor"
-        app:tabTextColor="?attr/tabSecondaryTextColor"/>
+        android:layout_height="wrap_content">
 
-    <com.nextgis.safeforest.util.AppViewPager
-        android:id="@+id/pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainActivity"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/paragraph_text"
+                android:text="@string/message_paragraph"/>
+
+            <EditText
+                android:id="@+id/message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start|top"
+                android:hint="@string/message_hint"
+                android:maxLines="10"/>
+
+            <TextView
+                style="@style/paragraph_text"
+                android:text="@string/set_location"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/location_current"
+                    style="@style/location_source_icon"
+                    android:text="@string/location_current"/>
+
+                <TextView
+                    android:id="@+id/location_map"
+                    style="@style/location_source_icon"
+                    android:text="@string/location_from_map"/>
+
+                <TextView
+                    android:id="@+id/location_compass"
+                    style="@style/location_source_icon"
+                    android:text="@string/location_from_compass"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
