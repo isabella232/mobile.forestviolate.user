@@ -26,6 +26,7 @@ package com.nextgis.safeforest.activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
@@ -58,6 +59,9 @@ import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 
 public class CreateMessageActivity
         extends SFActivity implements View.OnClickListener {
+    protected static final int MESSAGE_MAP = 0;
+    protected static final int MESSAGE_COMPASS = 1;
+
     protected ContentValues mValues;
     protected String mEmailText;
     protected String mContactsText;
@@ -208,6 +212,23 @@ public class CreateMessageActivity
             case R.id.location_map:
                 break;
             case R.id.location_compass:
+                Intent intent = new Intent(this, MessageCompassActivity.class);
+                startActivityForResult(intent, MESSAGE_COMPASS);
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case MESSAGE_MAP:
+                break;
+            case MESSAGE_COMPASS:
+                if (data != null)
+                    saveLocation((Location) data.getParcelableExtra(Constants.KEY_LOCATION));
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
                 break;
         }
     }
@@ -225,30 +246,7 @@ public class CreateMessageActivity
             @Override
             public void onGetAccurateLocation(Location accurateLocation, Long... values) {
                 progress.dismiss();
-
-                if (accurateLocation == null) {
-                    Toast.makeText(CreateMessageActivity.this, R.string.error_no_location, Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                mValues.put(Constants.FIELD_MDATE, accurateLocation.getTime());
-
-                try {
-                    GeoPoint pt;
-                    if (com.nextgis.maplib.util.Constants.DEBUG_MODE) {
-                        pt = new GeoPoint(0, 0);
-                    } else {
-                        pt = new GeoPoint(accurateLocation.getLongitude(), accurateLocation.getLatitude());
-                    }
-                    pt.setCRS(CRS_WGS84);
-                    pt.project(CRS_WEB_MERCATOR);
-                    GeoMultiPoint mpt = new GeoMultiPoint();
-                    mpt.add(pt);
-                    mValues.put(FIELD_GEOM, mpt.toBlob());
-                    Log.d(TAG, "MessageActivity, saveMessage(), current point: " + pt.toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                saveLocation(accurateLocation);
             }
         });
 
@@ -261,6 +259,32 @@ public class CreateMessageActivity
 
         progress.show();
         locationTaker.startTaking();
+    }
+
+    protected void saveLocation(Location location) {
+        if (location == null) {
+            Toast.makeText(CreateMessageActivity.this, R.string.error_no_location, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        mValues.put(Constants.FIELD_MDATE, location.getTime());
+
+        try {
+            GeoPoint pt;
+            if (com.nextgis.maplib.util.Constants.DEBUG_MODE) {
+                pt = new GeoPoint(0, 0);
+            } else {
+                pt = new GeoPoint(location.getLongitude(), location.getLatitude());
+            }
+            pt.setCRS(CRS_WGS84);
+            pt.project(CRS_WEB_MERCATOR);
+            GeoMultiPoint mpt = new GeoMultiPoint();
+            mpt.add(pt);
+            mValues.put(FIELD_GEOM, mpt.toBlob());
+            Log.d(TAG, "MessageActivity, saveMessage(), point: " + pt.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -42,6 +42,9 @@ public interface Constants
     int STEP_STATE_DONE  = 2;
     int STEP_STATE_ERROR = 3;
 
+    // BUNDLE
+    String KEY_LOCATION = "location";
+
     // STATUS
     String KEY_STEP = "sync_step";
     String KEY_STATE = "sync_state";

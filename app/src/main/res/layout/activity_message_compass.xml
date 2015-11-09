@@ -20,34 +20,35 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <include
+        layout="@layout/actionbar"/>
+
+    <fragment
+        android:id="@+id/compass_fragment"
+        android:name="com.nextgis.maplibui.fragment.CompassFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        tools:layout="@layout/fragment_compass"/>
+
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:orientation="vertical">
-
-        <!-- TODO: compass, button -->
-
-        <TextView
-            style="@style/paragraph_text"
-            android:text="Meters: 5m"/>
-
-        <TextView
-            style="@style/paragraph_text"
-            android:text="@string/message_paragraph"/>
+        android:layout_margin="5dp">
 
         <EditText
-            android:id="@+id/message"
+            android:id="@+id/et_distance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="start|top"
-            android:hint="@string/message_hint"
-            android:minLines="3"/>
-
-    </LinearLayout>
-</ScrollView>
+            android:layout_margin="5dp"
+            android:hint="@string/location_distance_to"
+            android:inputType="number|numberDecimal"/>
+    </android.support.design.widget.TextInputLayout>
+</LinearLayout>
