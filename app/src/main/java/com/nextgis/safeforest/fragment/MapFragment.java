@@ -54,6 +54,7 @@ import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
+import com.nextgis.safeforest.overlay.SelectLocationOverlay;
 import com.nextgis.safeforest.util.SettingsConstants;
 
 public class MapFragment
@@ -71,6 +72,7 @@ public class MapFragment
 
     protected GpsEventSource mGpsEventSource;
     protected CurrentLocationOverlay mCurrentLocationOverlay;
+    protected SelectLocationOverlay mSelectLocationOverlay;
 
     protected boolean mShowStatusPanel;
     protected GeoPoint mCurrentCenter;
@@ -92,7 +94,10 @@ public class MapFragment
         mCurrentLocationOverlay = new CurrentLocationOverlay(getActivity(), mMap);
         mCurrentLocationOverlay.setStandingMarker(R.drawable.ic_location_standing);
         mCurrentLocationOverlay.setMovingMarker(R.drawable.ic_location_moving);
+        mSelectLocationOverlay = new SelectLocationOverlay(getActivity(), mMap);
+        mSelectLocationOverlay.setVisibility(false);
 
+        mMap.addOverlay(mSelectLocationOverlay);
         mMap.addOverlay(mCurrentLocationOverlay);
 
         //search relative view of map, if not found - add it
@@ -532,5 +537,13 @@ public class MapFragment
         } else {
             Toast.makeText(getActivity(), R.string.error_no_location, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public Location getSelectedLocation() {
+        return mSelectLocationOverlay.getSelectedLocation();
+    }
+
+    public void setSelectedLocationVisible(boolean isVisible) {
+        mSelectLocationOverlay.setVisibility(isVisible);
     }
 }

@@ -210,10 +210,12 @@ public class CreateMessageActivity
                 getCurrentLocation();
                 break;
             case R.id.location_map:
+                Intent mapIntent = new Intent(this, MessageMapActivity.class);
+                startActivityForResult(mapIntent, MESSAGE_MAP);
                 break;
             case R.id.location_compass:
-                Intent intent = new Intent(this, MessageCompassActivity.class);
-                startActivityForResult(intent, MESSAGE_COMPASS);
+                Intent compassIntent = new Intent(this, MessageCompassActivity.class);
+                startActivityForResult(compassIntent, MESSAGE_COMPASS);
                 break;
         }
     }
@@ -222,7 +224,6 @@ public class CreateMessageActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case MESSAGE_MAP:
-                break;
             case MESSAGE_COMPASS:
                 if (data != null)
                     saveLocation((Location) data.getParcelableExtra(Constants.KEY_LOCATION));

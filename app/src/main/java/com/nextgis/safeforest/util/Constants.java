@@ -68,6 +68,7 @@ public interface Constants
     String FRAGMENT_PREFERENCES      = "sf_preferences";
     String FRAGMENT_VIEW_MESSAGE     = "view_message";
     String FRAGMENT_USER_DATA_DIALOG = "user_data_dialog";
+    String FRAGMENT_SELECT_LOCATION  = "select_location";
 
     String FIELD_ID        = "_id";
     String FIELD_MDATE     = "mdate";
