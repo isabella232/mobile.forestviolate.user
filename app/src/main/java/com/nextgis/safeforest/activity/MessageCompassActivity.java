@@ -83,7 +83,7 @@ public class MessageCompassActivity extends SFActivity {
             String distance = mDistance.getText().toString();
             if (!TextUtils.isEmpty(distance.trim())) {
                 double dist = Double.parseDouble(distance);
-                dist /= 6371.01;
+                dist /= 6371.01 * 1000;
 
                 double bear = mBezel.getAngle() - mNeedle.getAngle();
                 bear = Math.toRadians(bear);
