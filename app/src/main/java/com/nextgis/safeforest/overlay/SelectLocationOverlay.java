@@ -81,7 +81,7 @@ public class SelectLocationOverlay extends Overlay implements MapViewEventListen
 
     @Override
     public void draw(Canvas canvas, MapDrawable mapDrawable) {
-        if (isVisible() && mMapPoint != null) {
+        if (mMapPoint != null) {
             mOverlayPoint.setCoordinates(mMapPoint.getX(), mMapPoint.getY());
             drawOverlayItem(canvas, mOverlayPoint);
         }
@@ -89,14 +89,12 @@ public class SelectLocationOverlay extends Overlay implements MapViewEventListen
 
     @Override
     public void drawOnPanning(Canvas canvas, PointF currentMouseOffset) {
-        if (isVisible())
-            drawOnPanning(canvas, currentMouseOffset, mOverlayPoint);
+        drawOnPanning(canvas, currentMouseOffset, mOverlayPoint);
     }
 
     @Override
     public void drawOnZooming(Canvas canvas, PointF currentFocusLocation, float scale) {
-        if (isVisible())
-            drawOnZooming(canvas, currentFocusLocation, scale, mOverlayPoint, false);
+        drawOnZooming(canvas, currentFocusLocation, scale, mOverlayPoint, false);
     }
 
     @Override
@@ -106,7 +104,7 @@ public class SelectLocationOverlay extends Overlay implements MapViewEventListen
 
     @Override
     public void onSingleTapUp(MotionEvent event) {
-        if (mIsLocked)
+        if (!isVisible() || mIsLocked)
             return;
 
         mMapPoint = mMapViewOverlays.getMap().screenToMap(new GeoPoint(event.getX(), event.getY()));
