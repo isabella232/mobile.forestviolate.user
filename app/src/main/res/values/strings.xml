@@ -78,6 +78,7 @@
     <string name="theme">Application theme</string>
     <string name="sync_switch">Switch sync on/off</string>
     <string name="get_citizen_messages">Get messages</string>
+    <string name="get_forest_points">Download forest violations</string>
     <string name="date_paragraph">Date</string>
     <string name="author_paragraph">Author</string>
     <string name="status_paragraph">Status</string>

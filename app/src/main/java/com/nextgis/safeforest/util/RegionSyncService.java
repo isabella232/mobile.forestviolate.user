@@ -135,8 +135,10 @@ public class RegionSyncService extends Service {
 
             if (isRegionsOnly)
                 mKeys.put(Constants.KEY_FV_REGIONS, -1L);
-            else
+            else {
                 mKeys.put(Constants.KEY_CITIZEN_MESSAGES, -1L);
+                mKeys.put(Constants.KEY_FV_FOREST, -1L);
+            }
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(RegionSyncService.this);
             mMinX = prefs.getFloat(SettingsConstants.KEY_PREF_USERMINX, -2000.0f);
@@ -252,19 +254,28 @@ public class RegionSyncService extends Service {
             mStep = 2;
             publishProgress(getString(R.string.working), Constants.STEP_STATE_WORK);
 
-            if (!loadCitizenMessages(mKeys.get(Constants.KEY_CITIZEN_MESSAGES), mAccount.name, mMap)) {
+            if (!loadNGWLayer(Constants.KEY_CITIZEN_MESSAGES, mAccount.name, mMap)) {
+                publishProgress(getString(R.string.error_unexpected), Constants.STEP_STATE_ERROR);
+            } else {
+                publishProgress(getString(R.string.done), Constants.STEP_STATE_DONE);
+            }
+
+            mStep = 3;
+            publishProgress(getString(R.string.working), Constants.STEP_STATE_WORK);
+
+            if (!loadNGWLayer(Constants.KEY_FV_FOREST, mAccount.name, mMap)) {
                 publishProgress(getString(R.string.error_unexpected), Constants.STEP_STATE_ERROR);
             } else {
                 publishProgress(getString(R.string.done), Constants.STEP_STATE_DONE);
             }
         }
 
-        private boolean loadCitizenMessages(long resourceId, String accountName, MapBase map) {
+        private boolean loadNGWLayer(String layerName, String accountName, MapBase map) {
             NGWVectorLayerUI ngwVectorLayer = new NGWVectorLayerUI(getApplicationContext(),
-                    map.createLayerStorage(Constants.KEY_CITIZEN_MESSAGES));
+                    map.createLayerStorage(layerName));
 
-            ngwVectorLayer.setName(Constants.KEY_CITIZEN_MESSAGES);
-            ngwVectorLayer.setRemoteId(resourceId);
+            ngwVectorLayer.setName(layerName);
+            ngwVectorLayer.setRemoteId(mKeys.get(layerName));
             ngwVectorLayer.setServerWhere(String.format(Locale.US, "bbox=%f,%f,%f,%f",
                     mMinX, mMinY, mMaxX, mMaxY));
             ngwVectorLayer.setVisible(true);

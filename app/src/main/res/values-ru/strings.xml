@@ -78,7 +78,8 @@
     <string name="click_to_change_account">Изменить настройки аккаунта</string>
     <string name="theme">Тема приложения</string>
     <string name="sync_switch">Вкл./выкл. синхронизацию</string>
-    <string name="get_citizen_messages">Get messages</string>
+    <string name="get_citizen_messages">Получение сообщений</string>
+    <string name="get_forest_points">Загрузка точек лесонарушений</string>
     <string name="date_paragraph">Дата</string>
     <string name="author_paragraph">Автор</string>
     <string name="status_paragraph">Статус</string>

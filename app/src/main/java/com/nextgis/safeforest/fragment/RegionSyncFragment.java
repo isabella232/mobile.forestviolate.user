@@ -172,7 +172,7 @@ public class RegionSyncFragment extends Fragment {
                 int state = intent.getIntExtra(Constants.KEY_STATE, 0);
                 String message = intent.getStringExtra(Constants.KEY_MESSAGE);
 
-                if (step > 2)
+                if (step > 3)
                     ((NGActivity) getActivity()).refreshActivityView();
                 else
                     mAdapter.setMessage(step, state, message);

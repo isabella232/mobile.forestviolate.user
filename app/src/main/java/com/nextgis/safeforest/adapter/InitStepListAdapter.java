@@ -64,6 +64,11 @@ public class InitStepListAdapter extends BaseAdapter {
                 context.getString(R.string.waiting), Constants.STEP_STATE_WAIT);
         mSteps.add(step3);
 
+        // 4. scanex forest points
+        InitStep step4 = new InitStep(context.getString(R.string.get_forest_points),
+                context.getString(R.string.waiting), Constants.STEP_STATE_WAIT);
+        mSteps.add(step4);
+
         /*        // 5. load documents
         InitStep step5 = new InitStep(context.getString(R.string.load_documents),
                 context.getString(R.string.waiting), Constants.STEP_STATE_WAIT);
