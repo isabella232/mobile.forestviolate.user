@@ -47,6 +47,7 @@ import com.nextgis.maplib.location.AccurateLocationTaker;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.dialog.UserDataDialog;
+import com.nextgis.safeforest.dialog.YesNoDialog;
 import com.nextgis.safeforest.util.Constants;
 
 import java.io.IOException;
@@ -63,8 +64,7 @@ public class CreateMessageActivity
     protected static final int MESSAGE_COMPASS = 1;
 
     protected ContentValues mValues;
-    protected String mEmailText;
-    protected String mContactsText;
+    protected String mEmailText, mPhoneText, mFullNameText;
 
     protected int mMessageType = Constants.MSG_TYPE_UNKNOWN;
     protected EditText mMessage;
@@ -150,28 +150,29 @@ public class CreateMessageActivity
         final UserDataDialog dialog = new UserDataDialog();
         // TODO: set from a app var for the temporary storing
 //        dialog.setEmailText(app.getEmailText());
-//        dialog.setContactsText(app.getContactsText());
-        dialog.setOnPositiveClickedListener(
-                new UserDataDialog.OnPositiveClickedListener() {
-                    @Override
-                    public void onPositiveClicked() {
-                        mEmailText = dialog.getEmailText();
-                        mContactsText = dialog.getContactsText();
+//        dialog.setFullNameText(app.getFullNameText());
+        dialog.setOnPositiveClickedListener(new YesNoDialog.OnPositiveClickedListener() {
+            @Override
+            public void onPositiveClicked() {
+                mFullNameText = dialog.getFullNameText();
+                mPhoneText = dialog.getPhoneText();
+                mEmailText = dialog.getEmailText();
 
-                        if (TextUtils.isEmpty(mEmailText)) {
-                            Toast.makeText(CreateMessageActivity.this, R.string.email_hint, Toast.LENGTH_LONG).show();
-                            return;
-                        }
+                if (TextUtils.isEmpty(mFullNameText) || TextUtils.isEmpty(mPhoneText)) {
+                    Toast.makeText(CreateMessageActivity.this, R.string.anonymous_hint, Toast.LENGTH_LONG).show();
+                    return;
+                }
 
-                        if (TextUtils.isEmpty(mContactsText)) {
-                            Toast.makeText(CreateMessageActivity.this, R.string.contacts_hint, Toast.LENGTH_LONG).show();
-                            return;
-                        }
-
-                        saveMessage();
-                        finish();
-                    }
-                });
+                saveMessage();
+                finish();
+            }
+        });
+        dialog.setOnNegativeClickedListener(new YesNoDialog.OnNegativeClickedListener() {
+            @Override
+            public void onNegativeClicked() {
+                dialog.dismiss();
+            }
+        });
         dialog.setKeepInstance(true);
         dialog.show(getSupportFragmentManager(), Constants.FRAGMENT_USER_DATA_DIALOG);
     }
@@ -183,8 +184,8 @@ public class CreateMessageActivity
 
             mValues.put(Constants.FIELD_MTYPE, mMessageType);
             mValues.put(Constants.FIELD_STATUS, Constants.MSG_STATUS_NEW);
-            mValues.put(Constants.FIELD_AUTHOR, mEmailText); // TODO authorized user values
-            mValues.put(Constants.FIELD_CONTACT, mContactsText);
+            mValues.put(Constants.FIELD_AUTHOR, mFullNameText); // TODO authorized user values
+            mValues.put(Constants.FIELD_CONTACT, mPhoneText + ", " + mEmailText);
 
             Uri uri = Uri.parse("content://" + app.getAuthority() + "/" + Constants.KEY_CITIZEN_MESSAGES);
             Uri result = app.getContentResolver().insert(uri, mValues);

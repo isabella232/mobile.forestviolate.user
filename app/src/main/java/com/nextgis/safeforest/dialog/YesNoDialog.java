@@ -177,6 +177,7 @@ public class YesNoDialog
                         {
                             if (null != mOnPositiveClickedListener) {
                                 mOnPositiveClickedListener.onPositiveClicked();
+                                return;
                             }
                             dismiss();
                         }
@@ -194,6 +195,7 @@ public class YesNoDialog
                         {
                             if (null != mOnNegativeClickedListener) {
                                 mOnNegativeClickedListener.onNegativeClicked();
+                                return;
                             }
                             dismiss();
                         }

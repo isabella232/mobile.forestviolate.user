@@ -34,10 +34,12 @@ public class UserDataDialog
         extends YesNoDialog
 {
     protected EditText mEmail;
-    protected EditText mContacts;
+    protected EditText mPhone;
+    protected EditText mFullName;
 
     protected String mEmailText;
-    protected String mContactsText;
+    protected String mPhoneText;
+    protected String mFullNameText;
 
 
     @NonNull
@@ -49,14 +51,18 @@ public class UserDataDialog
         mEmail = (EditText) view.findViewById(R.id.email);
         mEmail.setText(mEmailText);
 
-        mContacts = (EditText) view.findViewById(R.id.contacts);
-        mContacts.setText(mContactsText);
+        mFullName = (EditText) view.findViewById(R.id.full_name);
+        mFullName.setText(mFullNameText);
+
+        mPhone = (EditText) view.findViewById(R.id.phone);
+        mPhone.setText(mPhoneText);
 
         setTitle(R.string.user_contact_info);
         // TODO: change icon
         setIcon(R.drawable.ic_phone_dark);
         setView(view);
-        setPositiveText(R.string.ok);
+        setPositiveText(android.R.string.ok);
+        setNegativeText(android.R.string.cancel);
 
         return super.onCreateDialog(savedInstanceState);
     }
@@ -74,14 +80,26 @@ public class UserDataDialog
     }
 
 
-    public void setContactsText(String contactsText)
+    public void setFullNameText(String fullNameText)
     {
-        mContactsText = contactsText;
+        mFullNameText = fullNameText;
     }
 
 
-    public String getContactsText()
+    public String getFullNameText()
     {
-        return mContacts.getText().toString();
+        return mFullName.getText().toString();
+    }
+
+
+    public void setPhoneText(String phoneText)
+    {
+        mPhoneText = phoneText;
+    }
+
+
+    public String getPhoneText()
+    {
+        return mPhone.getText().toString();
     }
 }

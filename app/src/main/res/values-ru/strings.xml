@@ -93,11 +93,11 @@
     <string name="location_distance_to">Расстояние до точки (м)</string>
     <string name="stmessage_paragraph">Сообщение диспетчера</string>
     <string name="coordinates_paragraph">Координаты</string>
-    <string name="email_paragraph">Электроная почта (e-mail)</string>
-    <string name="contacts_paragraph">ФИО, телефон</string>
+    <string name="anonymous_hint">Введите ФИО и телефон, чтобы с вами мог связаться диспетчер.</string>
+    <string name="email_hint">Электроная почта (e-mail)</string>
+    <string name="full_name_hint">ФИО*</string>
+    <string name="phone_hint">Телефон*</string>
     <string name="message_hint">Введите текст сообщения</string>
-    <string name="email_hint">Введите e-mail</string>
-    <string name="contacts_hint">Введите ФИО, телефон</string>
     <string name="action_felling">Лесозаготовка</string>
     <string name="action_view_message">Просмотр сообщения</string>
     <string name="error_create_message">Ошибка создания сообщения</string>

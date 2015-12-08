@@ -92,11 +92,11 @@
     <string name="location_distance_to">Distance to location (m)</string>
     <string name="stmessage_paragraph">Manager\'s message</string>
     <string name="coordinates_paragraph">Coordinates</string>
-    <string name="email_paragraph">E-mail</string>
-    <string name="contacts_paragraph">Full name, phone</string>
+    <string name="anonymous_hint">Enter your full name and phone number for supervisor callback.</string>
+    <string name="email_hint">E-mail</string>
+    <string name="full_name_hint">Full name*</string>
+    <string name="phone_hint">Phone*</string>
     <string name="message_hint">Enter the message text</string>
-    <string name="email_hint">Enter the e-mail</string>
-    <string name="contacts_hint">Enter the full name, phone</string>
     <string name="action_felling">Felling</string>
     <string name="action_view_message">View a message</string>
     <string name="error_create_message">Create message error</string>
