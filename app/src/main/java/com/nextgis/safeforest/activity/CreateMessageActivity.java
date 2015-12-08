@@ -242,7 +242,8 @@ public class CreateMessageActivity
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         final AccurateLocationTaker locationTaker = new AccurateLocationTaker(this,
-                Constants.MAX_LOCATION_MEASURES, Constants.MAX_LOCATION_TIME, Constants.MAX_LOCATION_TIME, null);
+                Constants.MAX_LOCATION_ACCURACY, Constants.MAX_LOCATION_MEASURES,
+                Constants.MAX_LOCATION_TIME, Constants.MAX_LOCATION_TIME, null);
         locationTaker.setOnGetAccurateLocationListener(new AccurateLocationTaker.OnGetAccurateLocationListener() {
             @Override
             public void onGetAccurateLocation(Location accurateLocation, Long... values) {

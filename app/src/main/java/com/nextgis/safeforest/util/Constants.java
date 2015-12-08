@@ -94,5 +94,6 @@ public interface Constants
     int MSG_TYPE_FELLING = 2;
 
     int MAX_LOCATION_MEASURES = 5;
+    float MAX_LOCATION_ACCURACY = 5f;
     long MAX_LOCATION_TIME = 30000L;
 }

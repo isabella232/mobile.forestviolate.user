@@ -27,8 +27,8 @@ import com.nextgis.maplibui.activity.NGActivity;
 public class SFActivity extends NGActivity {
 
     @Override
-    protected int getThemeId(boolean isDark) {
-        if(isDark)
+    public int getThemeId() {
+        if(mIsDarkTheme)
             return R.style.AppTheme_Dark;
         else
             return R.style.AppTheme_Light;

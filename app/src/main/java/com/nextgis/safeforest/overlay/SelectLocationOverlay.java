@@ -82,7 +82,7 @@ public class SelectLocationOverlay extends Overlay implements MapViewEventListen
     @Override
     public void draw(Canvas canvas, MapDrawable mapDrawable) {
         if (mMapPoint != null) {
-            mOverlayPoint.setCoordinates(mMapPoint.getX(), mMapPoint.getY());
+            mOverlayPoint.setCoordinates(mMapPoint);
             drawOverlayItem(canvas, mOverlayPoint);
         }
     }
@@ -110,7 +110,7 @@ public class SelectLocationOverlay extends Overlay implements MapViewEventListen
         mMapPoint = mMapViewOverlays.getMap().screenToMap(new GeoPoint(event.getX(), event.getY()));
         mMapPoint.setCRS(GeoConstants.CRS_WEB_MERCATOR);
         mMapPoint.project(GeoConstants.CRS_WGS84);
-        mOverlayPoint.setCoordinates(mMapPoint.getX(), mMapPoint.getY());
+        mOverlayPoint.setCoordinates(mMapPoint);
         mMapViewOverlays.invalidate();
     }
 
