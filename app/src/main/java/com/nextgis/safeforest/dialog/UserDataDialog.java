@@ -76,7 +76,7 @@ public class UserDataDialog
 
     public String getEmailText()
     {
-        return mEmail.getText().toString();
+        return mEmail.getText().toString().trim();
     }
 
 
@@ -88,7 +88,7 @@ public class UserDataDialog
 
     public String getFullNameText()
     {
-        return mFullName.getText().toString();
+        return mFullName.getText().toString().trim();
     }
 
 
@@ -100,6 +100,6 @@ public class UserDataDialog
 
     public String getPhoneText()
     {
-        return mPhone.getText().toString();
+        return mPhone.getText().toString().trim();
     }
 }

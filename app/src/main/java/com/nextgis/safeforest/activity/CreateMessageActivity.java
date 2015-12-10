@@ -51,6 +51,8 @@ import com.nextgis.safeforest.dialog.YesNoDialog;
 import com.nextgis.safeforest.util.Constants;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.TAG;
@@ -161,6 +163,22 @@ public class CreateMessageActivity
                 if (TextUtils.isEmpty(mFullNameText) || TextUtils.isEmpty(mPhoneText)) {
                     Toast.makeText(CreateMessageActivity.this, R.string.anonymous_hint, Toast.LENGTH_LONG).show();
                     return;
+                }
+
+                Pattern pattern = Pattern.compile(Constants.PHONE_PATTERN);
+                Matcher matcher = pattern.matcher(mPhoneText);
+                if (!matcher.matches()) {
+                    Toast.makeText(CreateMessageActivity.this, R.string.phone_not_valid, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (!TextUtils.isEmpty(mEmailText)) {
+                    pattern = Pattern.compile(Constants.EMAIL_PATTERN);
+                    matcher = pattern.matcher(mEmailText);
+                    if (!matcher.matches()) {
+                        Toast.makeText(CreateMessageActivity.this, R.string.email_not_valid, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                 }
 
                 saveMessage();

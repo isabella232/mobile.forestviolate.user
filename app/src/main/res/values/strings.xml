@@ -94,8 +94,10 @@
     <string name="coordinates_paragraph">Coordinates</string>
     <string name="anonymous_hint">Enter your full name and phone number for supervisor callback.</string>
     <string name="email_hint">E-mail</string>
+    <string name="email_not_valid">E-mail is not valid</string>
     <string name="full_name_hint">Full name*</string>
     <string name="phone_hint">Phone*</string>
+    <string name="phone_not_valid">Phone is not valid</string>
     <string name="message_hint">Enter the message text</string>
     <string name="action_felling">Felling</string>
     <string name="action_view_message">View a message</string>

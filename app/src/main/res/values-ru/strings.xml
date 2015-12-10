@@ -95,8 +95,10 @@
     <string name="coordinates_paragraph">Координаты</string>
     <string name="anonymous_hint">Введите ФИО и телефон, чтобы с вами мог связаться диспетчер.</string>
     <string name="email_hint">Электроная почта (e-mail)</string>
+    <string name="email_not_valid">Неверный формат почты</string>
     <string name="full_name_hint">ФИО*</string>
     <string name="phone_hint">Телефон*</string>
+    <string name="phone_not_valid">Неверный формат телефона</string>
     <string name="message_hint">Введите текст сообщения</string>
     <string name="action_felling">Лесозаготовка</string>
     <string name="action_view_message">Просмотр сообщения</string>
