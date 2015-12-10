@@ -23,78 +23,122 @@ package com.nextgis.safeforest.overlay;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.graphics.RectF;
 import android.location.Location;
 import android.location.LocationManager;
+import android.support.v7.internal.widget.ThemeUtils;
 import android.view.MotionEvent;
 
+import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.util.GeoConstants;
+import com.nextgis.maplibui.api.DrawItem;
 import com.nextgis.maplibui.api.MapViewEventListener;
 import com.nextgis.maplibui.api.Overlay;
-import com.nextgis.maplibui.api.OverlayItem;
 import com.nextgis.maplibui.mapui.MapViewOverlays;
-import com.nextgis.safeforest.R;
+import com.nextgis.maplibui.util.ConstantsUI;
 
 public class SelectLocationOverlay extends Overlay implements MapViewEventListener {
-    private GeoPoint mMapPoint;
-    private OverlayItem mOverlayPoint;
-    private boolean mIsLocked;
+    protected final static int VERTEX_RADIUS = 20;
+
+    protected GeoPoint mSelectedPoint;
+    protected DrawItem mSelectedItem;
+    protected PointF mTempPointOffset;
+
+    protected int mFillColor, mOutlineColor;
+    protected Paint mPaint;
+    protected final Bitmap mAnchor;
+    protected final float mAnchorRectOffsetX, mAnchorRectOffsetY;
+    protected final float mAnchorCenterX, mAnchorCenterY;
+    protected final float mTolerancePX, mAnchorTolerancePX;
 
     public SelectLocationOverlay(Context context, MapViewOverlays mapViewOverlays) {
         super(context, mapViewOverlays);
         mMapViewOverlays.addListener(this);
-        mOverlayPoint = new OverlayItem(mMapViewOverlays.getMap(), 0, 0, getMarker());
-    }
 
-    protected Bitmap getMarker() {
-        float scaledDensity = mContext.getResources().getDisplayMetrics().scaledDensity;
-        int size = (int) (16 * scaledDensity);
-        Bitmap marker = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(marker);
-        Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+        GeoPoint center = mMapViewOverlays.getMap().getFullScreenBounds().getCenter();
+        float[] geoPoints = new float[2];
+        geoPoints[0] = (float) center.getX();
+        geoPoints[1] = (float) center.getY();
+        mSelectedItem = new DrawItem(DrawItem.TYPE_VERTEX, geoPoints);
+        fillGeometry();
 
-        //noinspection deprecation
-        p.setColor(mContext.getResources().getColor(R.color.accent));
-        p.setAlpha(192);
-        c.drawOval(new RectF(0, 0, size * 3 / 4, size * 3 / 4), p);
+        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setStrokeCap(Paint.Cap.ROUND);
 
-        return marker;
+        mFillColor = ThemeUtils.getThemeAttrColor(mContext, com.nextgis.maplibui.R.attr.colorPrimary);
+        mOutlineColor = ThemeUtils.getThemeAttrColor(mContext, com.nextgis.maplibui.R.attr.colorPrimaryDark);
+
+        mAnchor = BitmapFactory.decodeResource(mContext.getResources(), com.nextgis.maplibui.R.drawable.ic_action_anchor);
+        mAnchorRectOffsetX = -mAnchor.getWidth() * 0.05f;
+        mAnchorRectOffsetY = -mAnchor.getHeight() * 0.05f;
+        mAnchorCenterX = mAnchor.getWidth() * 0.75f;
+        mAnchorCenterY = mAnchor.getHeight() * 0.75f;
+        mAnchorTolerancePX = mAnchor.getScaledWidth(context.getResources().getDisplayMetrics());
+        mTolerancePX = context.getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
+
     }
 
     public Location getSelectedLocation() {
-        if (mMapPoint == null)
-            return null;
-
+        mSelectedPoint.project(GeoConstants.CRS_WGS84);
         Location location = new Location(LocationManager.GPS_PROVIDER);
         location.setTime(System.currentTimeMillis());
-        GeoPoint point = mOverlayPoint.getCoordinates(GeoConstants.CRS_WGS84);
-        location.setLatitude(point.getX());
-        location.setLongitude(point.getY());
+        location.setLatitude(mSelectedPoint.getX());
+        location.setLongitude(mSelectedPoint.getY());
 
         return location;
     }
 
+    protected float[] mapToScreen() {
+        return mMapViewOverlays.getMap().mapToScreen(new GeoPoint[]{mSelectedPoint});
+    }
+
+
+    protected GeoPoint screenToMap() {
+        return mMapViewOverlays.getMap().screenToMap(mSelectedItem.getSelectedRing())[0];
+    }
+
     @Override
     public void draw(Canvas canvas, MapDrawable mapDrawable) {
-        if (mMapPoint != null) {
-            mOverlayPoint.setCoordinates(mMapPoint);
-            drawOverlayItem(canvas, mOverlayPoint);
-        }
+        fillDrawItem();
+        drawPoint(mSelectedItem, canvas);
     }
 
     @Override
     public void drawOnPanning(Canvas canvas, PointF currentMouseOffset) {
-        drawOnPanning(canvas, currentMouseOffset, mOverlayPoint);
+        DrawItem drawItem = mSelectedItem;
+        if (!mMapViewOverlays.isLockMap())
+            drawItem = mSelectedItem.pan(currentMouseOffset);
+
+        drawPoint(drawItem, canvas);
     }
 
     @Override
     public void drawOnZooming(Canvas canvas, PointF currentFocusLocation, float scale) {
-        drawOnZooming(canvas, currentFocusLocation, scale, mOverlayPoint, false);
+        DrawItem drawItem = mSelectedItem.zoom(currentFocusLocation, scale);
+        drawPoint(drawItem, canvas);
+    }
+
+    private void drawPoint(DrawItem drawItem, Canvas canvas) {
+        float[] items = drawItem.getSelectedRing();
+        if (null != items) {
+            mPaint.setColor(mOutlineColor);
+            mPaint.setStrokeWidth(VERTEX_RADIUS + 2);
+            canvas.drawPoints(items, mPaint);
+
+            mPaint.setColor(mFillColor);
+            mPaint.setStrokeWidth(VERTEX_RADIUS);
+            canvas.drawPoints(items, mPaint);
+
+            float anchorX = items[0] + mAnchorRectOffsetX;
+            float anchorY = items[1] + mAnchorRectOffsetY;
+            canvas.drawBitmap(mAnchor, anchorX, anchorY, null);
+        }
     }
 
     @Override
@@ -104,29 +148,47 @@ public class SelectLocationOverlay extends Overlay implements MapViewEventListen
 
     @Override
     public void onSingleTapUp(MotionEvent event) {
-        if (!isVisible() || mIsLocked)
-            return;
 
-        mMapPoint = mMapViewOverlays.getMap().screenToMap(new GeoPoint(event.getX(), event.getY()));
-        mMapPoint.setCRS(GeoConstants.CRS_WEB_MERCATOR);
-        mMapPoint.project(GeoConstants.CRS_WGS84);
-        mOverlayPoint.setCoordinates(mMapPoint);
-        mMapViewOverlays.invalidate();
     }
 
     @Override
-    public void panStart(MotionEvent e) {
-        mIsLocked = true;
+    public void panStart(MotionEvent event) {
+        double dMinX = event.getX() - mTolerancePX * 2 - mAnchorTolerancePX;
+        double dMaxX = event.getX() + mTolerancePX;
+        double dMinY = event.getY() - mTolerancePX * 2 - mAnchorTolerancePX;
+        double dMaxY = event.getY() + mTolerancePX;
+        GeoEnvelope screenEnv = new GeoEnvelope(dMinX, dMaxX, dMinY, dMaxY);
+
+        if (mSelectedItem.isTapNearSelectedPoint(screenEnv)) {
+            PointF tempPoint = mSelectedItem.getSelectedPoint();
+            mTempPointOffset = new PointF(tempPoint.x - event.getX(), tempPoint.y - event.getY());
+            mMapViewOverlays.setLockMap(true);
+        }
     }
 
     @Override
     public void panMoveTo(MotionEvent e) {
-
+        if (mMapViewOverlays.isLockMap()) {
+            mSelectedItem.setSelectedPointCoordinates(e.getX() + mTempPointOffset.x, e.getY() + mTempPointOffset.y);
+        }
     }
 
     @Override
     public void panStop() {
-        mIsLocked = false;
+        if (mMapViewOverlays.isLockMap()) {
+            mMapViewOverlays.setLockMap(false);
+            fillGeometry();
+            mMapViewOverlays.postInvalidate();
+        }
+    }
+
+    protected void fillGeometry() {
+        mSelectedPoint = new GeoPoint(screenToMap());
+        mSelectedPoint.setCRS(GeoConstants.CRS_WEB_MERCATOR);
+    }
+
+    protected void fillDrawItem() {
+        mSelectedItem = new DrawItem(DrawItem.TYPE_VERTEX, mapToScreen());
     }
 
     @Override
