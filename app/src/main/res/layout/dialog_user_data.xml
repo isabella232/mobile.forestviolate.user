@@ -28,8 +28,8 @@
     android:orientation="vertical">
 
     <TextView
-        android:text="@string/anonymous_hint"
-        style="@style/paragraph_text"/>
+        style="@style/paragraph_text"
+        android:text="@string/anonymous_hint" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -40,6 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/full_name_hint"
+            android:inputType="textPersonName"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </android.support.design.widget.TextInputLayout>
 

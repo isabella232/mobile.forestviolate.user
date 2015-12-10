@@ -27,10 +27,12 @@ import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -150,9 +152,12 @@ public class CreateMessageActivity
 
     protected void onSave() {
         final UserDataDialog dialog = new UserDataDialog();
-        // TODO: set from a app var for the temporary storing
-//        dialog.setEmailText(app.getEmailText());
-//        dialog.setFullNameText(app.getFullNameText());
+
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(CreateMessageActivity.this);
+        dialog.setFullNameText(prefs.getString(Constants.KEY_USER_FULLNAME, ""));
+        dialog.setPhoneText(prefs.getString(Constants.KEY_USER_PHONE, ""));
+        dialog.setEmailText(prefs.getString(Constants.KEY_USER_EMAIL, ""));
+
         dialog.setOnPositiveClickedListener(new YesNoDialog.OnPositiveClickedListener() {
             @Override
             public void onPositiveClicked() {
@@ -180,6 +185,11 @@ public class CreateMessageActivity
                         return;
                     }
                 }
+
+
+                prefs.edit().putString(Constants.KEY_USER_FULLNAME, mFullNameText)
+                        .putString(Constants.KEY_USER_PHONE, mPhoneText)
+                        .putString(Constants.KEY_USER_EMAIL, mEmailText).commit();
 
                 saveMessage();
                 finish();

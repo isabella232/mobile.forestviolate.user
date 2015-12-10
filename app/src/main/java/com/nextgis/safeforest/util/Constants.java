@@ -42,10 +42,14 @@ public interface Constants
     int STEP_STATE_DONE  = 2;
     int STEP_STATE_ERROR = 3;
 
-    // BUNDLE
+    /**
+     * Bundle
+     */
     String KEY_LOCATION = "location";
 
-    // STATUS
+    /**
+     * Status
+     */
     String KEY_STEP = "sync_step";
     String KEY_STATE = "sync_state";
     String KEY_MESSAGE = "sync_message";
@@ -100,9 +104,15 @@ public interface Constants
     /**
      * Patterns
      */
-//    String PHONE_PATTERN = "^\\+[0-9]+\\s\\(?[0-9]*\\)?\\s[0-9\\-]+$";
     String PHONE_PATTERN = "^((\\d{2,4})|([+1-9]+\\d{1,2}))?[-\\s]?"
             + "(\\d{3,4})?[-\\s]?((\\d{5,7})|(\\d{3}[-\\s]\\d{2}[-\\s]?\\d{2}))$";
     String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
             + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
+    /**
+     * Preferences
+     */
+    String KEY_USER_FULLNAME = "user_full_name";
+    String KEY_USER_PHONE = "user_phone";
+    String KEY_USER_EMAIL = "user_email";
 }
