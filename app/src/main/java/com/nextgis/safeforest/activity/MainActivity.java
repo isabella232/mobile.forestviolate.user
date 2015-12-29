@@ -54,6 +54,7 @@ import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplibui.fragment.NGWLoginFragment;
+import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.fragment.LoginFragment;
@@ -327,7 +328,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
                 return true;
 
             case R.id.action_settings:
-                app.showSettings();
+                app.showSettings(SettingsConstantsUI.ACTION_PREFS_GENERAL);
                 return true;
 
             case R.id.action_about:

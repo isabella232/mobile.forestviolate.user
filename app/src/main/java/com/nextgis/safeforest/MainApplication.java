@@ -93,7 +93,7 @@ public class MainApplication
      * Show settings Activity
      */
     @Override
-    public void showSettings()
+    public void showSettings(String setting)
     {
         Intent intentSet = new Intent(this, PreferencesActivity.class);
         intentSet.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
