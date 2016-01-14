@@ -5,7 +5,7 @@
  * Author:  NikitaFeodonit, nfeodonit@yandex.com
  * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2015-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,6 @@ import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplibui.fragment.NGWLoginFragment;
-import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.fragment.LoginFragment;
@@ -328,7 +327,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
                 return true;
 
             case R.id.action_settings:
-                app.showSettings(SettingsConstantsUI.ACTION_PREFS_GENERAL);
+                app.showSettings(null);
                 return true;
 
             case R.id.action_about:

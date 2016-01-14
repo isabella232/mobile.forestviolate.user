@@ -4,8 +4,9 @@
   ~ Purpose: Mobile application for registering facts of the forest violations.
   ~ Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
   ~ Author:  NikitaFeodonit, nfeodonit@yandex.com
+  ~ Author:  Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2015-2015. NextGIS, info@nextgis.com
+  ~ Copyright (c) 2015-2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -40,14 +41,17 @@
     <string name="geomixer_fv_tiles">Лесонарушения растр (GeoMixer)</string>
     <string name="sf_login_title">Аккаунт</string>
     <string
-        name="sf_login_description"><![CDATA[Введите ваши данные для регистрации на сервере учета лесонарушений (регистрацию можно пропустить, но приложение будет иметь ограниченную функциональность). В качестве логина необходимо использовать действительный адрес электронной почты. После нажатия на кнопку \"Регистрация\" или \"Пропустить\" выберите территорию работы и будет запущен процесс получения данных для работы оффлайн. Данный процесс требует большого количества трафика, поэтому на данном этапе рекомендуется использовать подключение по Wi-Fi.]]></string>
+        name="sf_login_description"><![CDATA[Введите ваши данные для регистрации на сервере учета лесонарушений (регистрацию можно пропустить, но приложение будет иметь ограниченную функциональность). После этого выберите территорию работы и будет начато получения данных для работы оффлайн. Данный процесс требует большого количества трафика, поэтому рекомендуется использовать подключение по Wi-Fi.]]></string>
     <string name="first_run">Первый запуск</string>
     <string name="fi_url">Адрес сервера</string>
     <string name="error_init">Ошибка инициализации</string>
     <string name="initialization">Первоначальная установка</string>
     <string name="create_base_layers">Создание базовых слоев карты</string>
     <string name="check_server">Проверка сервера</string>
-    <string name="register">Зарегистрироваться</string>
+    <string name="sign_up">Зарегистрироваться</string>
+    <string name="sign_in">Войти</string>
+    <string name="signing_in">Вход…</string>
+    <string name="signing_up">Регистрация…</string>
     <string name="skip">Пропустить</string>
     <string name="sf_region_select">Выберите территорию</string>
     <string name="sf_getting_regions">Загрузка регионов</string>
@@ -60,9 +64,11 @@
     <string name="working">Выполняется…</string>
     <string name="user_email_login">Логин (адрес электронной почты)</string>
     <string name="phone">Номер телефона</string>
-    <string name="password">Пароль к серверу сообщений</string>
+    <string name="password">Пароль</string>
     <string name="downloaded">загружено</string>
     <string name="error_unexpected">Возникла неожиданная ошибка</string>
+    <string name="error_sign_up">Не удалось зарегистрироваться\r\nПопробуйте выбрать другую почту или повторите попытку позже</string>
+    <string name="error_weak_password">Слабый пароль</string>
     <string name="of">из</string>
     <string name="show_status_panel">Панель статуса</string>
     <string name="show_status_panel_summary">Показать панель статуса внизу экрана</string>

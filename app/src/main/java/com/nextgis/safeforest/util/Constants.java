@@ -5,7 +5,7 @@
  * Author:  NikitaFeodonit, nfeodonit@yandex.com
  * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2015-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ public interface Constants
      */
     String KEY_CITIZEN_MESSAGES = "citizen_messages";
     String KEY_FV_REGIONS = "fv_regions";
-    String KEY_FV_FOREST = "fv_scan";
+    String KEY_FV_FOREST = "fv";
     String KEY_IS_AUTHORIZED = "is_authorised";
 
     /**
@@ -104,6 +104,7 @@ public interface Constants
     /**
      * Patterns
      */
+    String PASSWORD_PATTERN = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$";
     String PHONE_PATTERN = "^((\\d{2,4})|([+1-9]+\\d{1,2}))?[-\\s]?"
             + "(\\d{3,4})?[-\\s]?((\\d{5,7})|(\\d{3}[-\\s]\\d{2}[-\\s]?\\d{2}))$";
     String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"

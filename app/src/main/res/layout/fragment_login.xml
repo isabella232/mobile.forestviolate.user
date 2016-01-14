@@ -5,7 +5,7 @@
   ~ Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
   ~ Author:  Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2015-2015. NextGIS, info@nextgis.com
+  ~ Copyright (c) 2015-2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -49,41 +49,48 @@
             android:text="@string/sf_login_description"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-        <EditText
-            android:id="@+id/url"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:autoLink="web"
-            android:hint="@string/fi_url"
-            android:inputType="textUri"/>
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:ems="10"
-            android:hint="@string/user_email_login"
-            android:inputType="textEmailAddress"/>
+            <EditText
+                android:id="@+id/url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:autoLink="web"
+                android:hint="@string/fi_url"
+                android:inputType="textUri"
+                android:text="176.9.38.120/fv"/>
+        </android.support.design.widget.TextInputLayout>
 
-        <EditText
-            android:id="@+id/password"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:ems="10"
-            android:hint="@string/password"
-            android:inputType="textPassword"/>
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/phone"
+            <EditText
+                android:id="@+id/login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:ems="10"
+                android:hint="@string/user_email_login"
+                android:inputType="textEmailAddress"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:ems="10"
-            android:hint="@string/phone"
-            android:inputType="phone"/>
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:ems="10"
+                android:hint="@string/password"
+                android:inputType="textPassword"/>
+        </android.support.design.widget.TextInputLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -98,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:enabled="false"
-                android:text="@string/register"/>
+                android:text="@string/sign_in"/>
 
             <Button
                 android:id="@+id/skip"
@@ -108,5 +115,15 @@
                 android:enabled="false"
                 android:text="@string/skip"/>
         </LinearLayout>
+
+        <Button
+            android:id="@+id/signup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:enabled="false"
+            android:text="@string/sign_up"/>
+
     </LinearLayout>
 </ScrollView>

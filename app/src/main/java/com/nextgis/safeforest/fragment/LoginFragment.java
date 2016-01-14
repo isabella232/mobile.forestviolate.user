@@ -2,8 +2,9 @@
  * Project: Forest violations
  * Purpose: Mobile application for registering facts of the forest violations.
  * Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+ * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2015-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +22,16 @@
 
 package com.nextgis.safeforest.fragment;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.Loader;
+import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,17 +41,25 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.nextgis.maplib.api.IGISApplication;
+import com.nextgis.maplib.util.NGWUtil;
 import com.nextgis.maplibui.fragment.NGWLoginFragment;
 import com.nextgis.maplibui.service.HTTPLoader;
 import com.nextgis.safeforest.R;
+import com.nextgis.safeforest.dialog.UserDataDialog;
+import com.nextgis.safeforest.dialog.YesNoDialog;
 import com.nextgis.safeforest.util.Constants;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The login fragment to the forest violations server
  */
 public class LoginFragment extends NGWLoginFragment {
 
-    protected Button   mSkipButton;
+    protected ProgressDialog mProgressDialog;
+    protected Button   mSkipButton, mSignUpButton;
+    protected String mFullNameText, mPhoneText;
 
     @Override
     public View onCreateView(
@@ -58,22 +74,33 @@ public class LoginFragment extends NGWLoginFragment {
         mLogin = (EditText) view.findViewById(R.id.login);
         mPassword = (EditText) view.findViewById(R.id.password);
         mSignInButton = (Button) view.findViewById(R.id.signin);
+        mSignUpButton = (Button) view.findViewById(R.id.signup);
         mSkipButton = (Button) view.findViewById(R.id.skip);
 
         TextWatcher watcher = new LocalTextWatcher();
         mURL.addTextChangedListener(watcher);
         mLogin.addTextChangedListener(watcher);
+        watcher = new SfTextWatcher();
         mPassword.addTextChangedListener(watcher);
+
+        mProgressDialog = new ProgressDialog(getActivity());
 
         return view;
     }
 
+    private void validatePassword(String password) {
+        if (!Pattern.matches(Constants.PASSWORD_PATTERN, password))
+            ((TextInputLayout) mPassword.getParent()).setError(getString(R.string.error_weak_password));
+        else
+            ((TextInputLayout) mPassword.getParent()).setErrorEnabled(false);
+    }
 
     @Override
     public void onResume()
     {
         super.onResume();
         mSignInButton.setOnClickListener(this);
+        mSignUpButton.setOnClickListener(this);
         mSkipButton.setOnClickListener(this);
     }
 
@@ -82,6 +109,7 @@ public class LoginFragment extends NGWLoginFragment {
     public void onPause()
     {
         mSignInButton.setOnClickListener(null);
+        mSignUpButton.setOnClickListener(null);
         mSkipButton.setOnClickListener(null);
         super.onPause();
     }
@@ -90,11 +118,98 @@ public class LoginFragment extends NGWLoginFragment {
     @Override
     public void onClick(View v)
     {
-        if (v == mSignInButton) {
-            getLoaderManager().restartLoader(R.id.auth_token_loader, null, this);
+        Pattern pattern = Pattern.compile(Constants.EMAIL_PATTERN);
+        Matcher matcher = pattern.matcher(mLogin.getText());
+        if (!matcher.matches()) {
+            Toast.makeText(getActivity(), R.string.email_not_valid, Toast.LENGTH_SHORT).show();
+            return;
         }
-        else if (v == mSkipButton) {
-            getLoaderManager().restartLoader(R.id.non_auth_token_loader, null, this);
+
+        switch (v.getId()) {
+            case R.id.signin:
+                mProgressDialog.setMessage(getString(R.string.signing_in));
+                mProgressDialog.setCancelable(false);
+                mProgressDialog.show();
+
+                getLoaderManager().restartLoader(R.id.auth_token_loader, null, this);
+                break;
+            case R.id.signup:
+                final UserDataDialog dialog = new UserDataDialog();
+
+                dialog.setOnPositiveClickedListener(new YesNoDialog.OnPositiveClickedListener() {
+                    @Override
+                    public void onPositiveClicked() {
+                        mFullNameText = dialog.getFullNameText();
+                        mPhoneText = dialog.getPhoneText();
+
+                        if (TextUtils.isEmpty(mFullNameText)) {
+                            Toast.makeText(getActivity(), R.string.anonymous_hint, Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        Pattern pattern = Pattern.compile(Constants.PHONE_PATTERN);
+                        Matcher matcher = pattern.matcher(mPhoneText);
+                        if (!TextUtils.isEmpty(mPhoneText) && !matcher.matches()) {
+                            Toast.makeText(getActivity(), R.string.phone_not_valid, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        dialog.dismiss();
+
+                        mProgressDialog.setMessage(getString(R.string.signing_up));
+                        mProgressDialog.setCancelable(false);
+                        mProgressDialog.show();
+
+                        new Handler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                final boolean[] result = new boolean[1];
+
+                                Thread t = new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        result[0] = NGWUtil.signUp(mURL.getText().toString().trim(),
+                                                mLogin.getText().toString(), mPassword.getText().toString(), null, null);
+                                    }
+                                });
+                                t.start();
+
+                                while (t.isAlive())
+                                    SystemClock.sleep(300);
+
+                                if (result[0]) {
+                                    PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+                                            .putString(Constants.KEY_USER_FULLNAME, mFullNameText)
+                                            .putString(Constants.KEY_USER_PHONE, mPhoneText).commit();
+
+                                    getLoaderManager().restartLoader(R.id.auth_token_loader, null, LoginFragment.this);
+
+                                    mSignUpButton.setEnabled(false);
+                                    mSignInButton.setEnabled(false);
+                                    mSkipButton.setEnabled(false);
+                                } else
+                                    Toast.makeText(getActivity(), R.string.error_sign_up, Toast.LENGTH_LONG).show();
+
+                                mProgressDialog.dismiss();
+                            }
+                        });
+                    }
+                });
+
+                dialog.setOnNegativeClickedListener(new YesNoDialog.OnNegativeClickedListener() {
+                    @Override
+                    public void onNegativeClicked() {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.hideEmailField();
+                dialog.setKeepInstance(true);
+                dialog.show(getFragmentManager(), Constants.FRAGMENT_USER_DATA_DIALOG);
+                break;
+            case R.id.skip:
+                getLoaderManager().restartLoader(R.id.non_auth_token_loader, null, this);
+                break;
         }
     }
 
@@ -121,11 +236,18 @@ public class LoginFragment extends NGWLoginFragment {
             Loader<String> loader,
             String token)
     {
+        if (mProgressDialog.isShowing())
+            mProgressDialog.dismiss();
+
         if (loader.getId() == R.id.auth_token_loader) {
             if (token != null && token.length() > 0) {
                 onTokenReceived(getString(R.string.account_name), token);
             } else {
                 Toast.makeText(getActivity(), R.string.error_login, Toast.LENGTH_SHORT).show();
+
+                mSignUpButton.setEnabled(true);
+                mSignInButton.setEnabled(true);
+                mSkipButton.setEnabled(true);
             }
         }
         else if(loader.getId() == R.id.non_auth_token_loader){
@@ -140,6 +262,7 @@ public class LoginFragment extends NGWLoginFragment {
             mSkipButton.setEnabled(true);
             if( checkEditText(mLogin) && checkEditText(mPassword)) {
                 mSignInButton.setEnabled(true);
+                mSignUpButton.setEnabled(true);
             }
         }
     }
@@ -148,19 +271,21 @@ public class LoginFragment extends NGWLoginFragment {
             String accountName,
             String token)
     {
+        IGISApplication app = (IGISApplication) getActivity().getApplication();
         if(token.equals(Constants.ANONYMOUS)){
-            IGISApplication app = (IGISApplication) getActivity().getApplication();
-
             if (mForNewAccount) {
                 boolean accountAdded = app.addAccount(accountName, mURL.getText().toString(), Constants.ANONYMOUS, Constants.ANONYMOUS, token);
                 if(accountAdded) {
                     if (null != mOnAddAccountListener) {
-                        mOnAddAccountListener.onAddAccount(app.getAccount(accountName), token, accountAdded);
+                        mOnAddAccountListener.onAddAccount(app.getAccount(accountName), token, true);
                     }
+
+                    app.setUserData(accountName, Constants.KEY_USER_FULLNAME, mFullNameText);
+                    app.setUserData(accountName, Constants.KEY_USER_PHONE, mPhoneText);
                 }
                 else {
                     if (null != mOnAddAccountListener) {
-                        mOnAddAccountListener.onAddAccount(null, token, accountAdded);
+                        mOnAddAccountListener.onAddAccount(null, token, false);
                     }
                 }
 
@@ -170,7 +295,20 @@ public class LoginFragment extends NGWLoginFragment {
             }
         }
         else{
+            if (mForNewAccount) {
+                app.setUserData(accountName, Constants.KEY_USER_FULLNAME, mFullNameText);
+                app.setUserData(accountName, Constants.KEY_USER_PHONE, mPhoneText);
+            }
+
             super.onTokenReceived(accountName, token);
+        }
+    }
+
+    public class SfTextWatcher extends LocalTextWatcher {
+        @Override
+        public void afterTextChanged(Editable s) {
+            super.afterTextChanged(s);
+            validatePassword(s.toString());
         }
     }
 }

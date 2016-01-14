@@ -3,8 +3,9 @@
  * Purpose: Mobile application for registering facts of the forest violations.
  * Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
  * Author:  NikitaFeodonit, nfeodonit@yandex.com
+ * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2015-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +41,7 @@ public class UserDataDialog
     protected String mEmailText;
     protected String mPhoneText;
     protected String mFullNameText;
-
+    protected boolean mHideEmail;
 
     @NonNull
     @Override
@@ -50,6 +51,8 @@ public class UserDataDialog
 
         mEmail = (EditText) view.findViewById(R.id.email);
         mEmail.setText(mEmailText);
+        if (mHideEmail)
+            mEmail.setVisibility(View.GONE);
 
         mFullName = (EditText) view.findViewById(R.id.full_name);
         mFullName.setText(mFullNameText);
@@ -65,6 +68,14 @@ public class UserDataDialog
         setNegativeText(android.R.string.cancel);
 
         return super.onCreateDialog(savedInstanceState);
+    }
+
+
+    public void hideEmailField() {
+        mHideEmail = true;
+
+        if (mEmail != null)
+            mEmail.setVisibility(View.GONE);
     }
 
 

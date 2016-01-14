@@ -4,7 +4,7 @@
   ~ Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
   ~ Author:  NikitaFeodonit, nfeodonit@yandex.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2015-2015. NextGIS, info@nextgis.com
+  ~ Copyright (c) 2015-2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -39,14 +39,18 @@
     <string name="fire">Fire</string>
     <string name="geomixer_fv_tiles">GeoMixer violation tiles</string>
     <string name="sf_login_title">Account</string>
-    <string name="sf_login_description"><![CDATA[Enter your information for account registration on server (registration can be skipped, but the application will have limited functionality). As username you must use a valid email address. Clicking \ "Register \" or \ "Skip \" will start the selection of working area and the process of getting data to work offline. This process need a lot of traffic, so Wi-Fi connection recommended.]]></string>
+    <string
+        name="sf_login_description"><![CDATA[Enter your information for account registration on server (registration can be skipped, but the application will have limited functionality). After that, selection of working area and the process of getting data to work offline will be started. This process need a lot of traffic, so Wi-Fi connection recommended.]]></string>
     <string name="first_run">First run</string>
     <string name="fi_url">Server URL</string>
     <string name="error_init">Failed to initialize</string>
     <string name="initialization">Initial setup</string>
     <string name="create_base_layers">Create base layers</string>
     <string name="check_server">Check server</string>
-    <string name="register">Register</string>
+    <string name="sign_up">Sign up</string>
+    <string name="sign_in">Sign in</string>
+    <string name="signing_in">Signing in…</string>
+    <string name="signing_up">Signing up…</string>
     <string name="skip">Skip</string>
     <string name="sf_region_select">Select working territory</string>
     <string name="sf_getting_regions">Fetching regions</string>
@@ -59,9 +63,11 @@
     <string name="working">Working…</string>
     <string name="user_email_login">Login (email address)</string>
     <string name="phone">Phone number</string>
-    <string name="password">Password to message server</string>
+    <string name="password">Password</string>
     <string name="downloaded">downloaded</string>
     <string name="error_unexpected">Unexpected error occurred</string>
+    <string name="error_sign_up">Can not sign up\r\nTry choose another email or retry later</string>
+    <string name="error_weak_password">Weak password</string>
     <string name="of">of</string>
     <string name="show_status_panel">Status info panel</string>
     <string name="show_status_panel_summary">Show current status info at bottom panel</string>
