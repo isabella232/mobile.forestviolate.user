@@ -142,14 +142,14 @@ public class LoginFragment extends NGWLoginFragment {
                         mFullNameText = dialog.getFullNameText();
                         mPhoneText = dialog.getPhoneText();
 
-                        if (TextUtils.isEmpty(mFullNameText)) {
+                        if (TextUtils.isEmpty(mFullNameText) || TextUtils.isEmpty(mPhoneText)) {
                             Toast.makeText(getActivity(), R.string.anonymous_hint, Toast.LENGTH_LONG).show();
                             return;
                         }
 
                         Pattern pattern = Pattern.compile(Constants.PHONE_PATTERN);
                         Matcher matcher = pattern.matcher(mPhoneText);
-                        if (!TextUtils.isEmpty(mPhoneText) && !matcher.matches()) {
+                        if (!matcher.matches()) {
                             Toast.makeText(getActivity(), R.string.phone_not_valid, Toast.LENGTH_SHORT).show();
                             return;
                         }

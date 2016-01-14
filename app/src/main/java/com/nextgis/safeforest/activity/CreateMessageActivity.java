@@ -212,8 +212,8 @@ public class CreateMessageActivity
 
             mValues.put(Constants.FIELD_MTYPE, mMessageType);
             mValues.put(Constants.FIELD_STATUS, Constants.MSG_STATUS_NEW);
-            mValues.put(Constants.FIELD_AUTHOR, mFullNameText); // TODO authorized user values
-            mValues.put(Constants.FIELD_CONTACT, mPhoneText + ", " + mEmailText);
+            mValues.put(Constants.FIELD_AUTHOR, mEmailText); // TODO authorized user values
+            mValues.put(Constants.FIELD_CONTACT, mPhoneText + ", " + mFullNameText);
 
             Uri uri = Uri.parse("content://" + app.getAuthority() + "/" + Constants.KEY_CITIZEN_MESSAGES);
             Uri result = app.getContentResolver().insert(uri, mValues);
