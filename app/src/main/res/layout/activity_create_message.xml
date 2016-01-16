@@ -6,7 +6,7 @@
   ~ Author:  NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:  Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2015-2015. NextGIS, info@nextgis.com
+  ~ Copyright (c) 2015-2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -31,52 +32,86 @@
     <include
         layout="@layout/actionbar"/>
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <LinearLayout
+            android:id="@+id/ll_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_margin="5dp"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/paragraph_text"
-                android:text="@string/message_paragraph"/>
+            android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/message"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="start|top"
+                android:padding="5dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
                 android:hint="@string/message_hint"
-                android:maxLines="10"/>
+                android:background="@drawable/message_box"
+                android:maxLines="2"/>
 
-            <TextView
-                style="@style/paragraph_text"
-                android:text="@string/set_location"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/location_current"
-                    style="@style/location_source_icon"
-                    android:text="@string/location_current"/>
-
-                <TextView
-                    android:id="@+id/location_map"
-                    style="@style/location_source_icon"
-                    android:text="@string/location_from_map"/>
-
-                <TextView
-                    android:id="@+id/location_compass"
-                    style="@style/location_source_icon"
-                    android:text="@string/location_from_compass"/>
-            </LinearLayout>
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/action_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_addButtonColorNormal="?attr/colorPrimary"
+                fab:fab_addButtonColorPressed="?attr/colorAccent"
+                fab:fab_addButtonPlusIconColor="@android:color/white"
+                fab:fab_icon="@drawable/ic_send_white_24dp"/>
         </LinearLayout>
-    </ScrollView>
 
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_compass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/ll_message"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            fab:fab_addButtonColorNormal="?attr/colorPrimary"
+            fab:fab_addButtonColorPressed="?attr/colorAccent"
+            fab:fab_size="mini"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/action_compass"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            fab:fab_addButtonColorNormal="?attr/colorPrimary"
+            fab:fab_addButtonColorPressed="?attr/colorAccent"
+            fab:fab_icon="@drawable/ic_place_white_24dp"
+            fab:fab_size="mini"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/action_location"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            fab:fab_addButtonColorNormal="?attr/colorPrimary"
+            fab:fab_addButtonColorPressed="?attr/colorAccent"
+            fab:fab_addButtonPlusIconColor="@android:color/white"
+            fab:fab_icon="@drawable/ic_add_photo"
+            fab:fab_size="mini"/>
+
+    </RelativeLayout>
 </LinearLayout>

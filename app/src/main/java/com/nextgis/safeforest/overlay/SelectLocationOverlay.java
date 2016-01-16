@@ -3,7 +3,7 @@
  * Purpose: Mobile application for registering facts of the forest violations.
  * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * ****************************************************************************
- * Copyright (c) 2015 NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.support.v7.internal.widget.ThemeUtils;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoPoint;
@@ -41,6 +42,7 @@ import com.nextgis.maplibui.api.MapViewEventListener;
 import com.nextgis.maplibui.api.Overlay;
 import com.nextgis.maplibui.mapui.MapViewOverlays;
 import com.nextgis.maplibui.util.ConstantsUI;
+import com.nextgis.safeforest.R;
 
 public class SelectLocationOverlay extends Overlay implements MapViewEventListener {
     protected final static int VERTEX_RADIUS = 20;
@@ -81,7 +83,18 @@ public class SelectLocationOverlay extends Overlay implements MapViewEventListen
         mAnchorCenterY = mAnchor.getHeight() * 0.75f;
         mAnchorTolerancePX = mAnchor.getScaledWidth(context.getResources().getDisplayMetrics());
         mTolerancePX = context.getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
+    }
 
+    public void setSelectedLocation(Location location) {
+        if (location == null) {
+            Toast.makeText(mContext, R.string.error_no_location, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        mSelectedPoint.setCoordinates(location.getLongitude(), location.getLatitude());
+        mSelectedPoint.setCRS(GeoConstants.CRS_WGS84);
+        mSelectedPoint.project(GeoConstants.CRS_WEB_MERCATOR);
+        mMapViewOverlays.postInvalidate();
     }
 
     public Location getSelectedLocation() {

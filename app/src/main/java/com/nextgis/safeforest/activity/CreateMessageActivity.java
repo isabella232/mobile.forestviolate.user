@@ -5,7 +5,7 @@
  * Author:  NikitaFeodonit, nfeodonit@yandex.com
  * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2015-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,8 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -40,9 +42,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.location.AccurateLocationTaker;
@@ -50,6 +52,7 @@ import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.dialog.UserDataDialog;
 import com.nextgis.safeforest.dialog.YesNoDialog;
+import com.nextgis.safeforest.fragment.MapFragment;
 import com.nextgis.safeforest.util.Constants;
 
 import java.io.IOException;
@@ -64,7 +67,6 @@ import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 
 public class CreateMessageActivity
         extends SFActivity implements View.OnClickListener {
-    protected static final int MESSAGE_MAP = 0;
     protected static final int MESSAGE_COMPASS = 1;
 
     protected ContentValues mValues;
@@ -72,7 +74,8 @@ public class CreateMessageActivity
 
     protected int mMessageType = Constants.MSG_TYPE_UNKNOWN;
     protected EditText mMessage;
-    protected TextView mLocationCurrent, mLocationMap, mLocationCompass;
+    protected FloatingActionButton mSend, mLocationCurrent, mAddPhoto, mLocationCompass;
+    protected MapFragment mMapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +84,15 @@ public class CreateMessageActivity
         mValues = new ContentValues(); // TODO save / restore state
         setContentView(R.layout.activity_create_message);
         setToolbar(R.id.main_toolbar);
+
+        final FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
+        mMapFragment = (MapFragment) fm.findFragmentByTag(Constants.FRAGMENT_SELECT_LOCATION);
+        if (mMapFragment == null)
+            mMapFragment = new MapFragment();
+
+        ft.replace(R.id.container, mMapFragment, Constants.FRAGMENT_SELECT_LOCATION).commit();
 
         Bundle extras = getIntent().getExtras();
         if (null != extras) {
@@ -101,31 +113,39 @@ public class CreateMessageActivity
         }
 
         mMessage = (EditText) findViewById(R.id.message);
+        mSend = (FloatingActionButton) findViewById(R.id.action_send);
+        mSend.setOnClickListener(this);
 
-        mLocationCurrent = (TextView) findViewById(R.id.location_current);
+        mAddPhoto = (FloatingActionButton) findViewById(R.id.action_photo);
+        mAddPhoto.setOnClickListener(this);
+
+        mLocationCurrent = (FloatingActionButton) findViewById(R.id.action_location);
         mLocationCurrent.setOnClickListener(this);
-        Drawable drawable = getResources().getDrawable(R.drawable.ic_place_black_48dp);
-        tintIcon(drawable);
-        mLocationCurrent.setCompoundDrawables(null, drawable, null, null);
 
-        mLocationMap = (TextView) findViewById(R.id.location_map);
-        mLocationMap.setOnClickListener(this);
-        drawable = getResources().getDrawable(R.drawable.ic_map_black_48dp);
-        tintIcon(drawable);
-        mLocationMap.setCompoundDrawables(null, drawable, null, null);
-
-        mLocationCompass = (TextView) findViewById(R.id.location_compass);
+        mLocationCompass = (FloatingActionButton) findViewById(R.id.action_compass);
         mLocationCompass.setOnClickListener(this);
-        drawable = getResources().getDrawable(R.drawable.ic_compass);
+        Drawable drawable = getResources().getDrawable(R.drawable.ic_compass);
         tintIcon(drawable);
-        mLocationCompass.setCompoundDrawables(null, drawable, null, null);
+        assert drawable != null;
+        mLocationCompass.setIconDrawable(drawable);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mMapFragment.setSelectedLocationVisible(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mMapFragment.setSelectedLocationVisible(false);
+    }
 
     protected void tintIcon(Drawable drawable) {
         DrawableCompat.wrap(drawable);
         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-        DrawableCompat.setTint(drawable, getResources().getColor(R.color.accent));
+        DrawableCompat.setTint(drawable, getResources().getColor(R.color.color_white));
     }
 
 
@@ -141,8 +161,8 @@ public class CreateMessageActivity
         int itemId = item.getItemId();
 
         switch (itemId) {
-            case R.id.action_save:
-                onSave();
+            case R.id.action_locate:
+                mMapFragment.locateCurrentPosition();
                 return true;
         }
 
@@ -150,7 +170,8 @@ public class CreateMessageActivity
     }
 
 
-    protected void onSave() {
+    protected void sendMessage() {
+        saveLocation(mMapFragment.getSelectedLocation());
         final UserDataDialog dialog = new UserDataDialog();
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(CreateMessageActivity.this);
@@ -235,14 +256,16 @@ public class CreateMessageActivity
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.location_current:
+            case R.id.action_send:
+                sendMessage();
+                break;
+            case R.id.action_location:
                 getCurrentLocation();
                 break;
-            case R.id.location_map:
-                Intent mapIntent = new Intent(this, MessageMapActivity.class);
-                startActivityForResult(mapIntent, MESSAGE_MAP);
+            case R.id.action_photo:
+                // TODO photo
                 break;
-            case R.id.location_compass:
+            case R.id.action_compass:
                 Intent compassIntent = new Intent(this, MessageCompassActivity.class);
                 startActivityForResult(compassIntent, MESSAGE_COMPASS);
                 break;
@@ -252,10 +275,9 @@ public class CreateMessageActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case MESSAGE_MAP:
             case MESSAGE_COMPASS:
                 if (data != null)
-                    saveLocation((Location) data.getParcelableExtra(Constants.KEY_LOCATION));
+                    mMapFragment.setSelectedLocation((Location) data.getParcelableExtra(Constants.KEY_LOCATION));
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
@@ -276,8 +298,8 @@ public class CreateMessageActivity
         locationTaker.setOnGetAccurateLocationListener(new AccurateLocationTaker.OnGetAccurateLocationListener() {
             @Override
             public void onGetAccurateLocation(Location accurateLocation, Long... values) {
+                mMapFragment.setSelectedLocation(accurateLocation);
                 progress.dismiss();
-                saveLocation(accurateLocation);
             }
         });
 

@@ -113,11 +113,6 @@
             />
 
         <activity
-            android:name=".activity.MessageMapActivity"
-            android:label="@string/location_from_map"
-            />
-
-        <activity
             android:name=".activity.ViewMessageActivity"
             android:label="@string/action_view_message"
             />
