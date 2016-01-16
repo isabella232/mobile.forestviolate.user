@@ -3,7 +3,7 @@
  * Purpose: Mobile application for registering facts of the forest violations.
  * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * ****************************************************************************
- * Copyright (c) 2015 NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,18 +25,19 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.nextgis.maplibui.util.CompassImage;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.util.Constants;
 
-public class MessageCompassActivity extends SFActivity {
+public class MessageCompassActivity extends SFActivity implements View.OnClickListener {
     protected CompassImage mBezel, mNeedle;
     protected EditText mDistance;
+    protected FloatingActionButton mOk;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,29 +48,8 @@ public class MessageCompassActivity extends SFActivity {
         mBezel = (CompassImage) findViewById(R.id.compass);
         mNeedle = (CompassImage) findViewById(R.id.needle);
         mDistance = (EditText) findViewById(R.id.et_distance);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.message, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-
-        switch (itemId) {
-            case R.id.action_save:
-                Location location = getDistantLocation();
-                Intent intent = new Intent();
-                intent.putExtra(Constants.KEY_LOCATION, location);
-                setResult(RESULT_OK, intent);
-                finish();
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        mOk = (FloatingActionButton) findViewById(R.id.action_send);
+        mOk.setOnClickListener(this);
     }
 
     protected Location getDistantLocation() {
@@ -98,5 +78,18 @@ public class MessageCompassActivity extends SFActivity {
         }
 
         return location;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.action_send:
+                Location location = getDistantLocation();
+                Intent intent = new Intent();
+                intent.putExtra(Constants.KEY_LOCATION, location);
+                setResult(RESULT_OK, intent);
+                finish();
+                break;
+        }
     }
 }
