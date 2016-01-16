@@ -6,7 +6,7 @@
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
     <color name="tabTextColor">#ffffff</color>
 
     <color name="color_black">#000000</color>
+    <color name="color_a_black">#55000000</color>
     <color name="color_white">#ffffff</color>
 
     <color name="color_undobar_background">@color/primary_dark</color>

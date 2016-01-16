@@ -36,18 +36,22 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.keenfin.easypicker.PhotoPicker;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.location.AccurateLocationTaker;
+import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.dialog.UserDataDialog;
@@ -55,7 +59,10 @@ import com.nextgis.safeforest.dialog.YesNoDialog;
 import com.nextgis.safeforest.fragment.MapFragment;
 import com.nextgis.safeforest.util.Constants;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -76,6 +83,11 @@ public class CreateMessageActivity
     protected EditText mMessage;
     protected FloatingActionButton mSend, mLocationCurrent, mAddPhoto, mLocationCompass;
     protected MapFragment mMapFragment;
+    protected ActionBar mToolbar;
+    protected FrameLayout mPhotos;
+    protected int mTitle;
+    protected MenuItem mItem;
+    protected PhotoPicker mPhotoPicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +96,7 @@ public class CreateMessageActivity
         mValues = new ContentValues(); // TODO save / restore state
         setContentView(R.layout.activity_create_message);
         setToolbar(R.id.main_toolbar);
+        mToolbar = getSupportActionBar();
 
         final FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -97,22 +110,24 @@ public class CreateMessageActivity
         Bundle extras = getIntent().getExtras();
         if (null != extras) {
             mMessageType = extras.getInt(Constants.FIELD_MTYPE);
-            int textResId = R.string.new_message_status;
+            mTitle = R.string.new_message_status;
 
             switch (mMessageType) {
                 case Constants.MSG_TYPE_FELLING:
-                    textResId = R.string.action_felling;
+                    mTitle = R.string.action_felling;
                     break;
                 case Constants.MSG_TYPE_FIRE:
-                    textResId = R.string.fire;
+                    mTitle = R.string.fire;
                     break;
             }
 
-            //noinspection ConstantConditions
-            getSupportActionBar().setTitle(textResId);
+            mToolbar.setTitle(mTitle);
         }
 
+        mPhotoPicker = (PhotoPicker) findViewById(R.id.pp_violation);
+        mPhotos = (FrameLayout) findViewById(R.id.fl_photos);
         mMessage = (EditText) findViewById(R.id.message);
+
         mSend = (FloatingActionButton) findViewById(R.id.action_send);
         mSend.setOnClickListener(this);
 
@@ -152,6 +167,7 @@ public class CreateMessageActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.message, menu);
+        mItem = menu.getItem(0);
         return true;
     }
 
@@ -162,7 +178,10 @@ public class CreateMessageActivity
 
         switch (itemId) {
             case R.id.action_locate:
-                mMapFragment.locateCurrentPosition();
+                if (mPhotos.getVisibility() == View.GONE)
+                    mMapFragment.locateCurrentPosition();
+                else
+                    hidePhotos();
                 return true;
         }
 
@@ -233,6 +252,7 @@ public class CreateMessageActivity
 
             mValues.put(Constants.FIELD_MTYPE, mMessageType);
             mValues.put(Constants.FIELD_STATUS, Constants.MSG_STATUS_NEW);
+            mValues.put(Constants.FIELD_MESSAGE, mMessage.getText().toString());
             mValues.put(Constants.FIELD_AUTHOR, mEmailText); // TODO authorized user values
             mValues.put(Constants.FIELD_CONTACT, mPhoneText + ", " + mFullNameText);
 
@@ -247,9 +267,49 @@ public class CreateMessageActivity
                 long id = Long.parseLong(result.getLastPathSegment());
                 Log.d(TAG, "MessageFragment, saveMessage(), Layer: " + Constants.KEY_CITIZEN_MESSAGES
                         + ", id: " + id + ", insert result: " + result);
+
+                putAttaches(Uri.parse("content://" + app.getAuthority() + "/" +
+                        Constants.KEY_CITIZEN_MESSAGES + "/" + id + "/attach"));
             }
         } catch (RuntimeException e) {
             Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void putAttaches(Uri uri) {
+        for (String path : mPhotoPicker.getImagesPath()) {
+            String[] segments = path.split("/");
+            String name = segments.length > 0 ? segments[segments.length - 1] : "image.jpg";
+            ContentValues values = new ContentValues();
+            values.put(VectorLayer.ATTACH_DISPLAY_NAME, name);
+            values.put(VectorLayer.ATTACH_MIME_TYPE, "image/jpeg");
+
+            Uri result = getContentResolver().insert(uri, values);
+            if (result == null) {
+                Log.d(TAG, "attach insert failed");
+            } else {
+                try {
+                    OutputStream outStream = getContentResolver().openOutputStream(result);
+
+                    if (outStream != null) {
+                        InputStream inStream = new FileInputStream(path);
+                        byte[] buffer = new byte[8192];
+                        int counter;
+
+                        while ((counter = inStream.read(buffer, 0, buffer.length)) > 0) {
+                            outStream.write(buffer, 0, counter);
+                            outStream.flush();
+                        }
+
+                        outStream.close();
+                        inStream.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Log.d(TAG, "attach insert success: " + result.toString());
+            }
         }
     }
 
@@ -263,13 +323,27 @@ public class CreateMessageActivity
                 getCurrentLocation();
                 break;
             case R.id.action_photo:
-                // TODO photo
+                showPhotos();
                 break;
             case R.id.action_compass:
                 Intent compassIntent = new Intent(this, MessageCompassActivity.class);
                 startActivityForResult(compassIntent, MESSAGE_COMPASS);
                 break;
         }
+    }
+
+    private void showPhotos() {
+        mPhotos.setVisibility(View.VISIBLE);
+        mToolbar.setDisplayHomeAsUpEnabled(false);
+        mToolbar.setTitle(R.string.photo_add);
+        mItem.setIcon(R.drawable.ic_action_apply_dark);
+    }
+
+    private void hidePhotos() {
+        mPhotos.setVisibility(View.GONE);
+        mToolbar.setDisplayHomeAsUpEnabled(true);
+        mToolbar.setTitle(mTitle);
+        mItem.setIcon(R.drawable.ic_my_location_white_24dp);
     }
 
     @Override
@@ -280,6 +354,7 @@ public class CreateMessageActivity
                     mMapFragment.setSelectedLocation((Location) data.getParcelableExtra(Constants.KEY_LOCATION));
                 break;
             default:
+                mPhotoPicker.onActivityResult(requestCode, resultCode, data);
                 super.onActivityResult(requestCode, resultCode, data);
                 break;
         }

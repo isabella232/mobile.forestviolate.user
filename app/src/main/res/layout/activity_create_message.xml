@@ -24,6 +24,7 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:easypicker="http://schemas.android.com/apk/res-auto"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -40,7 +41,8 @@
         <FrameLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"/>
 
         <LinearLayout
             android:id="@+id/ll_message"
@@ -54,12 +56,12 @@
                 android:id="@+id/message"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:layout_weight="1"
                 android:layout_gravity="center"
-                android:hint="@string/message_hint"
+                android:layout_weight="1"
                 android:background="@drawable/message_box"
-                android:maxLines="2"/>
+                android:hint="@string/message_hint"
+                android:maxLines="2"
+                android:padding="5dp"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/action_send"
@@ -113,5 +115,24 @@
             fab:fab_icon="@drawable/ic_add_photo"
             fab:fab_size="mini"/>
 
+        <FrameLayout
+            android:id="@+id/fl_photos"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@color/color_a_black"
+            android:clickable="true"
+            android:padding="5dp"
+            android:visibility="gone">
+
+            <com.keenfin.easypicker.PhotoPicker
+                android:id="@+id/pp_violation"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                easypicker:accentColor="@android:color/transparent"
+                easypicker:newPhotosDirectory="@string/app_name"
+                easypicker:newPhotosIcon="@drawable/ic_add_photo"
+                easypicker:primaryColor="@color/accent"/>
+        </FrameLayout>
     </RelativeLayout>
 </LinearLayout>
