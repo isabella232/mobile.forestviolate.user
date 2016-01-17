@@ -103,6 +103,11 @@
             />
 
         <activity
+            android:name=".activity.AccountActivity"
+            android:label="@string/sf_login_title"
+            />
+
+        <activity
             android:name=".activity.CreateMessageActivity"
             android:label="@string/action_felling"
             />

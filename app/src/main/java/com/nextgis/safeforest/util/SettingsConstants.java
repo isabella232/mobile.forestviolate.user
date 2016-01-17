@@ -3,7 +3,7 @@
  * Purpose: Mobile application for registering facts of the forest violations.
  * Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
  * *****************************************************************************
- * Copyright (c) 2015-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,10 @@ public interface SettingsConstants
     String KEY_PREF_REGION   = "user_region";
     String KEY_PREF_REGION_NAME   = "user_region_name";
     String KEY_PREF_CHANGE_REGION        = "change_region";
-    String KEY_PREF_CHANGE_ACCOUNt       = "change_account";
+    String KEY_PREF_CHANGE_ACCOUNT       = "change_account";
+    String KEY_USER_FULLNAME = "user_full_name";
+    String KEY_USER_PHONE = "user_phone";
+    String KEY_USER_EMAIL = "user_email";
 
     /**
      * map preference

@@ -134,12 +134,12 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         setTitle(getText(R.string.first_run));
 
         FragmentManager fm = getSupportFragmentManager();
-        NGWLoginFragment ngwLoginFragment = (NGWLoginFragment) fm.findFragmentByTag("NGWLogin");
+        NGWLoginFragment ngwLoginFragment = (NGWLoginFragment) fm.findFragmentByTag(Constants.FRAGMENT_LOGIN);
 
         if (ngwLoginFragment == null) {
             ngwLoginFragment = new LoginFragment();
             FragmentTransaction ft = fm.beginTransaction();
-            ft.add(com.nextgis.maplibui.R.id.login_frame, ngwLoginFragment, "NGWLogin");
+            ft.add(com.nextgis.maplibui.R.id.login_frame, ngwLoginFragment, Constants.FRAGMENT_LOGIN);
             ft.commit();
         }
         ngwLoginFragment.setForNewAccount(true);

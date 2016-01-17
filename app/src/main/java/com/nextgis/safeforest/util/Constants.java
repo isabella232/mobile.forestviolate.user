@@ -71,8 +71,11 @@ public interface Constants
 
     String FRAGMENT_SYNC_REGION      = "ngw_sync_region";
     String FRAGMENT_PREFERENCES      = "sf_preferences";
+    String FRAGMENT_LOGIN            = "NGWLogin";
+    String FRAGMENT_ACCOUNT          = "sf_account";
     String FRAGMENT_VIEW_MESSAGE     = "view_message";
     String FRAGMENT_USER_DATA_DIALOG = "user_data_dialog";
+    String FRAGMENT_USER_AUTH        = "user_auth";
     String FRAGMENT_SELECT_LOCATION  = "select_location";
 
     String FIELD_ID        = "_id";
@@ -109,11 +112,4 @@ public interface Constants
             + "(\\d{3,4})?[-\\s]?((\\d{5,7})|(\\d{3}[-\\s]\\d{2}[-\\s]?\\d{2}))$";
     String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
             + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-
-    /**
-     * Preferences
-     */
-    String KEY_USER_FULLNAME = "user_full_name";
-    String KEY_USER_PHONE = "user_phone";
-    String KEY_USER_EMAIL = "user_email";
 }

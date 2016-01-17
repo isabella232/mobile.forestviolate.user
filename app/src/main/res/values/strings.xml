@@ -52,6 +52,8 @@
     <string name="signing_in">Signing in…</string>
     <string name="signing_up">Signing up…</string>
     <string name="skip">Skip</string>
+    <string name="auth_title">Authorization required</string>
+    <string name="auth_require">To post message to server you have to leave your full name and contact phone. Would you like to sign in/up?</string>
     <string name="sf_region_select">Select working territory</string>
     <string name="sf_getting_regions">Fetching regions</string>
     <string name="sync_region">Syncing region</string>
@@ -81,6 +83,7 @@
     <string name="show_zoom_controls_summary">Show zoom in/zoom out control on the map</string>
     <string name="general">General</string>
     <string name="click_to_change_account">Change account settings</string>
+    <string name="change_server">Change server</string>
     <string name="theme">Application theme</string>
     <string name="sync_switch">Switch sync on/off</string>
     <string name="get_citizen_messages">Get messages</string>
@@ -101,8 +104,8 @@
     <string name="anonymous_hint">Enter your full name and phone number for supervisor callback.</string>
     <string name="email_hint">E-mail</string>
     <string name="email_not_valid">E-mail is not valid</string>
-    <string name="full_name_hint">Full name*</string>
-    <string name="phone_hint">Phone*</string>
+    <string name="full_name_hint">Full name</string>
+    <string name="phone_hint">Phone</string>
     <string name="phone_not_valid">Phone is not valid</string>
     <string name="message_hint">Type a message</string>
     <string name="action_felling">Felling</string>

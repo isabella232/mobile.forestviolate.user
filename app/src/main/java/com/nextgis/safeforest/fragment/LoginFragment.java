@@ -26,7 +26,6 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.Loader;
@@ -48,6 +47,7 @@ import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.dialog.UserDataDialog;
 import com.nextgis.safeforest.dialog.YesNoDialog;
 import com.nextgis.safeforest.util.Constants;
+import com.nextgis.safeforest.util.SettingsConstants;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -120,7 +120,7 @@ public class LoginFragment extends NGWLoginFragment {
     {
         Pattern pattern = Pattern.compile(Constants.EMAIL_PATTERN);
         Matcher matcher = pattern.matcher(mLogin.getText());
-        if (!matcher.matches()) {
+        if (v.getId() != R.id.skip && !matcher.matches()) {
             Toast.makeText(getActivity(), R.string.email_not_valid, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -178,10 +178,6 @@ public class LoginFragment extends NGWLoginFragment {
                                     SystemClock.sleep(300);
 
                                 if (result[0]) {
-                                    PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
-                                            .putString(Constants.KEY_USER_FULLNAME, mFullNameText)
-                                            .putString(Constants.KEY_USER_PHONE, mPhoneText).commit();
-
                                     getLoaderManager().restartLoader(R.id.auth_token_loader, null, LoginFragment.this);
 
                                     mSignUpButton.setEnabled(false);
@@ -258,9 +254,10 @@ public class LoginFragment extends NGWLoginFragment {
     @Override
     protected void updateButtonState()
     {
-        if (checkEditText(mURL)){
+        if (checkEditText(mURL)) {
             mSkipButton.setEnabled(true);
-            if( checkEditText(mLogin) && checkEditText(mPassword)) {
+
+            if (checkEditText(mLogin) && checkEditText(mPassword)) {
                 mSignInButton.setEnabled(true);
                 mSignUpButton.setEnabled(true);
             }
@@ -280,15 +277,14 @@ public class LoginFragment extends NGWLoginFragment {
                         mOnAddAccountListener.onAddAccount(app.getAccount(accountName), token, true);
                     }
 
-                    app.setUserData(accountName, Constants.KEY_USER_FULLNAME, mFullNameText);
-                    app.setUserData(accountName, Constants.KEY_USER_PHONE, mPhoneText);
+                    app.setUserData(accountName, SettingsConstants.KEY_USER_FULLNAME, mFullNameText);
+                    app.setUserData(accountName, SettingsConstants.KEY_USER_PHONE, mPhoneText);
                 }
                 else {
                     if (null != mOnAddAccountListener) {
                         mOnAddAccountListener.onAddAccount(null, token, false);
                     }
                 }
-
             } else {
                 // do nothing, guest account cannot be changed
                 getActivity().finish();
@@ -296,9 +292,10 @@ public class LoginFragment extends NGWLoginFragment {
         }
         else{
             if (mForNewAccount) {
-                app.setUserData(accountName, Constants.KEY_USER_FULLNAME, mFullNameText);
-                app.setUserData(accountName, Constants.KEY_USER_PHONE, mPhoneText);
-            }
+                app.setUserData(accountName, SettingsConstants.KEY_USER_FULLNAME, mFullNameText);
+                app.setUserData(accountName, SettingsConstants.KEY_USER_PHONE, mPhoneText);
+            } else if (null != mOnAddAccountListener)
+                mOnAddAccountListener.onAddAccount(app.getAccount(accountName), token, false);
 
             super.onTokenReceived(accountName, token);
         }

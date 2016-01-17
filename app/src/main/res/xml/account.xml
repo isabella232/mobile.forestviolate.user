@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Project: Forest violations
+  ~ Purpose: Mobile application for registering facts of the forest violations.
+  ~ Author:  Stanislav Petriakov, becomeglory@gmail.com
+  ~ *****************************************************************************
+  ~ Copyright (c) 2016 NextGIS, info@nextgis.com
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:key="user_id">
+        <EditTextPreference
+            android:inputType="textPersonName"
+            android:key="user_full_name"
+            android:title="@string/full_name_hint"/>
+        <EditTextPreference
+            android:inputType="phone"
+            android:key="user_phone"
+            android:title="@string/phone_hint"/>
+        <EditTextPreference
+            android:inputType="textEmailAddress"
+            android:key="user_email"
+            android:title="@string/email_hint"/>
+        <Preference
+            android:key="change_account"
+            android:title="@string/change_server"/>
+    </PreferenceCategory>
+</PreferenceScreen>

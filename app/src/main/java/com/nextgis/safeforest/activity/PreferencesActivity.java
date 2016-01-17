@@ -2,8 +2,9 @@
  * Project: Forest violations
  * Purpose: Mobile application for registering facts of the forest violations.
  * Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+ * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2015-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +24,7 @@ package com.nextgis.safeforest.activity;
 
 import android.accounts.Account;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -41,9 +43,6 @@ import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.fragment.RegionSyncFragment;
 import com.nextgis.safeforest.util.SettingsConstants;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Application preference
@@ -199,6 +198,16 @@ public class PreferencesActivity extends SFActivity {
                             }
                         });
             }
+
+            Preference changeAccount = findPreference(SettingsConstants.KEY_PREF_CHANGE_ACCOUNT);
+            changeAccount.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent accountSettings = new Intent(activity, AccountActivity.class);
+                    startActivity(accountSettings);
+                    return true;
+                }
+            });
         }
     }
 }

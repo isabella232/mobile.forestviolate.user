@@ -53,6 +53,9 @@
     <string name="signing_in">Вход…</string>
     <string name="signing_up">Регистрация…</string>
     <string name="skip">Пропустить</string>
+    <string name="auth_title">Требуется авторизация</string>
+    <string name="auth_require">Для отправки сообщения на сервер нужно указать имя и контактный телефон. Вы хотите зарегистрироваться или войти в
+        аккаунт?</string>
     <string name="sf_region_select">Выберите территорию</string>
     <string name="sf_getting_regions">Загрузка регионов</string>
     <string name="sync_region">Синхронизация региона</string>
@@ -82,6 +85,7 @@
     <string name="show_zoom_controls_summary">Показывать кнопки +/- на карте для увеличения/уменьшения</string>
     <string name="general">Общие</string>
     <string name="click_to_change_account">Изменить настройки аккаунта</string>
+    <string name="change_server">Изменить сервер</string>
     <string name="theme">Тема приложения</string>
     <string name="sync_switch">Вкл./выкл. синхронизацию</string>
     <string name="get_citizen_messages">Получение сообщений</string>
@@ -102,8 +106,8 @@
     <string name="anonymous_hint">Введите ФИО и телефон, чтобы с вами мог связаться диспетчер.</string>
     <string name="email_hint">Электроная почта (e-mail)</string>
     <string name="email_not_valid">Неверный формат почты</string>
-    <string name="full_name_hint">ФИО*</string>
-    <string name="phone_hint">Телефон*</string>
+    <string name="full_name_hint">ФИО</string>
+    <string name="phone_hint">Телефон</string>
     <string name="phone_not_valid">Неверный формат телефона</string>
     <string name="message_hint">Введите сообщение</string>
     <string name="action_felling">Лесозаготовка</string>
