@@ -3,7 +3,7 @@
  * Purpose: Mobile application for registering facts of the forest violations.
  * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * ****************************************************************************
- * Copyright (c) 2015 NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
 
 package com.nextgis.safeforest.fragment;
 
-import android.accounts.Account;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -83,19 +82,12 @@ public class RegionSyncFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
         mAdapter = new InitStepListAdapter(getActivity());
-
         mApp = (IGISApplication) getActivity().getApplication();
-        Account account = mApp.getAccount(getString(R.string.account_name));
-        //set properties from account
-        String auth = mApp.getAccountUserData(account, Constants.KEY_IS_AUTHORIZED);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        final SharedPreferences.Editor edit = preferences.edit();
+        mIsRegionSet = MapUtil.isRegionSet(preferences) && MapUtil.hasLayer(mApp.getMap(), Constants.KEY_FV_REGIONS);;
 
-        edit.putBoolean(Constants.KEY_IS_AUTHORIZED, !auth.equals(Constants.ANONYMOUS));
-        edit.commit();
-
-        mIsRegionSet = MapUtil.isRegionSet(preferences);
         if (mIsRegionSet)
             startSyncService(getActivity(), false);
     }
