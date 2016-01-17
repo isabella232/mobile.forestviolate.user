@@ -23,16 +23,17 @@
 
 package com.nextgis.safeforest.activity;
 
+import android.accounts.Account;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -58,6 +59,7 @@ import com.nextgis.safeforest.dialog.UserDataDialog;
 import com.nextgis.safeforest.dialog.YesNoDialog;
 import com.nextgis.safeforest.fragment.MapFragment;
 import com.nextgis.safeforest.util.Constants;
+import com.nextgis.safeforest.util.SettingsConstants;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -76,6 +78,7 @@ public class CreateMessageActivity
         extends SFActivity implements View.OnClickListener {
     protected static final int MESSAGE_COMPASS = 1;
 
+    protected MainApplication mApp;
     protected ContentValues mValues;
     protected String mEmailText, mPhoneText, mFullNameText;
 
@@ -88,14 +91,18 @@ public class CreateMessageActivity
     protected int mTitle;
     protected MenuItem mItem;
     protected PhotoPicker mPhotoPicker;
+    protected boolean mIsAuthorized;
+    protected UserDataDialog mUserDataDialog;
+    protected YesNoDialog mAuthDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mValues = new ContentValues(); // TODO save / restore state
         setContentView(R.layout.activity_create_message);
         setToolbar(R.id.main_toolbar);
+
+        mValues = new ContentValues();
+        mApp = (MainApplication) getApplication();
         mToolbar = getSupportActionBar();
 
         final FragmentManager fm = getSupportFragmentManager();
@@ -149,6 +156,19 @@ public class CreateMessageActivity
     protected void onResume() {
         super.onResume();
         mMapFragment.setSelectedLocationVisible(true);
+
+        Account account = mApp.getAccount(getString(R.string.account_name));
+        String auth = mApp.getAccountUserData(account, Constants.KEY_IS_AUTHORIZED);
+        mIsAuthorized = auth != null && !auth.equals(Constants.ANONYMOUS);
+        mPhoneText = mApp.getAccountUserData(account, SettingsConstants.KEY_USER_PHONE);
+        mFullNameText = mApp.getAccountUserData(account, SettingsConstants.KEY_USER_FULLNAME);
+        mEmailText = mApp.getAccountUserData(account, SettingsConstants.KEY_USER_EMAIL);
+
+        if (mIsAuthorized) {
+            mEmailText = mApp.getAccountLogin(account);
+        } else {
+            showUserDialog();
+        }
     }
 
     @Override
@@ -188,22 +208,23 @@ public class CreateMessageActivity
         return super.onOptionsItemSelected(item);
     }
 
+    protected void showUserDialog() {
+        if (mUserDataDialog != null && mUserDataDialog.isAdded() ||
+                mAuthDialog != null && mAuthDialog.isAdded())
+            return;
 
-    protected void sendMessage() {
-        saveLocation(mMapFragment.getSelectedLocation());
-        final UserDataDialog dialog = new UserDataDialog();
+        mUserDataDialog = new UserDataDialog();
 
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(CreateMessageActivity.this);
-        dialog.setFullNameText(prefs.getString(Constants.KEY_USER_FULLNAME, ""));
-        dialog.setPhoneText(prefs.getString(Constants.KEY_USER_PHONE, ""));
-        dialog.setEmailText(prefs.getString(Constants.KEY_USER_EMAIL, ""));
+        mUserDataDialog.setFullNameText(mFullNameText);
+        mUserDataDialog.setPhoneText(mPhoneText);
+        mUserDataDialog.setEmailText(mEmailText);
 
-        dialog.setOnPositiveClickedListener(new YesNoDialog.OnPositiveClickedListener() {
+        mUserDataDialog.setOnPositiveClickedListener(new YesNoDialog.OnPositiveClickedListener() {
             @Override
             public void onPositiveClicked() {
-                mFullNameText = dialog.getFullNameText();
-                mPhoneText = dialog.getPhoneText();
-                mEmailText = dialog.getEmailText();
+                mFullNameText = mUserDataDialog.getFullNameText();
+                mPhoneText = mUserDataDialog.getPhoneText();
+                mEmailText = mUserDataDialog.getEmailText();
 
                 if (TextUtils.isEmpty(mFullNameText) || TextUtils.isEmpty(mPhoneText)) {
                     Toast.makeText(CreateMessageActivity.this, R.string.anonymous_hint, Toast.LENGTH_LONG).show();
@@ -226,49 +247,85 @@ public class CreateMessageActivity
                     }
                 }
 
+                String accountName = getString(R.string.account_name);
+                mApp.setUserData(accountName, SettingsConstants.KEY_USER_FULLNAME, mFullNameText);
+                mApp.setUserData(accountName, SettingsConstants.KEY_USER_PHONE, mPhoneText);
+                mApp.setUserData(accountName, SettingsConstants.KEY_USER_EMAIL, mEmailText);
 
-                prefs.edit().putString(Constants.KEY_USER_FULLNAME, mFullNameText)
-                        .putString(Constants.KEY_USER_PHONE, mPhoneText)
-                        .putString(Constants.KEY_USER_EMAIL, mEmailText).commit();
+                mUserDataDialog.dismiss();
+            }
+        });
+        mUserDataDialog.setOnNegativeClickedListener(new YesNoDialog.OnNegativeClickedListener() {
+            @Override
+            public void onNegativeClicked() {
+                showSignUpDialog();
+                mUserDataDialog.dismiss();
+            }
+        });
+        mUserDataDialog.setKeepInstance(true);
+        mUserDataDialog.show(getSupportFragmentManager(), Constants.FRAGMENT_USER_DATA_DIALOG);
+    }
 
-                saveMessage();
+    protected void showSignUpDialog() {
+        if (mAuthDialog != null && mAuthDialog.isAdded())
+            return;
+
+        mAuthDialog = new YesNoDialog();
+        mAuthDialog.setTitle(R.string.auth_title)
+                .setMessage(R.string.auth_require)
+                .setPositiveText(android.R.string.yes)
+                .setNegativeText(android.R.string.no);
+        mAuthDialog.setOnPositiveClickedListener(new YesNoDialog.OnPositiveClickedListener() {
+            @Override
+            public void onPositiveClicked() {
+                ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                boolean isConnected = cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
+
+                if (isConnected) {
+                    Intent accountSettings = new Intent(CreateMessageActivity.this, AccountActivity.class);
+                    accountSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    accountSettings.setAction(Constants.FRAGMENT_LOGIN);
+                    startActivity(accountSettings);
+                } else
+                    Toast.makeText(CreateMessageActivity.this, R.string.error_network_unavailable, Toast.LENGTH_SHORT).show();
+
+                mAuthDialog.dismiss();
+            }
+        });
+        mAuthDialog.setOnNegativeClickedListener(new YesNoDialog.OnNegativeClickedListener() {
+            @Override
+            public void onNegativeClicked() {
+                mAuthDialog.dismiss();
                 finish();
             }
         });
-        dialog.setOnNegativeClickedListener(new YesNoDialog.OnNegativeClickedListener() {
-            @Override
-            public void onNegativeClicked() {
-                dialog.dismiss();
-            }
-        });
-        dialog.setKeepInstance(true);
-        dialog.show(getSupportFragmentManager(), Constants.FRAGMENT_USER_DATA_DIALOG);
+        mAuthDialog.setKeepInstance(true);
+        mAuthDialog.show(getSupportFragmentManager(), Constants.FRAGMENT_USER_AUTH);
     }
 
+    protected void sendMessage() {
+        saveLocation(mMapFragment.getSelectedLocation());
 
-    protected void saveMessage() {
         try {
-            final MainApplication app = (MainApplication) getApplication();
-
             mValues.put(Constants.FIELD_MTYPE, mMessageType);
             mValues.put(Constants.FIELD_STATUS, Constants.MSG_STATUS_NEW);
             mValues.put(Constants.FIELD_MESSAGE, mMessage.getText().toString());
-            mValues.put(Constants.FIELD_AUTHOR, mEmailText); // TODO authorized user values
+            mValues.put(Constants.FIELD_AUTHOR, mEmailText);
             mValues.put(Constants.FIELD_CONTACT, mPhoneText + ", " + mFullNameText);
 
-            Uri uri = Uri.parse("content://" + app.getAuthority() + "/" + Constants.KEY_CITIZEN_MESSAGES);
-            Uri result = app.getContentResolver().insert(uri, mValues);
+            Uri uri = Uri.parse("content://" + mApp.getAuthority() + "/" + Constants.KEY_CITIZEN_MESSAGES);
+            Uri result = mApp.getContentResolver().insert(uri, mValues);
 
             if (result == null) {
                 Log.d(TAG, "MessageFragment, saveMessage(), Layer: " + Constants.KEY_CITIZEN_MESSAGES + ", insert FAILED");
-                Toast.makeText(app, R.string.error_create_message, Toast.LENGTH_LONG).show();
+                Toast.makeText(mApp, R.string.error_create_message, Toast.LENGTH_LONG).show();
                 // TODO: not close activity
             } else {
                 long id = Long.parseLong(result.getLastPathSegment());
                 Log.d(TAG, "MessageFragment, saveMessage(), Layer: " + Constants.KEY_CITIZEN_MESSAGES
                         + ", id: " + id + ", insert result: " + result);
 
-                putAttaches(Uri.parse("content://" + app.getAuthority() + "/" +
+                putAttaches(Uri.parse("content://" + mApp.getAuthority() + "/" +
                         Constants.KEY_CITIZEN_MESSAGES + "/" + id + "/attach"));
             }
         } catch (RuntimeException e) {
