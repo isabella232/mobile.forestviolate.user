@@ -50,6 +50,7 @@ import android.widget.Toast;
 
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
+import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
@@ -365,6 +366,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
+        protected MapFragment mMapFragment;
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -376,7 +378,10 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             if (position == 0) {
                 return new MessageListFragment();
             } else {
-                return new MapFragment();
+                if (mMapFragment == null)
+                    mMapFragment = new MapFragment();
+
+                return mMapFragment;
             }
         }
 
@@ -396,6 +401,14 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             }
             return null;
         }
+    }
+
+    public void setZoomAndCenter(float zoom, GeoPoint center) {
+        mSectionsPagerAdapter.mMapFragment.setZoomAndCenter(zoom, center);
+    }
+
+    public void showMap() {
+        mViewPager.setCurrentItem(1, true);
     }
 
 

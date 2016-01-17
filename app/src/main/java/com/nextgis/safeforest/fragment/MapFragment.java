@@ -290,6 +290,10 @@ public class MapFragment
         mCurrentCenter = null;
     }
 
+    public void setZoomAndCenter(float zoom, GeoPoint center) {
+        mMap.setZoomAndCenter(zoom, center);
+    }
+
     public void refresh()
     {
         if (null != mMap) {

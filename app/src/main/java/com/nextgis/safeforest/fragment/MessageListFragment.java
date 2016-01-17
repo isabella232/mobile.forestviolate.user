@@ -5,7 +5,7 @@
  * Author:  NikitaFeodonit, nfeodonit@yandex.com
  * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2015-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,16 +38,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.nextgis.maplib.datasource.GeoGeometryFactory;
+import com.nextgis.maplib.datasource.GeoMultiPoint;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
+import com.nextgis.safeforest.activity.MainActivity;
 import com.nextgis.safeforest.adapter.MessageCursorAdapter;
 import com.nextgis.safeforest.util.Constants;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
+
+import java.io.IOException;
 
 
 public class MessageListFragment
@@ -113,6 +119,27 @@ public class MessageListFragment
         ListView list = (ListView) rootView.findViewById(R.id.message_list);
         list.setAdapter(mAdapter);
         list.setOnItemClickListener(mAdapter);
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Cursor cursor = (Cursor) mAdapter.getItem(position);
+                if (null == cursor)
+                    return false;
+
+                try {
+                    GeoMultiPoint point = (GeoMultiPoint) GeoGeometryFactory.fromBlob(cursor.getBlob(6));
+                    if (point != null && point.size() > 0) {
+                        ((MainActivity) getActivity()).setZoomAndCenter(15, point.get(0));
+                        ((MainActivity) getActivity()).showMap();
+                    }
+                    return true;
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                return false;
+            }
+        });
         list.setOnScrollListener(new AbsListView.OnScrollListener() {
             private int mLastFirstVisibleItem;
             private int mScrollState;
@@ -157,7 +184,7 @@ public class MessageListFragment
                     set.playTogether(
                             ObjectAnimator.ofFloat(fab, "scaleX", from, to),
                             ObjectAnimator.ofFloat(fab, "scaleY", from, to)
-                            );
+                    );
                     set.setDuration(300).start();
                 }
 
@@ -187,7 +214,8 @@ public class MessageListFragment
                         Constants.FIELD_AUTHOR,
                         Constants.FIELD_STATUS,
                         Constants.FIELD_MTYPE,
-                        Constants.FIELD_MESSAGE};
+                        Constants.FIELD_MESSAGE,
+                        com.nextgis.maplib.util.Constants.FIELD_GEOM};
 
                 String sortOrder = Constants.FIELD_MDATE + " DESC";
 
