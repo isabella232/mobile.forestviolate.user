@@ -101,8 +101,8 @@ public class SelectLocationOverlay extends Overlay implements MapViewEventListen
         mSelectedPoint.project(GeoConstants.CRS_WGS84);
         Location location = new Location(LocationManager.GPS_PROVIDER);
         location.setTime(System.currentTimeMillis());
-        location.setLatitude(mSelectedPoint.getX());
-        location.setLongitude(mSelectedPoint.getY());
+        location.setLongitude(mSelectedPoint.getX());
+        location.setLatitude(mSelectedPoint.getY());
 
         return location;
     }

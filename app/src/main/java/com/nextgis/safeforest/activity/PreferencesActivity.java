@@ -35,6 +35,7 @@ import android.support.v7.preference.PreferenceManager;
 import android.view.MenuItem;
 
 import com.nextgis.maplib.util.Constants;
+import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
@@ -131,8 +132,7 @@ public class PreferencesActivity extends SFActivity {
                 SharedPreferences settings = activity.getSharedPreferences(Constants.PREFERENCES, Constants.MODE_MULTI_PROCESS);
                 long timeStamp = settings.getLong(com.nextgis.maplib.util.SettingsConstants.KEY_PREF_LAST_SYNC_TIMESTAMP, 0);
                 if (timeStamp > 0) {
-                    syncSwitch.setSummary(getString(R.string.last_sync_time) + ": " +
-                            new SimpleDateFormat().format(new Date(timeStamp)));
+                    syncSwitch.setSummary(ControlHelper.getSyncTime(activity, timeStamp));
                 }
             }
 
