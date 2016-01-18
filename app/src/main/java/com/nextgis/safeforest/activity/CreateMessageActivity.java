@@ -206,6 +206,7 @@ public class CreateMessageActivity
             return;
 
         mUserDataDialog = new UserDataDialog();
+        mUserDataDialog.setCancelable(false);
 
         mUserDataDialog.setFullNameText(mFullNameText);
         mUserDataDialog.setPhoneText(mPhoneText);
@@ -263,10 +264,12 @@ public class CreateMessageActivity
             return;
 
         mAuthDialog = new YesNoDialog();
+        mUserDataDialog.setCancelable(false);
         mAuthDialog.setTitle(R.string.auth_title)
                 .setMessage(R.string.auth_require)
                 .setPositiveText(android.R.string.yes)
                 .setNegativeText(android.R.string.no);
+
         mAuthDialog.setOnPositiveClickedListener(new YesNoDialog.OnPositiveClickedListener() {
             @Override
             public void onPositiveClicked() {
