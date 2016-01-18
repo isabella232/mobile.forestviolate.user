@@ -147,9 +147,7 @@ public class CreateMessageActivity
         mLocationCompass = (FloatingActionButton) findViewById(R.id.action_compass);
         mLocationCompass.setOnClickListener(this);
         Drawable drawable = getResources().getDrawable(R.drawable.ic_compass);
-        tintIcon(drawable);
-        assert drawable != null;
-        mLocationCompass.setIconDrawable(drawable);
+        mLocationCompass.setIconDrawable(tintIcon(drawable));
     }
 
     @Override
@@ -177,10 +175,11 @@ public class CreateMessageActivity
         mMapFragment.setSelectedLocationVisible(false);
     }
 
-    protected void tintIcon(Drawable drawable) {
-        DrawableCompat.wrap(drawable);
-        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-        DrawableCompat.setTint(drawable, getResources().getColor(R.color.color_white));
+    protected Drawable tintIcon(Drawable drawable) {
+        Drawable result = DrawableCompat.wrap(drawable);
+        result.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        DrawableCompat.setTint(result, getResources().getColor(R.color.color_white));
+        return result;
     }
 
 
