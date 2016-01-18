@@ -85,6 +85,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
      * The {@link ViewPager} that will host the section contents.
      */
     protected ViewPager mViewPager;
+    protected TabLayout mTabLayout;
     protected boolean mFirstRun;
     protected int mCurrentView;
 
@@ -181,17 +182,38 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+        mTabLayout = (TabLayout) findViewById(R.id.tabs);
+        mTabLayout.setupWithViewPager(mViewPager);
+        mTabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager) {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                super.onTabSelected(tab);
 
-        if(tabLayout.getTabCount() < mSectionsPagerAdapter.getCount()) {
+                if (tab.getPosition() == 0)
+                    ((MapFragment) mSectionsPagerAdapter.getItem(1)).pauseGps();
+                else
+                    ((MapFragment) mSectionsPagerAdapter.getItem(1)).resumeGps();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                super.onTabUnselected(tab);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                super.onTabReselected(tab);
+            }
+        });
+
+        if(mTabLayout.getTabCount() < mSectionsPagerAdapter.getCount()) {
             // For each of the sections in the app, add a tab to the action bar.
             for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
                 // Create a tab with text corresponding to the page title defined by
                 // the adapter. Also specify this Activity object, which implements
                 // the TabListener interface, as the callback (listener) for when
                 // this tab is selected.
-                tabLayout.addTab(tabLayout.newTab().setText(mSectionsPagerAdapter.getPageTitle(i)));
+                mTabLayout.addTab(mTabLayout.newTab().setText(mSectionsPagerAdapter.getPageTitle(i)));
             }
         }
 
@@ -229,6 +251,10 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
                         }
                     });
         }
+    }
+
+    public boolean isMapShown() {
+        return mTabLayout.getSelectedTabPosition() == 1;
     }
 
     private void addFire() {
@@ -409,6 +435,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
     public void showMap() {
         mViewPager.setCurrentItem(1, true);
+        mTabLayout.setScrollPosition(1, 0, true);
     }
 
 

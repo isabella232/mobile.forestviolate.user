@@ -55,6 +55,7 @@ import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
+import com.nextgis.safeforest.activity.MainActivity;
 import com.nextgis.safeforest.overlay.SelectLocationOverlay;
 import com.nextgis.safeforest.util.SettingsConstants;
 
@@ -192,13 +193,7 @@ public class MapFragment
     @Override
     public void onPause()
     {
-        if (null != mCurrentLocationOverlay) {
-            mCurrentLocationOverlay.stopShowingCurrentLocation();
-        }
-        if (null != mGpsEventSource) {
-            mGpsEventSource.removeListener(this);
-        }
-
+        pauseGps();
 
         final SharedPreferences.Editor edit =
                 PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
@@ -264,18 +259,13 @@ public class MapFragment
             mMap.addListener(this);
         }
 
+        if (getActivity() instanceof MainActivity) {
+            if (((MainActivity) getActivity()).isMapShown())
+                resumeGps();
+        } else
+            resumeGps();
+
         mCoordinatesFormat = prefs.getInt(SettingsConstants.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);
-
-        if (null != mCurrentLocationOverlay) {
-            mCurrentLocationOverlay.updateMode(
-                    PreferenceManager.getDefaultSharedPreferences(getActivity())
-                            .getString(SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC, "3"));
-            mCurrentLocationOverlay.startShowingCurrentLocation();
-        }
-        if (null != mGpsEventSource) {
-            mGpsEventSource.addListener(this);
-        }
-
         mShowStatusPanel = prefs.getBoolean(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL, true);
 
         if (null != mStatusPanel) {
@@ -288,6 +278,25 @@ public class MapFragment
         }
 
         mCurrentCenter = null;
+    }
+
+    public void pauseGps() {
+        if (null != mCurrentLocationOverlay)
+            mCurrentLocationOverlay.stopShowingCurrentLocation();
+
+        if (null != mGpsEventSource)
+            mGpsEventSource.removeListener(this);
+    }
+
+    public void resumeGps() {
+        if (null != mCurrentLocationOverlay) {
+            mCurrentLocationOverlay.updateMode(PreferenceManager.getDefaultSharedPreferences(getActivity())
+                    .getString(SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC, "3"));
+            mCurrentLocationOverlay.startShowingCurrentLocation();
+        }
+
+        if (null != mGpsEventSource)
+            mGpsEventSource.addListener(this);
     }
 
     public void setZoomAndCenter(float zoom, GeoPoint center) {
