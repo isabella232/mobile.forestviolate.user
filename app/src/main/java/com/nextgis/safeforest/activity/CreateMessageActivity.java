@@ -36,7 +36,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -60,6 +59,7 @@ import com.nextgis.safeforest.dialog.YesNoDialog;
 import com.nextgis.safeforest.fragment.MapFragment;
 import com.nextgis.safeforest.util.Constants;
 import com.nextgis.safeforest.util.SettingsConstants;
+import com.nextgis.safeforest.util.UiUtil;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -147,7 +147,7 @@ public class CreateMessageActivity
         mLocationCompass = (FloatingActionButton) findViewById(R.id.action_compass);
         mLocationCompass.setOnClickListener(this);
         Drawable drawable = getResources().getDrawable(R.drawable.ic_compass);
-        mLocationCompass.setIconDrawable(tintIcon(drawable));
+        mLocationCompass.setIconDrawable(UiUtil.tintIcon(drawable, getResources().getColor(R.color.color_white)));
     }
 
     @Override
@@ -173,13 +173,6 @@ public class CreateMessageActivity
     protected void onPause() {
         super.onPause();
         mMapFragment.setSelectedLocationVisible(false);
-    }
-
-    protected Drawable tintIcon(Drawable drawable) {
-        Drawable result = DrawableCompat.wrap(drawable);
-        result.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-        DrawableCompat.setTint(result, getResources().getColor(R.color.color_white));
-        return result;
     }
 
 

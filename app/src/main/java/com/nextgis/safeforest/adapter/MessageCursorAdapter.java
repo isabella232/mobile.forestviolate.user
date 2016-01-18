@@ -32,14 +32,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.activity.ViewMessageActivity;
 import com.nextgis.safeforest.util.Constants;
+import com.nextgis.safeforest.util.UiUtil;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
+import java.text.DateFormat;
 
 
 public class MessageCursorAdapter
@@ -111,12 +110,7 @@ public class MessageCursorAdapter
         message.setText(cursor.getString(mMessageColumn));
 
         TextView dateView = (TextView) view.findViewById(R.id.date);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(cursor.getLong(mDateColumn));
-        Date date = calendar.getTime();
-        Locale locale = mContext.getResources().getConfiguration().locale;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yy", locale);
-        dateView.setText(sdf.format(date));
+        dateView.setText(UiUtil.formatDate(cursor.getLong(mDateColumn), DateFormat.SHORT));
 
         // TODO: get status from database
         ImageView stateIcon = (ImageView) view.findViewById(R.id.state_icon);

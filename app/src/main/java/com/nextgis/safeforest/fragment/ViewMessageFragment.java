@@ -43,12 +43,10 @@ import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.util.Constants;
+import com.nextgis.safeforest.util.UiUtil;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
+import java.text.DateFormat;
 
 import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.TAG;
@@ -117,13 +115,8 @@ public class ViewMessageFragment
         if (null != cursor && cursor.moveToFirst()) {
 
             try {
-                Calendar calendar = Calendar.getInstance();
                 long timeInMillis = cursor.getLong(cursor.getColumnIndex(Constants.FIELD_MDATE));
-                calendar.setTimeInMillis(timeInMillis);
-                Date calendarTime = calendar.getTime();
-                SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yy", Locale.US);
-                mDate = sdf.format(calendarTime);
-
+                mDate = UiUtil.formatDate(timeInMillis, DateFormat.LONG);
 
                 int status = cursor.getInt(cursor.getColumnIndex(Constants.FIELD_STATUS));
                 switch (status) {
@@ -206,7 +199,7 @@ public class ViewMessageFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_view_message, null);
+        View view = inflater.inflate(R.layout.fragment_view_message, container, false);
 
         mDateView = (TextView) view.findViewById(R.id.date);
         mDateView.setText(mDate);
