@@ -76,7 +76,7 @@ public class MapFragment
     protected CurrentLocationOverlay mCurrentLocationOverlay;
     protected SelectLocationOverlay mSelectLocationOverlay;
 
-    protected boolean mShowStatusPanel;
+    protected boolean mShowStatusPanel, mShowSelectLocation;
     protected GeoPoint mCurrentCenter;
     protected int mCoordinatesFormat;
 
@@ -97,7 +97,7 @@ public class MapFragment
         mCurrentLocationOverlay.setStandingMarker(R.drawable.ic_location_standing);
         mCurrentLocationOverlay.setMovingMarker(R.drawable.ic_location_moving);
         mSelectLocationOverlay = new SelectLocationOverlay(getActivity(), mMap);
-        mSelectLocationOverlay.setVisibility(false);
+        mSelectLocationOverlay.setVisibility(mShowSelectLocation);
 
         mMap.addOverlay(mSelectLocationOverlay);
         mMap.addOverlay(mCurrentLocationOverlay);
@@ -562,6 +562,9 @@ public class MapFragment
     }
 
     public void setSelectedLocationVisible(boolean isVisible) {
-        mSelectLocationOverlay.setVisibility(isVisible);
+        mShowSelectLocation = isVisible;
+
+        if (mSelectLocationOverlay != null)
+            mSelectLocationOverlay.setVisibility(isVisible);
     }
 }

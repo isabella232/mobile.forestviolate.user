@@ -28,6 +28,8 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class UiUtil {
     public static String formatDate(long timestamp, int style) {
@@ -43,6 +45,24 @@ public final class UiUtil {
         result.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         DrawableCompat.setTint(result, color);
         return result;
+    }
+
+    public static boolean isPhoneValid(String phone) {
+        if (phone == null)
+            phone = "";
+
+        Pattern pattern = Pattern.compile(Constants.PHONE_PATTERN);
+        Matcher matcher = pattern.matcher(phone);
+        return matcher.matches();
+    }
+
+    public static boolean isEmailValid(String email) {
+        if (email == null)
+            email = "";
+
+        Pattern pattern = Pattern.compile(Constants.EMAIL_PATTERN);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
 }

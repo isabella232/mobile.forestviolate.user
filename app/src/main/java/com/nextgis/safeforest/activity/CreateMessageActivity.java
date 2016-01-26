@@ -91,7 +91,6 @@ public class CreateMessageActivity
     protected int mTitle;
     protected MenuItem mItem;
     protected PhotoPicker mPhotoPicker;
-    protected boolean mIsAuthorized;
     protected UserDataDialog mUserDataDialog;
     protected YesNoDialog mAuthDialog;
 
@@ -104,15 +103,6 @@ public class CreateMessageActivity
         mValues = new ContentValues();
         mApp = (MainApplication) getApplication();
         mToolbar = getSupportActionBar();
-
-        final FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-
-        mMapFragment = (MapFragment) fm.findFragmentByTag(Constants.FRAGMENT_SELECT_LOCATION);
-        if (mMapFragment == null)
-            mMapFragment = new MapFragment();
-
-        ft.replace(R.id.container, mMapFragment, Constants.FRAGMENT_SELECT_LOCATION).commit();
 
         Bundle extras = getIntent().getExtras();
         if (null != extras) {
@@ -150,31 +140,42 @@ public class CreateMessageActivity
         mLocationCompass.setIconDrawable(UiUtil.tintIcon(drawable, getResources().getColor(R.color.color_white)));
     }
 
+    private void addMap() {
+        final FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
+        mMapFragment = (MapFragment) fm.findFragmentByTag(Constants.FRAGMENT_SELECT_LOCATION);
+        if (mMapFragment == null)
+            mMapFragment = new MapFragment();
+
+        ft.replace(R.id.container, mMapFragment, Constants.FRAGMENT_SELECT_LOCATION).commit();
+        mMapFragment.setSelectedLocationVisible(true);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        mMapFragment.setSelectedLocationVisible(true);
 
         Account account = mApp.getAccount(getString(R.string.account_name));
         String auth = mApp.getAccountUserData(account, Constants.KEY_IS_AUTHORIZED);
-        mIsAuthorized = auth != null && !auth.equals(Constants.ANONYMOUS);
+        boolean isAuthorized = auth != null && !auth.equals(Constants.ANONYMOUS);
+        boolean isUserDataValid = hasPhoneAndName();
         mPhoneText = mApp.getAccountUserData(account, SettingsConstants.KEY_USER_PHONE);
         mFullNameText = mApp.getAccountUserData(account, SettingsConstants.KEY_USER_FULLNAME);
         mEmailText = mApp.getAccountUserData(account, SettingsConstants.KEY_USER_EMAIL);
 
-        if (mIsAuthorized) {
+        if (isAuthorized)
             mEmailText = mApp.getAccountLogin(account);
-        } else {
+
+        if (isAuthorized || isUserDataValid)
+            addMap();
+        else
             showUserDialog();
-        }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mMapFragment.setSelectedLocationVisible(false);
+    private boolean hasPhoneAndName() {
+        return UiUtil.isPhoneValid(mPhoneText) && !TextUtils.isEmpty(mFullNameText);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -182,7 +183,6 @@ public class CreateMessageActivity
         mItem = menu.getItem(0);
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -224,17 +224,13 @@ public class CreateMessageActivity
                     return;
                 }
 
-                Pattern pattern = Pattern.compile(Constants.PHONE_PATTERN);
-                Matcher matcher = pattern.matcher(mPhoneText);
-                if (!matcher.matches()) {
+                if (!UiUtil.isPhoneValid(mPhoneText)) {
                     Toast.makeText(CreateMessageActivity.this, R.string.phone_not_valid, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (!TextUtils.isEmpty(mEmailText)) {
-                    pattern = Pattern.compile(Constants.EMAIL_PATTERN);
-                    matcher = pattern.matcher(mEmailText);
-                    if (!matcher.matches()) {
+                    if (!UiUtil.isEmailValid(mEmailText)) {
                         Toast.makeText(CreateMessageActivity.this, R.string.email_not_valid, Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -246,6 +242,7 @@ public class CreateMessageActivity
                 mApp.setUserData(accountName, SettingsConstants.KEY_USER_EMAIL, mEmailText);
 
                 mUserDataDialog.dismiss();
+                addMap();
             }
         });
         mUserDataDialog.setOnNegativeClickedListener(new YesNoDialog.OnNegativeClickedListener() {
@@ -285,6 +282,7 @@ public class CreateMessageActivity
                     Toast.makeText(CreateMessageActivity.this, R.string.error_network_unavailable, Toast.LENGTH_SHORT).show();
 
                 mAuthDialog.dismiss();
+                addMap();
             }
         });
         mAuthDialog.setOnNegativeClickedListener(new YesNoDialog.OnNegativeClickedListener() {
