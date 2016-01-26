@@ -31,7 +31,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,8 +47,8 @@ import com.nextgis.safeforest.dialog.UserDataDialog;
 import com.nextgis.safeforest.dialog.YesNoDialog;
 import com.nextgis.safeforest.util.Constants;
 import com.nextgis.safeforest.util.SettingsConstants;
+import com.nextgis.safeforest.util.UiUtil;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -77,11 +76,9 @@ public class LoginFragment extends NGWLoginFragment {
         mSignUpButton = (Button) view.findViewById(R.id.signup);
         mSkipButton = (Button) view.findViewById(R.id.skip);
 
-        TextWatcher watcher = new LocalTextWatcher();
-        mURL.addTextChangedListener(watcher);
-        mLogin.addTextChangedListener(watcher);
-        watcher = new SfTextWatcher();
-        mPassword.addTextChangedListener(watcher);
+        mURL.addTextChangedListener(new URLWatcher());
+        mLogin.addTextChangedListener(new EmailWatcher());
+        mPassword.addTextChangedListener(new PasswordWatcher());
 
         mProgressDialog = new ProgressDialog(getActivity());
 
@@ -89,10 +86,28 @@ public class LoginFragment extends NGWLoginFragment {
     }
 
     private void validatePassword(String password) {
-        if (!Pattern.matches(Constants.PASSWORD_PATTERN, password))
+        if (!Pattern.matches(Constants.PASSWORD_PATTERN, password) && password.length() > 0)
             ((TextInputLayout) mPassword.getParent()).setError(getString(R.string.error_weak_password));
         else
             ((TextInputLayout) mPassword.getParent()).setErrorEnabled(false);
+    }
+
+    private void validateEmail(String email) {
+        if (!UiUtil.isEmailValid(email) && email.length() > 0)
+            ((TextInputLayout) mLogin.getParent()).setError(getString(R.string.email_not_valid));
+        else
+            ((TextInputLayout) mLogin.getParent()).setErrorEnabled(false);
+    }
+
+    private void validateURL(String url) {
+        if (!isValidURL(url) && url.length() > 0)
+            ((TextInputLayout) mURL.getParent()).setError(getString(R.string.error_invalid_url));
+        else
+            ((TextInputLayout) mURL.getParent()).setErrorEnabled(false);
+    }
+
+    private boolean isValidURL(String url) {
+        return android.util.Patterns.WEB_URL.matcher(url).matches();
     }
 
     @Override
@@ -118,10 +133,13 @@ public class LoginFragment extends NGWLoginFragment {
     @Override
     public void onClick(View v)
     {
-        Pattern pattern = Pattern.compile(Constants.EMAIL_PATTERN);
-        Matcher matcher = pattern.matcher(mLogin.getText());
-        if (v.getId() != R.id.skip && !matcher.matches()) {
+        if (v.getId() != R.id.skip && !UiUtil.isEmailValid(mLogin.getText().toString())) {
             Toast.makeText(getActivity(), R.string.email_not_valid, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!isValidURL(mURL.getText().toString())) {
+            Toast.makeText(getActivity(), R.string.error_invalid_url, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -147,9 +165,7 @@ public class LoginFragment extends NGWLoginFragment {
                             return;
                         }
 
-                        Pattern pattern = Pattern.compile(Constants.PHONE_PATTERN);
-                        Matcher matcher = pattern.matcher(mPhoneText);
-                        if (!matcher.matches()) {
+                        if (!UiUtil.isPhoneValid(mPhoneText)) {
                             Toast.makeText(getActivity(), R.string.phone_not_valid, Toast.LENGTH_SHORT).show();
                             return;
                         }
@@ -301,11 +317,27 @@ public class LoginFragment extends NGWLoginFragment {
         }
     }
 
-    public class SfTextWatcher extends LocalTextWatcher {
+    public class PasswordWatcher extends LocalTextWatcher {
         @Override
         public void afterTextChanged(Editable s) {
             super.afterTextChanged(s);
             validatePassword(s.toString());
+        }
+    }
+
+    public class EmailWatcher extends LocalTextWatcher {
+        @Override
+        public void afterTextChanged(Editable s) {
+            super.afterTextChanged(s);
+            validateEmail(s.toString());
+        }
+    }
+
+    public class URLWatcher extends LocalTextWatcher {
+        @Override
+        public void afterTextChanged(Editable s) {
+            super.afterTextChanged(s);
+            validateURL(s.toString());
         }
     }
 }

@@ -40,6 +40,7 @@ import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.fragment.LoginFragment;
 import com.nextgis.safeforest.util.Constants;
 import com.nextgis.safeforest.util.SettingsConstants;
+import com.nextgis.safeforest.util.UiUtil;
 
 import java.util.regex.Pattern;
 
@@ -117,8 +118,7 @@ public class AccountActivity extends SFActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object o) {
                     String phone = (String) o;
-                    Pattern pattern = Pattern.compile(Constants.PHONE_PATTERN);
-                    if (!pattern.matcher(phone).matches()) {
+                    if (!UiUtil.isPhoneValid(phone)) {
                         Toast.makeText(activity, R.string.phone_not_valid, Toast.LENGTH_SHORT).show();
                         return false;
                     }
@@ -135,8 +135,7 @@ public class AccountActivity extends SFActivity {
                 public boolean onPreferenceChange(Preference preference, Object o) {
                     String email = (String) o;
                     if (!TextUtils.isEmpty((email))) {
-                        Pattern pattern = Pattern.compile(Constants.EMAIL_PATTERN);
-                        if (!pattern.matcher(email).matches()) {
+                        if (!UiUtil.isEmailValid(email)) {
                             Toast.makeText(activity, R.string.email_not_valid, Toast.LENGTH_SHORT).show();
                             return false;
                         }

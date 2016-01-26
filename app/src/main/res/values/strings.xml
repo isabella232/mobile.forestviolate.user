@@ -84,6 +84,8 @@
     <string name="general">General</string>
     <string name="click_to_change_account">Change account settings</string>
     <string name="change_server">Change server</string>
+    <string name="pref_full_name">Full name</string>
+    <string name="pref_phone">Phone</string>
     <string name="theme">Application theme</string>
     <string name="sync_switch">Switch sync on/off</string>
     <string name="get_citizen_messages">Get messages</string>
@@ -104,8 +106,8 @@
     <string name="anonymous_hint">Enter your full name and phone number for supervisor callback.</string>
     <string name="email_hint">E-mail</string>
     <string name="email_not_valid">E-mail is not valid</string>
-    <string name="full_name_hint">Full name</string>
-    <string name="phone_hint">Phone</string>
+    <string name="full_name_hint">Full name*</string>
+    <string name="phone_hint">Phone*</string>
     <string name="phone_not_valid">Phone is not valid</string>
     <string name="message_hint">Type a message</string>
     <string name="action_felling">Felling</string>

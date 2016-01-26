@@ -86,6 +86,8 @@
     <string name="general">Общие</string>
     <string name="click_to_change_account">Изменить настройки аккаунта</string>
     <string name="change_server">Изменить сервер</string>
+    <string name="pref_full_name">ФИО</string>
+    <string name="pref_phone">Телефон</string>
     <string name="theme">Тема приложения</string>
     <string name="sync_switch">Вкл./выкл. синхронизацию</string>
     <string name="get_citizen_messages">Получение сообщений</string>
@@ -106,8 +108,8 @@
     <string name="anonymous_hint">Введите ФИО и телефон, чтобы с вами мог связаться диспетчер.</string>
     <string name="email_hint">Электроная почта (e-mail)</string>
     <string name="email_not_valid">Неверный формат почты</string>
-    <string name="full_name_hint">ФИО</string>
-    <string name="phone_hint">Телефон</string>
+    <string name="full_name_hint">ФИО*</string>
+    <string name="phone_hint">Телефон*</string>
     <string name="phone_not_valid">Неверный формат телефона</string>
     <string name="message_hint">Введите сообщение</string>
     <string name="action_felling">Лесозаготовка</string>

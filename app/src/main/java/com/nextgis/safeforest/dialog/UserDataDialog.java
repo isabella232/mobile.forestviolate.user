@@ -55,11 +55,9 @@ public class UserDataDialog
             mEmail.setVisibility(View.GONE);
 
         mFullName = (EditText) view.findViewById(R.id.full_name);
-        mFullName.setHint(getString(R.string.full_name_hint) + "*");
         mFullName.setText(mFullNameText);
 
         mPhone = (EditText) view.findViewById(R.id.phone);
-        mPhone.setHint(getString(R.string.phone_hint) + "*");
         mPhone.setText(mPhoneText);
 
         setTitle(R.string.user_contact_info);
