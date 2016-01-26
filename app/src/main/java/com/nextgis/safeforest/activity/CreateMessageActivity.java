@@ -65,8 +65,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.TAG;
@@ -138,6 +136,9 @@ public class CreateMessageActivity
         mLocationCompass.setOnClickListener(this);
         Drawable drawable = getResources().getDrawable(R.drawable.ic_compass);
         mLocationCompass.setIconDrawable(UiUtil.tintIcon(drawable, getResources().getColor(R.color.color_white)));
+
+        mUserDataDialog = (UserDataDialog) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_USER_DATA_DIALOG);
+        mAuthDialog = (YesNoDialog) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_USER_AUTH);
     }
 
     private void addMap() {
@@ -201,16 +202,14 @@ public class CreateMessageActivity
     }
 
     protected void showUserDialog() {
-        if (mUserDataDialog != null && mUserDataDialog.isAdded() ||
-                mAuthDialog != null && mAuthDialog.isAdded())
-            return;
-
-        mUserDataDialog = new UserDataDialog();
-        mUserDataDialog.setCancelable(false);
-
-        mUserDataDialog.setFullNameText(mFullNameText);
-        mUserDataDialog.setPhoneText(mPhoneText);
-        mUserDataDialog.setEmailText(mEmailText);
+        if (mUserDataDialog == null) {
+            mUserDataDialog = new UserDataDialog();
+            mUserDataDialog.setCancelable(false);
+            mUserDataDialog.setKeepInstance(true);
+            mUserDataDialog.setFullNameText(mFullNameText);
+            mUserDataDialog.setPhoneText(mPhoneText);
+            mUserDataDialog.setEmailText(mEmailText);
+        }
 
         mUserDataDialog.setOnPositiveClickedListener(new YesNoDialog.OnPositiveClickedListener() {
             @Override
@@ -252,20 +251,21 @@ public class CreateMessageActivity
                 mUserDataDialog.dismiss();
             }
         });
-        mUserDataDialog.setKeepInstance(true);
-        mUserDataDialog.show(getSupportFragmentManager(), Constants.FRAGMENT_USER_DATA_DIALOG);
+
+        if (!mUserDataDialog.isAdded())
+            mUserDataDialog.show(getSupportFragmentManager(), Constants.FRAGMENT_USER_DATA_DIALOG);
     }
 
     protected void showSignUpDialog() {
-        if (mAuthDialog != null && mAuthDialog.isAdded())
-            return;
-
-        mAuthDialog = new YesNoDialog();
-        mUserDataDialog.setCancelable(false);
-        mAuthDialog.setTitle(R.string.auth_title)
-                .setMessage(R.string.auth_require)
-                .setPositiveText(android.R.string.yes)
-                .setNegativeText(android.R.string.no);
+        if (mAuthDialog == null) {
+            mAuthDialog = new YesNoDialog();
+            mAuthDialog.setCancelable(false);
+            mAuthDialog.setKeepInstance(true);
+            mAuthDialog.setTitle(R.string.auth_title)
+                    .setMessage(R.string.auth_require)
+                    .setPositiveText(android.R.string.yes)
+                    .setNegativeText(android.R.string.no);
+        }
 
         mAuthDialog.setOnPositiveClickedListener(new YesNoDialog.OnPositiveClickedListener() {
             @Override
@@ -292,8 +292,9 @@ public class CreateMessageActivity
                 finish();
             }
         });
-        mAuthDialog.setKeepInstance(true);
-        mAuthDialog.show(getSupportFragmentManager(), Constants.FRAGMENT_USER_AUTH);
+
+        if (!mAuthDialog.isAdded())
+            mAuthDialog.show(getSupportFragmentManager(), Constants.FRAGMENT_USER_AUTH);
     }
 
     protected void sendMessage() {
