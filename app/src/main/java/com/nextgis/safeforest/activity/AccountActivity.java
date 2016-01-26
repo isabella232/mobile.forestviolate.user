@@ -42,8 +42,6 @@ import com.nextgis.safeforest.util.Constants;
 import com.nextgis.safeforest.util.SettingsConstants;
 import com.nextgis.safeforest.util.UiUtil;
 
-import java.util.regex.Pattern;
-
 /**
  * Application preference
  */
@@ -89,6 +87,7 @@ public class AccountActivity extends SFActivity {
     public static class AccountFragment extends PreferenceFragmentCompat {
         protected MainApplication mApp;
         protected Account mAccount;
+        protected EditTextPreference mEmail;
 
         @Override
         public void onCreatePreferences(Bundle bundle, String s) {
@@ -129,8 +128,8 @@ public class AccountActivity extends SFActivity {
                 }
             });
 
-            EditTextPreference email = (EditTextPreference) findPreference(SettingsConstants.KEY_USER_EMAIL);
-            email.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            mEmail = (EditTextPreference) findPreference(SettingsConstants.KEY_USER_EMAIL);
+            mEmail.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object o) {
                     String email = (String) o;
@@ -174,13 +173,12 @@ public class AccountActivity extends SFActivity {
             EditTextPreference phone = (EditTextPreference) findPreference(SettingsConstants.KEY_USER_PHONE);
             phone.setSummary(mApp.getAccountUserData(mAccount, SettingsConstants.KEY_USER_PHONE));
 
-            EditTextPreference email = (EditTextPreference) findPreference(SettingsConstants.KEY_USER_EMAIL);
-            email.setSummary(mApp.getAccountUserData(mAccount, SettingsConstants.KEY_USER_EMAIL));
+            mEmail.setSummary(mApp.getAccountUserData(mAccount, SettingsConstants.KEY_USER_EMAIL));
 
-            if (email.isVisible() && !emailLogin.equals(Constants.ANONYMOUS))
-                email.setVisible(false);
-            else if (!email.isVisible())
-                email.setVisible(true);
+            if (!emailLogin.equals(Constants.ANONYMOUS))
+                login.removePreference(mEmail);
+            else
+                login.addPreference(mEmail);
         }
     }
 }
