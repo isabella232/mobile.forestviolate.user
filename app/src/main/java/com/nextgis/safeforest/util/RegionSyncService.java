@@ -3,7 +3,7 @@
  * Purpose: Mobile application for registering facts of the forest violations.
  * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * ****************************************************************************
- * Copyright (c) 2015 NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,10 +32,15 @@ import com.nextgis.maplib.api.IProgressor;
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.TileItem;
 import com.nextgis.maplib.datasource.ngw.Connection;
+import com.nextgis.maplib.datasource.ngw.LayerWithStyles;
+import com.nextgis.maplib.datasource.ngw.Resource;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.maplib.map.NGWRasterLayer;
+import com.nextgis.maplib.map.RemoteTMSLayer;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.NGException;
+import com.nextgis.maplib.util.NGWUtil;
 import com.nextgis.maplibui.mapui.NGWVectorLayerUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
@@ -119,12 +124,12 @@ public class RegionSyncService extends Service {
     }
 
     class InitialSync extends Thread implements IProgressor {
-        protected Map<String, Long> mKeys = new HashMap<>();
+        protected Map<String, Resource> mKeys = new HashMap<>();
         protected Intent mMessageIntent;
         protected Account mAccount;
         protected MapBase mMap;
 
-        protected String mProgressMessage;
+        protected String mProgressMessage, mURL;
         protected int mMaxProgress;
         protected int mStep;
         protected boolean mIsRegionsOnly;
@@ -134,10 +139,12 @@ public class RegionSyncService extends Service {
             mIsRegionsOnly = isRegionsOnly;
 
             if (isRegionsOnly)
-                mKeys.put(Constants.KEY_FV_REGIONS, -1L);
+                mKeys.put(Constants.KEY_FV_REGIONS, null);
             else {
-                mKeys.put(Constants.KEY_CITIZEN_MESSAGES, -1L);
-                mKeys.put(Constants.KEY_FV_FOREST, -1L);
+                mKeys.put(Constants.KEY_CITIZEN_MESSAGES, null);
+                mKeys.put(Constants.KEY_FV_FOREST, null);
+                mKeys.put(Constants.KEY_FV_LV, null);
+                mKeys.put(Constants.KEY_FV_ULV, null);
             }
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(RegionSyncService.this);
@@ -156,14 +163,14 @@ public class RegionSyncService extends Service {
                 mAccount = app.getAccount(getString(R.string.account_name));
                 final String sLogin = app.getAccountLogin(mAccount);
                 final String sPassword = app.getAccountPassword(mAccount);
-                final String sURL = app.getAccountUrl(mAccount);
+                mURL = app.getAccountUrl(mAccount);
                 mMap = app.getMap();
 
-                if (null == sURL || null == sPassword || null == sLogin) {
+                if (null == mURL || null == sPassword || null == sLogin) {
                     break;
                 }
 
-                Connection connection = new Connection("tmp", sLogin, sPassword, sURL);
+                Connection connection = new Connection("tmp", sLogin, sPassword, mURL);
                 publishProgress(getString(R.string.connecting), Constants.STEP_STATE_WORK);
 
                 if (!connection.connect(sLogin.equals(Constants.ANONYMOUS))) {
@@ -222,7 +229,7 @@ public class RegionSyncService extends Service {
         protected void loadRegions() {
             NGWVectorLayerUI ngwVectorLayer = new NGWVectorLayerUI(getApplicationContext(), mMap.createLayerStorage(Constants.KEY_FV_REGIONS));
             ngwVectorLayer.setName(Constants.KEY_FV_REGIONS);
-            ngwVectorLayer.setRemoteId(mKeys.get(Constants.KEY_FV_REGIONS));
+            ngwVectorLayer.setRemoteId(mKeys.get(Constants.KEY_FV_REGIONS).getRemoteId());
             ngwVectorLayer.setAccountName(mAccount.name);
             ngwVectorLayer.setSyncType(com.nextgis.maplib.util.Constants.SYNC_ALL);
             ngwVectorLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
@@ -275,7 +282,7 @@ public class RegionSyncService extends Service {
                     map.createLayerStorage(layerName));
 
             ngwVectorLayer.setName(layerName);
-            ngwVectorLayer.setRemoteId(mKeys.get(layerName));
+            ngwVectorLayer.setRemoteId(mKeys.get(layerName).getRemoteId());
             ngwVectorLayer.setServerWhere(String.format(Locale.US, "bbox=%f,%f,%f,%f",
                     mMinX, mMinY, mMaxX, mMaxY));
             ngwVectorLayer.setVisible(true);
@@ -325,7 +332,7 @@ public class RegionSyncService extends Service {
         }*/
 
             String kosmosnimkiLayerName = getString(R.string.topo);
-            String kosmosnimkiLayerURL = SettingsConstants.KOSOSNIMKI_URL;
+            String kosmosnimkiLayerURL = SettingsConstants.KOSMOSNIMKI_URL;
             RemoteTMSLayerUI ksLayer =
                     new RemoteTMSLayerUI(getApplicationContext(), map.createLayerStorage());
             ksLayer.setName(kosmosnimkiLayerName);
@@ -334,14 +341,13 @@ public class RegionSyncService extends Service {
             ksLayer.setMaxZoom(12.4f);
             ksLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
             ksLayer.setVisible(true);
-
             map.addLayer(ksLayer);
             //mMap.moveLayer(1, ksLayer);
 
             if (extent.isInit()) {
                 //download
                 try {
-                    downloadTiles(ksLayer, extent, 5, 9);
+                    downloadTiles(ksLayer, extent, 5, 8);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -357,9 +363,39 @@ public class RegionSyncService extends Service {
             mixerLayer.setMaxZoom(GeoConstants.DEFAULT_MAX_ZOOM);
             mixerLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
             mixerLayer.setVisible(true);
-
             map.addLayer(mixerLayer);
             //mMap.moveLayer(2, mixerLayer);
+
+            long styleId = ((LayerWithStyles) mKeys.get(Constants.KEY_FV_LV)).getStyleId(0);
+            NGWRasterLayer lvLayer = new NGWRasterLayer(getApplicationContext(), map.createLayerStorage());
+            lvLayer.setName(getString(R.string.lv));
+            lvLayer.setAccountName(mAccount.name);
+            lvLayer.setRemoteId(styleId);
+            lvLayer.setURL(NGWUtil.getTMSUrl(mURL, styleId));
+            lvLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
+            lvLayer.setMaxZoom(9);
+            lvLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
+            map.addLayer(lvLayer);
+
+            if (extent.isInit()) {
+                //download
+                try {
+                    downloadTiles(lvLayer, extent, 5, 8);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            styleId = ((LayerWithStyles) mKeys.get(Constants.KEY_FV_ULV)).getStyleId(0);
+            NGWRasterLayer ulvLayer = new NGWRasterLayer(getApplicationContext(), map.createLayerStorage());
+            ulvLayer.setName(getString(R.string.ulv));
+            ulvLayer.setAccountName(mAccount.name);
+            ulvLayer.setRemoteId(styleId);
+            ulvLayer.setURL(NGWUtil.getTMSUrl(mURL, styleId));
+            ulvLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
+            ulvLayer.setMaxZoom(16);
+            ulvLayer.setMinZoom(9);
+            map.addLayer(ulvLayer);
 
             //set extent
             if (map instanceof MapDrawable && extent.isInit()) {
@@ -369,12 +405,12 @@ public class RegionSyncService extends Service {
             publishProgress(getString(R.string.done), Constants.STEP_STATE_DONE);
         }
 
-        private void downloadTiles(final RemoteTMSLayerUI osmLayer, GeoEnvelope loadBounds, int zoomFrom, int zoomTo) throws InterruptedException {
+        private void downloadTiles(final RemoteTMSLayer layer, GeoEnvelope loadBounds, int zoomFrom, int zoomTo) throws InterruptedException {
             //download
             publishProgress(getString(R.string.form_tiles_list), Constants.STEP_STATE_WORK);
             final List<TileItem> tilesList = new LinkedList<>();
             for (int zoom = zoomFrom; zoom < zoomTo + 1; zoom++) {
-                tilesList.addAll(com.nextgis.maplib.util.MapUtil.getTileItems(loadBounds, zoom, osmLayer.getTMSType()));
+                tilesList.addAll(com.nextgis.maplib.util.MapUtil.getTileItems(loadBounds, zoom, layer.getTMSType()));
             }
 
             int threadCount = Constants.DOWNLOAD_SEPARATE_THREADS;
@@ -412,7 +448,7 @@ public class RegionSyncService extends Service {
                                     public void run() {
                                         android.os.Process.setThreadPriority(
                                                 com.nextgis.maplib.util.Constants.DEFAULT_DRAW_THREAD_PRIORITY);
-                                        osmLayer.downloadTile(tile);
+                                        layer.downloadTile(tile);
                                     }
                                 }));
             }

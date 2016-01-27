@@ -3,7 +3,7 @@
  * Purpose: Mobile application for registering facts of the forest violations.
  * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * ****************************************************************************
- * Copyright (c) 2015 NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ public final class MapUtil {
                 && preferences.contains(SettingsConstants.KEY_PREF_USERMINY) && preferences.contains(SettingsConstants.KEY_PREF_USERMAXY);
     }
 
-    public static boolean checkServerLayers(INGWResource resource, Map<String, Long> keys) {
+    public static boolean checkServerLayers(INGWResource resource, Map<String, Resource> keys) {
         if (resource instanceof Connection) {
             Connection connection = (Connection) resource;
             connection.loadChildren();
@@ -55,12 +55,12 @@ public final class MapUtil {
 
             if (keys.containsKey(childResource.getKey()) && childResource instanceof Resource) {
                 Resource ngwResource = (Resource) childResource;
-                keys.put(ngwResource.getKey(), ngwResource.getRemoteId());
+                keys.put(ngwResource.getKey(), ngwResource);
             }
 
             boolean bIsFill = true;
-            for (Map.Entry<String, Long> entry : keys.entrySet()) {
-                if (entry.getValue() <= 0) {
+            for (Map.Entry<String, Resource> entry : keys.entrySet()) {
+                if (entry.getValue() == null) {
                     bIsFill = false;
                     break;
                 }
@@ -77,8 +77,8 @@ public final class MapUtil {
 
         boolean bIsFill = true;
 
-        for (Map.Entry<String, Long> entry : keys.entrySet()) {
-            if (entry.getValue() <= 0) {
+        for (Map.Entry<String, Resource> entry : keys.entrySet()) {
+            if (entry.getValue() == null) {
                 bIsFill = false;
                 break;
             }

@@ -60,6 +60,8 @@ public interface Constants
     String KEY_CITIZEN_MESSAGES = "citizen_messages";
     String KEY_FV_REGIONS = "fv_regions";
     String KEY_FV_FOREST = "fv";
+    String KEY_FV_LV = "lv";
+    String KEY_FV_ULV = "ulv";
     String KEY_IS_AUTHORIZED = "is_authorised";
 
     /**

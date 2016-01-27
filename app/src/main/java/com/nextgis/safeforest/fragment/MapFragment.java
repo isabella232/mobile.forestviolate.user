@@ -22,6 +22,7 @@
 
 package com.nextgis.safeforest.fragment;
 
+import android.accounts.Account;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
@@ -46,6 +47,7 @@ import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.maplib.map.RemoteTMSLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.LocationUtil;
@@ -257,6 +259,8 @@ public class MapFragment
                 mMap.setZoomAndCenter(mMapZoom, new GeoPoint(mMapScrollX, mMapScrollY));
             }
             mMap.addListener(this);
+
+            setLayersVisibility();
         }
 
         if (getActivity() instanceof MainActivity) {
@@ -278,6 +282,25 @@ public class MapFragment
         }
 
         mCurrentCenter = null;
+    }
+
+    private void setLayersVisibility() {
+        MainApplication app = (MainApplication) getActivity().getApplication();
+        Account account = app.getAccount(getString(R.string.account_name));
+        String auth = app.getAccountUserData(account, com.nextgis.safeforest.util.Constants.KEY_IS_AUTHORIZED);
+        boolean isAuthorized = auth != null && !auth.equals(com.nextgis.safeforest.util.Constants.ANONYMOUS);
+
+        RemoteTMSLayer layer = (RemoteTMSLayer) app.getMap().getLayerByName(getString(R.string.lv));
+        if (layer != null)
+            layer.setVisible(isAuthorized);
+
+        layer = (RemoteTMSLayer) app.getMap().getLayerByName(getString(R.string.ulv));
+        if (layer != null)
+            layer.setVisible(isAuthorized);
+
+        layer = (RemoteTMSLayer) app.getMap().getLayerByName(getString(R.string.geomixer_fv_tiles));
+        if (layer != null)
+            layer.setVisible(isAuthorized);
     }
 
     public void pauseGps() {

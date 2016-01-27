@@ -36,6 +36,9 @@
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2015]]></string>
     <string name="action_about">О программе</string>
     <string name="topo">Topo</string>
+    <string name="fires">Пожары</string>
+    <string name="lv">Лесничества</string>
+    <string name="ulv">Участковые лесничества</string>
     <string name="contact">Контакт</string>
     <string name="fire">Пожар</string>
     <string name="geomixer_fv_tiles">Лесонарушения растр (GeoMixer)</string>

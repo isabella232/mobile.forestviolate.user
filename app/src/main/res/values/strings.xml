@@ -35,6 +35,9 @@
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2015]]></string>
     <string name="action_about">About</string>
     <string name="topo">Topo</string>
+    <string name="fires">Fires</string>
+    <string name="lv">Forestry</string>
+    <string name="ulv">Divisional forestry</string>
     <string name="contact">Contact</string>
     <string name="fire">Fire</string>
     <string name="geomixer_fv_tiles">GeoMixer violation tiles</string>
