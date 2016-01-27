@@ -317,7 +317,6 @@ public class RegionSyncService extends Service {
             osmLayer.setMaxZoom(20);
             osmLayer.setMinZoom(12.4f);
             osmLayer.setVisible(true);
-
             map.addLayer(osmLayer);
             //mMap.moveLayer(0, osmLayer);
             GeoEnvelope extent = new GeoEnvelope(mMinX, mMaxX, mMinY, mMaxY);
@@ -365,6 +364,15 @@ public class RegionSyncService extends Service {
             mixerLayer.setVisible(true);
             map.addLayer(mixerLayer);
             //mMap.moveLayer(2, mixerLayer);
+
+            RemoteTMSLayer firesLayer = new RemoteTMSLayer(getApplicationContext(), map.createLayerStorage());
+            firesLayer.setName(getString(R.string.fires));
+            firesLayer.setURL(SettingsConstants.FIRES_URL);
+            firesLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
+            firesLayer.setMaxZoom(GeoConstants.DEFAULT_MAX_ZOOM);
+            firesLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
+            firesLayer.setVisible(true);
+            map.addLayer(firesLayer);
 
             long styleId = ((LayerWithStyles) mKeys.get(Constants.KEY_FV_LV)).getStyleId(0);
             NGWRasterLayer lvLayer = new NGWRasterLayer(getApplicationContext(), map.createLayerStorage());

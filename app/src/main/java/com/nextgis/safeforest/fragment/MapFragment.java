@@ -61,6 +61,11 @@ import com.nextgis.safeforest.activity.MainActivity;
 import com.nextgis.safeforest.overlay.SelectLocationOverlay;
 import com.nextgis.safeforest.util.SettingsConstants;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 public class MapFragment
         extends Fragment
         implements MapViewEventListener, GpsEventListener {
@@ -260,7 +265,7 @@ public class MapFragment
             }
             mMap.addListener(this);
 
-            setLayersVisibility();
+            setLayers();
         }
 
         if (getActivity() instanceof MainActivity) {
@@ -284,7 +289,7 @@ public class MapFragment
         mCurrentCenter = null;
     }
 
-    private void setLayersVisibility() {
+    private void setLayers() {
         MainApplication app = (MainApplication) getActivity().getApplication();
         Account account = app.getAccount(getString(R.string.account_name));
         String auth = app.getAccountUserData(account, com.nextgis.safeforest.util.Constants.KEY_IS_AUTHORIZED);
@@ -301,6 +306,15 @@ public class MapFragment
         layer = (RemoteTMSLayer) app.getMap().getLayerByName(getString(R.string.geomixer_fv_tiles));
         if (layer != null)
             layer.setVisible(isAuthorized);
+
+        layer = (RemoteTMSLayer) app.getMap().getLayerByName(getString(R.string.fires));
+        if (layer != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Calendar calendar = Calendar.getInstance();
+            layer.setEndDate(sdf.format(new Date(calendar.getTimeInMillis())));
+            calendar.add(Calendar.WEEK_OF_YEAR, -2);
+            layer.setStartDate(sdf.format(new Date(calendar.getTimeInMillis())));
+        }
     }
 
     public void pauseGps() {
