@@ -69,12 +69,12 @@ public class InitStepListAdapter extends BaseAdapter {
                 context.getString(R.string.waiting), Constants.STEP_STATE_WAIT);
         mSteps.add(step4);
 
-        /*        // 5. load documents
-        InitStep step5 = new InitStep(context.getString(R.string.load_documents),
+        // 5. load documents
+        InitStep step5 = new InitStep(context.getString(R.string.docs),
                 context.getString(R.string.waiting), Constants.STEP_STATE_WAIT);
         mSteps.add(step5);
 
-        // 6. load linked tables
+        /*        // 6. load linked tables
         InitStep step6 = new InitStep(context.getString(R.string.load_linked_layers),
                 context.getString(R.string.waiting), Constants.STEP_STATE_WAIT);
         mSteps.add(step6);

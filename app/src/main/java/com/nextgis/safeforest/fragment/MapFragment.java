@@ -46,7 +46,9 @@ import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.location.GpsEventSource;
+import com.nextgis.maplib.map.Layer;
 import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.RemoteTMSLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
@@ -295,7 +297,7 @@ public class MapFragment
         String auth = app.getAccountUserData(account, com.nextgis.safeforest.util.Constants.KEY_IS_AUTHORIZED);
         boolean isAuthorized = auth != null && !auth.equals(com.nextgis.safeforest.util.Constants.ANONYMOUS);
 
-        RemoteTMSLayer layer = (RemoteTMSLayer) app.getMap().getLayerByName(getString(R.string.lv));
+        Layer layer = (RemoteTMSLayer) app.getMap().getLayerByName(getString(R.string.lv));
         if (layer != null)
             layer.setVisible(isAuthorized);
 
@@ -307,13 +309,20 @@ public class MapFragment
         if (layer != null)
             layer.setVisible(isAuthorized);
 
+        layer = (NGWVectorLayer) app.getMap().getLayerByName(com.nextgis.safeforest.util.Constants.KEY_FV_DOCS);
+        if (layer != null) {
+            layer.setVisible(isAuthorized);
+            int sync = isAuthorized ? Constants.SYNC_ALL : Constants.SYNC_NONE;
+            ((NGWVectorLayer) layer).setSyncType(sync);
+        }
+
         layer = (RemoteTMSLayer) app.getMap().getLayerByName(getString(R.string.fires));
         if (layer != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             Calendar calendar = Calendar.getInstance();
-            layer.setEndDate(sdf.format(new Date(calendar.getTimeInMillis())));
+            ((RemoteTMSLayer) layer).setEndDate(sdf.format(new Date(calendar.getTimeInMillis())));
             calendar.add(Calendar.WEEK_OF_YEAR, -2);
-            layer.setStartDate(sdf.format(new Date(calendar.getTimeInMillis())));
+            ((RemoteTMSLayer) layer).setStartDate(sdf.format(new Date(calendar.getTimeInMillis())));
         }
     }
 

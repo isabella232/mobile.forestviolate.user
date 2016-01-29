@@ -145,6 +145,7 @@ public class RegionSyncService extends Service {
                 mKeys.put(Constants.KEY_FV_FOREST, null);
                 mKeys.put(Constants.KEY_FV_LV, null);
                 mKeys.put(Constants.KEY_FV_ULV, null);
+                mKeys.put(Constants.KEY_FV_DOCS, null);
             }
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(RegionSyncService.this);
@@ -272,6 +273,15 @@ public class RegionSyncService extends Service {
 
             if (!loadNGWLayer(Constants.KEY_FV_FOREST, mAccount.name, mMap)) {
                 publishProgress(getString(R.string.error_unexpected), Constants.STEP_STATE_ERROR);
+            } else {
+                publishProgress(getString(R.string.done), Constants.STEP_STATE_DONE);
+            }
+
+            mStep = 4;
+            publishProgress(getString(R.string.working), Constants.STEP_STATE_WORK);
+
+            if (!loadNGWLayer(Constants.KEY_FV_DOCS, mAccount.name, mMap)) {
+                publishProgress(getString(R.string.skip), Constants.STEP_STATE_ERROR);
             } else {
                 publishProgress(getString(R.string.done), Constants.STEP_STATE_DONE);
             }

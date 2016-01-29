@@ -86,7 +86,7 @@ public class RegionSyncFragment extends Fragment {
         mAdapter = new InitStepListAdapter(getActivity());
         mApp = (IGISApplication) getActivity().getApplication();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mIsRegionSet = MapUtil.isRegionSet(preferences) && MapUtil.hasLayer(mApp.getMap(), Constants.KEY_FV_REGIONS);;
+        mIsRegionSet = MapUtil.isRegionSet(preferences) && MapUtil.hasLayer(mApp.getMap(), Constants.KEY_FV_REGIONS);
 
         if (mIsRegionSet)
             startSyncService(getActivity(), false);
@@ -164,7 +164,7 @@ public class RegionSyncFragment extends Fragment {
                 int state = intent.getIntExtra(Constants.KEY_STATE, 0);
                 String message = intent.getStringExtra(Constants.KEY_MESSAGE);
 
-                if (step > 3)
+                if (step > 4)
                     ((NGActivity) getActivity()).refreshActivityView();
                 else
                     mAdapter.setMessage(step, state, message);
