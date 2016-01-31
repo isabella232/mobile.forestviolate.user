@@ -114,7 +114,7 @@
     <string name="phone_hint">Phone*</string>
     <string name="phone_not_valid">Phone is not valid</string>
     <string name="message_hint">Type a message</string>
-    <string name="action_felling">Felling</string>
+    <string name="action_felling">Illegal felling</string>
     <string name="action_view_message">View a message</string>
     <string name="error_create_message">Create message error</string>
     <string name="action_sync">Synchronization</string>

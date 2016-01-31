@@ -116,7 +116,7 @@
     <string name="phone_hint">Телефон*</string>
     <string name="phone_not_valid">Неверный формат телефона</string>
     <string name="message_hint">Введите сообщение</string>
-    <string name="action_felling">Лесозаготовка</string>
+    <string name="action_felling">Незаконная рубка</string>
     <string name="action_view_message">Просмотр сообщения</string>
     <string name="error_create_message">Ошибка создания сообщения</string>
     <string name="action_sync">Синхронизация</string>
