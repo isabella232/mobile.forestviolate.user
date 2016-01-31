@@ -2,8 +2,9 @@
  * Project: Forest violations
  * Purpose: Mobile application for registering facts of the forest violations.
  * Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+ * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2015-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,11 +24,11 @@ package com.nextgis.safeforest.activity;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.nextgis.maplibui.activity.NGActivity;
@@ -57,9 +58,18 @@ public class AboutActivity extends NGActivity
             txtVersion.setText("");
         }
 
-        TextView txtCreditsText = (TextView) findViewById(R.id.credits);
-        txtCreditsText.setText(Html.fromHtml(getString(R.string.credits)));
-        txtCreditsText.setMovementMethod(LinkMovementMethod.getInstance());
+        Button credits = (Button) findViewById(R.id.credits);
+        credits.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog builder = new AlertDialog.Builder(view.getContext(), R.style.AppCompatDialog).setTitle(R.string.credits_intro)
+                        .setMessage(R.string.credits)
+                        .setPositiveButton(android.R.string.ok, null).create();
+                builder.show();
+                ((TextView) builder.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+                ((TextView) builder.findViewById(android.R.id.message)).setLinksClickable(true);
+            }
+        });
 
         TextView txtCopyrightText = (TextView) findViewById(R.id.copyright);
         txtCopyrightText.setText(Html.fromHtml(getString(R.string.copyright)));
