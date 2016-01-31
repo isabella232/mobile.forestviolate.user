@@ -2,6 +2,7 @@
  * Project: Forest violations
  * Purpose: Mobile application for registering facts of the forest violations.
  * Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+ * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
  * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
  *
@@ -42,6 +43,7 @@ public interface SettingsConstants
     String KEY_USER_FULLNAME = "user_full_name";
     String KEY_USER_PHONE = "user_phone";
     String KEY_USER_EMAIL = "user_email";
+    String KEY_PREF_FILTER = "message_filter";
 
     /**
      * map preference

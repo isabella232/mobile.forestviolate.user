@@ -88,6 +88,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     protected TabLayout mTabLayout;
     protected boolean mFirstRun;
     protected int mCurrentView;
+    protected MenuItem mFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,10 +190,13 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             public void onTabSelected(TabLayout.Tab tab) {
                 super.onTabSelected(tab);
 
-                if (tab.getPosition() == 0)
+                if (tab.getPosition() == 0) {
                     ((MapFragment) mSectionsPagerAdapter.getItem(1)).pauseGps();
-                else
+                    mFilter.setVisible(true);
+                } else {
                     ((MapFragment) mSectionsPagerAdapter.getItem(1)).resumeGps();
+                    mFilter.setVisible(false);
+                }
             }
 
             @Override
@@ -327,8 +331,17 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        if(!mFirstRun)
+        if(!mFirstRun) {
             getMenuInflater().inflate(R.menu.main, menu);
+            mFilter = menu.findItem(R.id.action_filter);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        mFilter.setVisible(mViewPager.getCurrentItem() == 0);
         return true;
     }
 
@@ -344,6 +357,10 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         final MainApplication app = (MainApplication) getApplication();
 
         switch (id) {
+            case R.id.action_filter:
+                mSectionsPagerAdapter.mMessageFragment.showFilter();
+                return true;
+
             case R.id.action_sync:
                 new Thread() {
                     @Override
@@ -393,6 +410,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         protected MapFragment mMapFragment;
+        protected MessageListFragment mMessageFragment;
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -402,7 +420,10 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             if (position == 0) {
-                return new MessageListFragment();
+                if (mMessageFragment == null)
+                    mMessageFragment = new MessageListFragment();
+
+                return mMessageFragment;
             } else {
                 if (mMapFragment == null)
                     mMapFragment = new MapFragment();

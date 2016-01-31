@@ -31,8 +31,8 @@
     <string name="title_orientation">По ориентировке</string>
     <string name="action_settings">Настройки</string>
     <string name="app_description">Приложение для просмотра уведомлений о лесонарушениях, вводе информации о лесонарушении и отслеживания его статуса.</string>
-    <string name="credits_intro">Лицензии:</string>
-    <string name="credits"><![CDATA[Иконка компаса сделана Dmitry Baranovskiy из <a href=\"http://thenounproject.com/search/?q=compass&i=7895\">the Noun Project</a>, а также некоторые иконки получены с сайта <a href=\"http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html\">romannurik.github.io</a>, <a href=\"http://creativecommons.org/licenses/by/3.0/\">CC BY 3.0 license</a>]]></string>
+    <string name="credits_intro">Лицензии</string>
+    <string name="credits">Иконка компаса сделана Dmitry Baranovskiy из <a href="http://thenounproject.com/search/?q=compass&amp;i=7895">the Noun Project</a>, фильтра Austin Andrews из <a href="http://materialdesignicons.com/icon/filter">Material Design Icons</a>, а также некоторые иконки взяты с сайта <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a>, <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2015]]></string>
     <string name="action_about">О программе</string>
     <string name="topo">Topo</string>
@@ -120,6 +120,7 @@
     <string name="action_view_message">Просмотр сообщения</string>
     <string name="error_create_message">Ошибка создания сообщения</string>
     <string name="action_sync">Синхронизация</string>
+    <string name="action_filter">Фильтр</string>
     <string name="unknown_message_status">Неизвестный статус</string>
     <string name="new_message_status">Новое сообщение</string>
     <string name="sent_message_status">Отправленное сообщение</string>

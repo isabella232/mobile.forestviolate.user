@@ -2,8 +2,9 @@
   ~ Project: Forest violations
   ~ Purpose: Mobile application for registering facts of the forest violations.
   ~ Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+  ~ Author:  Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2015-2015. NextGIS, info@nextgis.com
+  ~ Copyright (c) 2015-2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -23,16 +24,26 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".MainActivity">
-    <item android:id="@+id/action_sync"
-          android:title="@string/action_sync"
-          android:orderInCategory="100"
-          app:showAsAction="never"/>
-    <item android:id="@+id/action_settings"
-          android:title="@string/action_settings"
-          android:orderInCategory="100"
-          app:showAsAction="never"/>
-    <item android:id="@+id/action_about"
-          android:title="@string/action_about"
-          android:orderInCategory="100"
-          app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_filter"
+        android:icon="@drawable/ic_filter_white_24dp"
+        android:orderInCategory="0"
+        android:title="@string/action_filter"
+        android:visible="false"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_sync"
+        android:orderInCategory="100"
+        android:title="@string/action_sync"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="100"
+        android:title="@string/action_about"
+        app:showAsAction="never"/>
 </menu>

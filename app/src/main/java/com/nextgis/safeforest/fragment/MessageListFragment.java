@@ -25,15 +25,19 @@ package com.nextgis.safeforest.fragment;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,11 +53,14 @@ import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.activity.MainActivity;
 import com.nextgis.safeforest.adapter.MessageCursorAdapter;
 import com.nextgis.safeforest.util.Constants;
+import com.nextgis.safeforest.util.SettingsConstants;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class MessageListFragment
@@ -65,6 +72,9 @@ public class MessageListFragment
     protected MessageCursorAdapter mAdapter;
     protected BroadcastReceiver mReceiver;
     protected IntentFilter mIntentFilter;
+    protected SharedPreferences mPreferences;
+
+    protected boolean mShowFires, mShowFelling;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
@@ -94,6 +104,11 @@ public class MessageListFragment
         mIntentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_FEATURE_ID_CHANGE);
 
         mReceiver = new VectorLayerNotifyReceiver();
+
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        boolean[] filter = stringToBoolean(mPreferences.getString(SettingsConstants.KEY_PREF_FILTER, "[true, true]"));
+        mShowFires = filter[0];
+        mShowFelling = filter[1];
     }
 
     @Override
@@ -219,19 +234,40 @@ public class MessageListFragment
 
                 String sortOrder = Constants.FIELD_MDATE + " DESC";
 
-                return new CursorLoader(getActivity(), uri, projection, null, null, sortOrder);
+                ArrayList<String> activeTypes = new ArrayList<>();
+                if (mShowFires)
+                    activeTypes.add(Constants.MSG_TYPE_FIRE + "");
+                if (mShowFelling)
+                    activeTypes.add(Constants.MSG_TYPE_FELLING + "");
+
+                String[] selectionArgs = activeTypes.toArray(new String[activeTypes.size()]);
+                String selection = Constants.FIELD_MTYPE + " IN (" + makePlaceholders(activeTypes.size()) + ")";
+
+                return new CursorLoader(getActivity(), uri, projection, selection, selectionArgs, sortOrder);
 
             default:
                 return null;
         }
     }
 
+    private String makePlaceholders(int size) {
+        if (size == 0)
+            return "";
+
+        StringBuilder sb = new StringBuilder(size * 2 - 1);
+        sb.append("?");
+
+        for (int i = 1; i < size; i++) {
+            sb.append(",?");
+        }
+
+        return sb.toString();
+    }
 
     @Override
     public void onLoadFinished(
             Loader<Cursor> loader,
-            Cursor cursor)
-    {
+            Cursor cursor) {
         mAdapter.swapCursor(cursor);
     }
 
@@ -242,6 +278,39 @@ public class MessageListFragment
         mAdapter.changeCursor(null);
     }
 
+    public void showFilter() {
+        final boolean[] values = stringToBoolean(mPreferences.getString(SettingsConstants.KEY_PREF_FILTER, "[true, true]"));
+        CharSequence[] titles = new CharSequence[]{getString(R.string.fires), getString(R.string.action_felling)};
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), R.style.AppCompatDialog);
+        dialog.setTitle(R.string.action_filter)
+                .setMultiChoiceItems(titles, values, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                        values[which] = isChecked;
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mShowFires = values[0];
+                        mShowFelling = values[1];
+                        mPreferences.edit().putString(SettingsConstants.KEY_PREF_FILTER, Arrays.toString(values)).commit();
+                        getLoaderManager().restartLoader(LIST_LOADER, null, MessageListFragment.this);
+                    }
+                });
+        dialog.show().setCanceledOnTouchOutside(false);
+    }
+
+    private boolean[] stringToBoolean(String string) {
+        string = string.replaceAll("\\s|\\[|\\]", "");
+        String[] parts = string.split(",");
+        boolean[] result = new boolean[parts.length];
+        for (int i = 0; i < parts.length; i++)
+            result[i] = Boolean.parseBoolean(parts[i]);
+
+        return result;
+    }
 
     public class VectorLayerNotifyReceiver
             extends BroadcastReceiver
