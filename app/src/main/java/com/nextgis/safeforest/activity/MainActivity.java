@@ -340,7 +340,9 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        mFilter.setVisible(mViewPager.getCurrentItem() == 0);
+        if (mViewPager != null)
+            mFilter.setVisible(mViewPager.getCurrentItem() == 0);
+
         return true;
     }
 
