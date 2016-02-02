@@ -30,12 +30,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -48,18 +46,16 @@ import android.widget.ListView;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.nextgis.maplib.datasource.GeoGeometryFactory;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
-import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.activity.MainActivity;
 import com.nextgis.safeforest.adapter.MessageCursorAdapter;
-import com.nextgis.safeforest.util.Constants;
+import com.nextgis.safeforest.adapter.MessagesLoader;
 import com.nextgis.safeforest.util.SettingsConstants;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 
@@ -81,7 +77,7 @@ public class MessageListFragment
     {
         super.onActivityCreated(savedInstanceState);
         // Here we have to initialize the loader by reason the screen rotation
-        getLoaderManager().initLoader(LIST_LOADER, null, this);
+        getActivity().getSupportLoaderManager().initLoader(LIST_LOADER, null, this).forceLoad();
     }
 
 
@@ -218,51 +214,12 @@ public class MessageListFragment
     {
         switch (loaderID) {
             case LIST_LOADER:
-                MainApplication app = (MainApplication) getActivity().getApplicationContext();
-
-                Uri uri = Uri.parse(
-                        "content://" + app.getAuthority() + "/" + Constants.KEY_CITIZEN_MESSAGES);
-
-                String[] projection = {
-                        Constants.FIELD_ID,
-                        Constants.FIELD_MDATE,
-                        Constants.FIELD_AUTHOR,
-                        Constants.FIELD_STATUS,
-                        Constants.FIELD_MTYPE,
-                        Constants.FIELD_MESSAGE,
-                        com.nextgis.maplib.util.Constants.FIELD_GEOM};
-
-                String sortOrder = Constants.FIELD_MDATE + " DESC";
-
-                ArrayList<String> activeTypes = new ArrayList<>();
-                if (mShowFires)
-                    activeTypes.add(Constants.MSG_TYPE_FIRE + "");
-                if (mShowFelling)
-                    activeTypes.add(Constants.MSG_TYPE_FELLING + "");
-
-                String[] selectionArgs = activeTypes.toArray(new String[activeTypes.size()]);
-                String selection = Constants.FIELD_MTYPE + " IN (" + makePlaceholders(activeTypes.size()) + ")";
-
-                return new CursorLoader(getActivity(), uri, projection, selection, selectionArgs, sortOrder);
-
+                return new MessagesLoader(getActivity());
             default:
                 return null;
         }
     }
 
-    private String makePlaceholders(int size) {
-        if (size == 0)
-            return "";
-
-        StringBuilder sb = new StringBuilder(size * 2 - 1);
-        sb.append("?");
-
-        for (int i = 1; i < size; i++) {
-            sb.append(",?");
-        }
-
-        return sb.toString();
-    }
 
     @Override
     public void onLoadFinished(

@@ -91,6 +91,20 @@ public interface Constants
     String FIELD_STMESSAGE = "stmessage";
     String FIELD_NAME      = "NAME_";
     String FIELD_PHONE     = "PHONE";
+    String FIELD_DATA_TYPE = "message_data_type";
+
+    String FIELD_DOC_TYPE  = "type";
+    String FIELD_DOC_DATE  = "date";
+    String FIELD_DOC_PLACE = "place";
+    String FIELD_DOC_ID    = "number";
+    String FIELD_DOC_USER  = "user";
+    String FIELD_DOC_VIOLATE    = "violate";
+    String FIELD_DOC_STATUS     = "status";
+    String FIELD_DOC_DATE_PICK  = "date_pick";
+    String FIELD_DOC_FOREST_CAT = "forest_cat";
+    String FIELD_DOC_TERRITORY  = "territory";
+    String FIELD_DOC_REGION     = "region";
+    String FIELD_DOC_DATE_VIOLATE   = "date_violate";
 
     int MSG_STATUS_UNKNOWN      = 0;
     int MSG_STATUS_NEW          = 1;
@@ -99,9 +113,11 @@ public interface Constants
     int MSG_STATUS_NOT_ACCEPTED = 4;
     int MSG_STATUS_CHECKED      = 5;
 
-    int MSG_TYPE_UNKNOWN = 0;
-    int MSG_TYPE_FIRE    = 1;
-    int MSG_TYPE_FELLING = 2;
+    int DOC_TYPE_FIELD_WORKS    = 1;
+    int DOC_TYPE_INDICTMENT     = 2;
+    int MSG_TYPE_UNKNOWN    = 0;
+    int MSG_TYPE_FIRE       = 1;
+    int MSG_TYPE_FELLING    = 2;
     long MAX_DIFF_FIRE = 2 * 24 * 60 * 60 * 1000;
     long MAX_DIFF_FELLING = 15 * 24 * 60 * 60 * 1000;
 

@@ -54,6 +54,7 @@ public class MessageCursorAdapter
     protected int mStatusColumn;
     protected int mTypeColumn;
     protected int mMessageColumn;
+    protected int mMessageDataType;
 
 
     public MessageCursorAdapter(
@@ -90,16 +91,25 @@ public class MessageCursorAdapter
         }
 
         ImageView typeIcon = (ImageView) view.findViewById(R.id.type_icon);
-        int type = cursor.getInt(mTypeColumn);
+        int type = cursor.getInt(mMessageDataType);
         switch (type) {
-            case Constants.MSG_TYPE_UNKNOWN:
-            default:
+            case 0:
+                type = cursor.getInt(mTypeColumn);
+
+                switch (type) {
+                    case Constants.MSG_TYPE_UNKNOWN:
+                    default:
+                        break;
+                    case Constants.MSG_TYPE_FIRE:
+                        typeIcon.setImageResource(R.drawable.ic_fire_light);
+                        break;
+                    case Constants.MSG_TYPE_FELLING:
+                        typeIcon.setImageResource(R.drawable.ic_axe_light);
+                        break;
+                }
                 break;
-            case Constants.MSG_TYPE_FIRE:
-                typeIcon.setImageResource(R.drawable.ic_fire_light);
-                break;
-            case Constants.MSG_TYPE_FELLING:
-                typeIcon.setImageResource(R.drawable.ic_axe_light);
+            case 1:
+                typeIcon.setImageResource(R.drawable.ic_doc_light);
                 break;
         }
 
@@ -140,6 +150,7 @@ public class MessageCursorAdapter
             mStatusColumn = cursor.getColumnIndex(Constants.FIELD_STATUS);
             mTypeColumn = cursor.getColumnIndex(Constants.FIELD_MTYPE);
             mMessageColumn = cursor.getColumnIndex(Constants.FIELD_MESSAGE);
+            mMessageDataType = cursor.getColumnIndex(Constants.FIELD_DATA_TYPE);
         }
     }
 
