@@ -113,13 +113,6 @@ public class MapFragment
 
         //search relative view of map, if not found - add it
         mMapRelativeLayout = (RelativeLayout) view.findViewById(R.id.maprl);
-        if (mMapRelativeLayout != null) {
-            mMapRelativeLayout.addView(
-                    mMap, 0, new RelativeLayout.LayoutParams(
-                            RelativeLayout.LayoutParams.MATCH_PARENT,
-                            RelativeLayout.LayoutParams.MATCH_PARENT));
-        }
-        mMap.invalidate();
 
         mivZoomIn = (FloatingActionButton) view.findViewById(R.id.action_zoom_in);
         if (null != mivZoomIn) {
@@ -197,6 +190,16 @@ public class MapFragment
         }
 
         rl.invalidate();
+    }
+
+    public void addMap() {
+        if (mMapRelativeLayout != null) {
+            FrameLayout map = (FrameLayout) mMapRelativeLayout.findViewById(R.id.mapfl);
+            if (map.getChildCount() == 0)
+                map.addView(mMap, 0, new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.MATCH_PARENT,
+                        RelativeLayout.LayoutParams.MATCH_PARENT));
+        }
     }
 
     @Override

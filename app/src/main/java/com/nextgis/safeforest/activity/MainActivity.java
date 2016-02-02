@@ -41,11 +41,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.nextgis.maplib.api.IGISApplication;
@@ -195,6 +193,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
                     mFilter.setVisible(true);
                 } else {
                     ((MapFragment) mSectionsPagerAdapter.getItem(1)).resumeGps();
+                    ((MapFragment) mSectionsPagerAdapter.getItem(1)).addMap();
                     mFilter.setVisible(false);
                 }
             }
@@ -457,48 +456,5 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     public void showMap() {
         mViewPager.setCurrentItem(1, true);
         mTabLayout.setScrollPosition(1, 0, true);
-    }
-
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static Fragment newInstance(int sectionNumber) {
-            if(sectionNumber == 0) {
-                PlaceholderFragment fragment = new PlaceholderFragment();
-                Bundle args = new Bundle();
-                args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-                fragment.setArguments(args);
-                return fragment;
-            }
-            else{
-                MapFragment fragment = new MapFragment();
-                Bundle args = new Bundle();
-                args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-                fragment.setArguments(args);
-                return fragment;
-            }
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
     }
 }
