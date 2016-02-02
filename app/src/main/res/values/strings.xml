@@ -99,6 +99,14 @@
     <string name="status_paragraph">Status</string>
     <string name="type_paragraph">Type</string>
     <string name="message_paragraph">Message</string>
+    <string name="inspector">Inspector</string>
+    <string name="violate">Violation type</string>
+    <string name="place">Draft place</string>
+    <string name="date_pick">Date discovered</string>
+    <string name="date_violate">Violation date</string>
+    <string name="forest_category">Forest category</string>
+    <string name="territory">Territory</string>
+    <string name="region">Region</string>
     <string name="set_location">Define location</string>
     <string name="location_current">Current</string>
     <string name="location_from_map">Map</string>
@@ -126,8 +134,10 @@
     <string name="not_accepted_message_status">Not accepted message</string>
     <string name="checked_message_status">Checked message</string>
     <string name="unknown_message_type">Unknown type</string>
-    <string name="fire_message_type">Fire</string>
-    <string name="felling_message_type">Illegal felling</string>
+    <string name="message_type_fire">Fire</string>
+    <string name="message_type_felling">Illegal felling</string>
+    <string name="doc_type_indictment">Forestry violations</string>
+    <string name="doc_type_field_works">Field activities</string>
     <string name="user_contact_info">Contact info</string>
     <string name="no_region_selected">Region is not selected</string>
     <string name="region_has_no_phone">No phone for this region</string>

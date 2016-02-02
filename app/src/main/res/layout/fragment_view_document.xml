@@ -2,11 +2,9 @@
 <!--
   ~ Project: Forest violations
   ~ Purpose: Mobile application for registering facts of the forest violations.
-  ~ Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
-  ~ Author:  NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:  Stanislav Petriakov, becomeglory@gmail.com
-  ~ ******************************************************************************
-  ~ Copyright (c) 2015-2016 NextGIS, info@nextgis.com
+  ~ *****************************************************************************
+  ~ Copyright (c) 2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -33,17 +31,27 @@
         android:layout_margin="5dp"
         android:orientation="vertical">
 
-        <TextView
-            style="@style/paragraph_text"
-            android:text="@string/date_paragraph"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/id"
+                style="@style/message_view_text"
+                android:layout_width="wrap_content"/>
+
+            <TextView
+                android:id="@+id/date"
+                style="@style/message_view_text"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="end"/>
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/date"
-            style="@style/message_view_text"/>
-
-        <TextView
             style="@style/paragraph_text"
-            android:text="@string/author_paragraph"/>
+            android:text="@string/inspector"/>
 
         <TextView
             android:id="@+id/author"
@@ -68,26 +76,58 @@
 
         <TextView
             style="@style/paragraph_text"
-            android:text="@string/message_paragraph"/>
+            android:text="@string/violate"/>
 
         <TextView
-            android:id="@+id/message"
+            android:id="@+id/violate"
             style="@style/message_view_text"/>
 
         <TextView
             style="@style/paragraph_text"
-            android:text="@string/stmessage_paragraph"/>
+            android:text="@string/place"/>
 
         <TextView
-            android:id="@+id/stmessage"
+            android:id="@+id/place"
             style="@style/message_view_text"/>
 
         <TextView
             style="@style/paragraph_text"
-            android:text="@string/coordinates_paragraph"/>
+            android:text="@string/date_pick"/>
 
         <TextView
-            android:id="@+id/coordinates"
+            android:id="@+id/date_pick"
+            style="@style/message_view_text"/>
+
+        <TextView
+            style="@style/paragraph_text"
+            android:text="@string/date_violate"/>
+
+        <TextView
+            android:id="@+id/date_violate"
+            style="@style/message_view_text"/>
+
+        <TextView
+            style="@style/paragraph_text"
+            android:text="@string/forest_category"/>
+
+        <TextView
+            android:id="@+id/forest_category"
+            style="@style/message_view_text"/>
+
+        <TextView
+            style="@style/paragraph_text"
+            android:text="@string/territory"/>
+
+        <TextView
+            android:id="@+id/territory"
+            style="@style/message_view_text"/>
+
+        <TextView
+            style="@style/paragraph_text"
+            android:text="@string/region"/>
+
+        <TextView
+            android:id="@+id/region"
             style="@style/message_view_text"/>
     </LinearLayout>
 </ScrollView>

@@ -101,6 +101,14 @@
     <string name="status_paragraph">Статус</string>
     <string name="type_paragraph">Тип</string>
     <string name="message_paragraph">Сообщение</string>
+    <string name="inspector">Инспектор</string>
+    <string name="violate">Тип нарушения</string>
+    <string name="place">Место составления</string>
+    <string name="date_pick">Дата обнаружения</string>
+    <string name="date_violate">Дата совершения</string>
+    <string name="forest_category">Категория леса</string>
+    <string name="territory">Территория</string>
+    <string name="region">Регион</string>
     <string name="set_location">Укажите место</string>
     <string name="location_current">Текущее</string>
     <string name="location_from_map">Карта</string>
@@ -128,8 +136,10 @@
     <string name="not_accepted_message_status">Не принятое сообщение</string>
     <string name="checked_message_status">Проверенное сообщение</string>
     <string name="unknown_message_type">Неизвестный тип</string>
-    <string name="fire_message_type">Пожар</string>
-    <string name="felling_message_type">Незаконная рубка</string>
+    <string name="message_type_fire">Пожар</string>
+    <string name="message_type_felling">Незаконная рубка</string>
+    <string name="doc_type_indictment">Акт о лесонарушении</string>
+    <string name="doc_type_field_works">Акт полевых мероприятий</string>
     <string name="user_contact_info">Контактные данные</string>
     <string name="no_region_selected">Не выбран регион</string>
     <string name="region_has_no_phone">Для этого региона нет телефона</string>
