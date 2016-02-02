@@ -32,10 +32,14 @@ import com.nextgis.safeforest.util.Constants;
 
 public class MessagesLoader extends AsyncTaskLoader<Cursor> {
     private MapEventSource mMap;
+    private boolean mShowFires, mShowFelling, mShowDocs;
 
-    public MessagesLoader(Context context) {
+    public MessagesLoader(Context context, boolean showFires, boolean showFelling, boolean showDocs) {
         super(context);
         mMap = (MapEventSource) MapBase.getInstance();
+        mShowFelling = showFelling;
+        mShowFires = showFires;
+        mShowDocs = showDocs;
     }
 
     @Override
@@ -44,16 +48,39 @@ public class MessagesLoader extends AsyncTaskLoader<Cursor> {
             return null;
 
         SQLiteDatabase db = mMap.getDatabase(true);
+        String query = "";
+        String selection = "";
 
-        String query = String.format("select %s, %s, %s, %s, %s, %s, %s, 0 as %s from %s union all " +
-                        "select %s, %s as %s, %s as %s, %s as %s, %s as %s, %s as %s, %s, 1 as %s from %s where %s IN (%d, %d) order by %s desc",
+        if (mShowFires)
+            selection += Constants.MSG_TYPE_FIRE;
+
+        if (mShowFelling) {
+            if (selection.length() > 0)
+                selection += ",";
+            selection += Constants.MSG_TYPE_FELLING;
+        }
+
+        String messages = String.format("select %s, %s, %s, %s, %s, %s, %s, 0 as %s from %s where %s in (%s)",
                 Constants.FIELD_ID, Constants.FIELD_MDATE, Constants.FIELD_AUTHOR, Constants.FIELD_STATUS, Constants.FIELD_MTYPE, Constants.FIELD_MESSAGE,
-                com.nextgis.maplib.util.Constants.FIELD_GEOM, Constants.FIELD_DATA_TYPE, Constants.KEY_CITIZEN_MESSAGES,
+                com.nextgis.maplib.util.Constants.FIELD_GEOM, Constants.FIELD_DATA_TYPE, Constants.KEY_CITIZEN_MESSAGES, Constants.FIELD_MTYPE, selection);
+
+        String docs = String.format("select %s, %s as %s, %s as %s, %s as %s, %s as %s, %s as %s, %s, 1 as %s from %s where %s IN (%d, %d)",
                 Constants.FIELD_ID, Constants.FIELD_DOC_DATE, Constants.FIELD_MDATE, Constants.FIELD_DOC_USER, Constants.FIELD_AUTHOR,
                 Constants.FIELD_DOC_STATUS, Constants.FIELD_STATUS, Constants.FIELD_DOC_TYPE, Constants.FIELD_MTYPE,
-                Constants.FIELD_DOC_VIOLATE, Constants.FIELD_MESSAGE, com.nextgis.maplib.util.Constants.FIELD_GEOM,
-                Constants.FIELD_DATA_TYPE, Constants.KEY_FV_DOCS, Constants.FIELD_DOC_TYPE, Constants.DOC_TYPE_FIELD_WORKS, Constants.DOC_TYPE_INDICTMENT,
-                Constants.FIELD_MDATE);
+                Constants.FIELD_DOC_VIOLATE, Constants.FIELD_MESSAGE, com.nextgis.maplib.util.Constants.FIELD_GEOM, Constants.FIELD_DATA_TYPE,
+                Constants.KEY_FV_DOCS, Constants.FIELD_DOC_TYPE, Constants.DOC_TYPE_FIELD_WORKS, Constants.DOC_TYPE_INDICTMENT);
+
+        boolean showMessages = mShowFires || mShowFelling;
+        if (showMessages && mShowDocs)
+            query += messages + " union all " + docs;
+        else if (showMessages)
+            query += messages;
+        else if (mShowDocs)
+            query += docs;
+        else
+            return null;
+
+        query += String.format(" order by %s desc", Constants.FIELD_MDATE);
 
         return db.rawQuery(query, null);
     }

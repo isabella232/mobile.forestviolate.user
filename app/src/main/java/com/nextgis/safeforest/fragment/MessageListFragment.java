@@ -23,6 +23,7 @@
 
 package com.nextgis.safeforest.fragment;
 
+import android.accounts.Account;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -46,6 +47,7 @@ import android.widget.ListView;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.nextgis.maplib.datasource.GeoGeometryFactory;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
+import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.activity.MainActivity;
 import com.nextgis.safeforest.adapter.MessageCursorAdapter;
@@ -70,16 +72,8 @@ public class MessageListFragment
     protected IntentFilter mIntentFilter;
     protected SharedPreferences mPreferences;
 
-    protected boolean mShowFires, mShowFelling;
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-        // Here we have to initialize the loader by reason the screen rotation
-        getActivity().getSupportLoaderManager().initLoader(LIST_LOADER, null, this).forceLoad();
-    }
-
+    protected boolean mIsAuthorized;
+    protected boolean mShowFires, mShowFelling, mShowDocs;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -87,7 +81,9 @@ public class MessageListFragment
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mAdapter = new MessageCursorAdapter(getContext(), null, 0);
+        mReceiver = new VectorLayerNotifyReceiver();
 
         // register events from layers modify in services or other applications
         mIntentFilter = new IntentFilter();
@@ -99,12 +95,17 @@ public class MessageListFragment
         mIntentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_UPDATE_FIELDS);
         mIntentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_FEATURE_ID_CHANGE);
 
-        mReceiver = new VectorLayerNotifyReceiver();
+        MainApplication app = (MainApplication) getActivity().getApplication();
+        Account account = app.getAccount(getString(R.string.account_name));
+        String auth = app.getAccountUserData(account, com.nextgis.safeforest.util.Constants.KEY_IS_AUTHORIZED);
+        mIsAuthorized = auth != null && !auth.equals(com.nextgis.safeforest.util.Constants.ANONYMOUS);
 
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        boolean[] filter = stringToBoolean(mPreferences.getString(SettingsConstants.KEY_PREF_FILTER, "[true, true]"));
+        boolean[] filter = getFilter();
         mShowFires = filter[0];
         mShowFelling = filter[1];
+        mShowDocs = mIsAuthorized && filter[2];
+
+        getActivity().getSupportLoaderManager().initLoader(LIST_LOADER, null, this).forceLoad();
     }
 
     @Override
@@ -214,7 +215,7 @@ public class MessageListFragment
     {
         switch (loaderID) {
             case LIST_LOADER:
-                return new MessagesLoader(getActivity());
+                return new MessagesLoader(getActivity(), mShowFires, mShowFelling, mShowDocs);
             default:
                 return null;
         }
@@ -236,9 +237,10 @@ public class MessageListFragment
     }
 
     public void showFilter() {
-        final boolean[] values = stringToBoolean(mPreferences.getString(SettingsConstants.KEY_PREF_FILTER, "[true, true]"));
-        CharSequence[] titles = new CharSequence[]{getString(R.string.fires), getString(R.string.action_felling)};
+        final boolean[] values = getFilter();
+        CharSequence[] titles = new CharSequence[]{getString(R.string.fires), getString(R.string.action_felling), getString(R.string.documents)};
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), R.style.AppCompatDialog);
+
         dialog.setTitle(R.string.action_filter)
                 .setMultiChoiceItems(titles, values, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
@@ -252,14 +254,25 @@ public class MessageListFragment
                     public void onClick(DialogInterface dialog, int which) {
                         mShowFires = values[0];
                         mShowFelling = values[1];
+                        mShowDocs = mIsAuthorized && values[2];
                         mPreferences.edit().putString(SettingsConstants.KEY_PREF_FILTER, Arrays.toString(values)).commit();
-                        getLoaderManager().restartLoader(LIST_LOADER, null, MessageListFragment.this);
+                        getLoaderManager().restartLoader(LIST_LOADER, null, MessageListFragment.this).forceLoad();
                     }
                 });
-        dialog.show().setCanceledOnTouchOutside(false);
+
+        AlertDialog box = dialog.show();
+        box.setCanceledOnTouchOutside(false);
+        final ListView items = box.getListView();
+        items.post(new Runnable() {
+            @Override
+            public void run() {
+                items.getChildAt(2).setEnabled(mIsAuthorized);
+            }
+        });
     }
 
-    private boolean[] stringToBoolean(String string) {
+    private boolean[] getFilter() {
+        String string = mPreferences.getString(SettingsConstants.KEY_PREF_FILTER, "[true, true, true]");
         string = string.replaceAll("\\s|\\[|\\]", "");
         String[] parts = string.split(",");
         boolean[] result = new boolean[parts.length];
