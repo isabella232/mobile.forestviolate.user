@@ -93,6 +93,9 @@ public final class MapUtil {
     }
 
     public static void removeOutdatedChanges(NGWVectorLayer layer) {
+        if (layer == null)
+            return;
+
         String changeTableName = layer.getPath().getName() + com.nextgis.maplib.util.Constants.CHANGES_NAME_POSTFIX;
 
         try {
