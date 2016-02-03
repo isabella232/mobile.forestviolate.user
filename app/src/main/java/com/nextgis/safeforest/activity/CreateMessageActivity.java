@@ -155,8 +155,8 @@ public class CreateMessageActivity
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
 
         Account account = mApp.getAccount(getString(R.string.account_name));
         String auth = mApp.getAccountUserData(account, Constants.KEY_IS_AUTHORIZED);
@@ -173,6 +173,14 @@ public class CreateMessageActivity
             addMap();
         else
             showUserDialog();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mMapFragment != null)
+            mMapFragment.addMap();
     }
 
     private boolean hasPhoneAndName() {
