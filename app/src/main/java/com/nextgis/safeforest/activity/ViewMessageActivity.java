@@ -54,4 +54,9 @@ public class ViewMessageActivity
         ft.replace(R.id.container, viewMessageFragment, Constants.FRAGMENT_VIEW_MESSAGE);
         ft.commit();
     }
+
+    public void setTitle(String title) {
+        //noinspection ConstantConditions
+        getSupportActionBar().setTitle(title);
+    }
 }

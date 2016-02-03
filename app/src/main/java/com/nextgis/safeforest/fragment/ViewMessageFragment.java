@@ -43,6 +43,7 @@ import com.nextgis.maplib.util.LocationUtil;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
+import com.nextgis.safeforest.activity.ViewMessageActivity;
 import com.nextgis.safeforest.util.Constants;
 import com.nextgis.safeforest.util.UiUtil;
 
@@ -144,7 +145,6 @@ public class ViewMessageFragment
         TextView dateView = (TextView) view.findViewById(R.id.date);
         TextView authorView = (TextView) view.findViewById(R.id.author);
         TextView statusView = (TextView) view.findViewById(R.id.status);
-        TextView typeView = (TextView) view.findViewById(R.id.type);
         TextView messageView = (TextView) view.findViewById(R.id.message);
         TextView managerMessageView = (TextView) view.findViewById(R.id.stmessage);
         TextView coordinatesView = (TextView) view.findViewById(R.id.coordinates);
@@ -191,7 +191,7 @@ public class ViewMessageFragment
                     data = getString(R.string.message_type_felling);
                     break;
             }
-            typeView.setText(data);
+            ((ViewMessageActivity) getActivity()).setTitle(data);
 
             GeoMultiPoint mpt = (GeoMultiPoint) GeoGeometryFactory.fromBlob(
                     cursor.getBlob(cursor.getColumnIndex(FIELD_GEOM)));
@@ -228,7 +228,6 @@ public class ViewMessageFragment
         TextView dateView = (TextView) view.findViewById(R.id.date);
         TextView authorView = (TextView) view.findViewById(R.id.author);
         TextView statusView = (TextView) view.findViewById(R.id.status);
-        TextView typeView = (TextView) view.findViewById(R.id.type);
         TextView violateView = (TextView) view.findViewById(R.id.violate);
         TextView placeView = (TextView) view.findViewById(R.id.place);
         TextView datePickView = (TextView) view.findViewById(R.id.date_pick);
@@ -275,7 +274,7 @@ public class ViewMessageFragment
                 data = getString(R.string.doc_type_field_works);
                 break;
         }
-        typeView.setText(data);
+        ((ViewMessageActivity) getActivity()).setTitle(data);
 
         authorView.setText(cursor.getString(cursor.getColumnIndex(Constants.FIELD_DOC_USER)));
         violateView.setText(cursor.getString(cursor.getColumnIndex(Constants.FIELD_DOC_VIOLATE)));

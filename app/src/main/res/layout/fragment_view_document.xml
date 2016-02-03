@@ -67,15 +67,6 @@
 
         <TextView
             style="@style/paragraph_text"
-            android:text="@string/type_paragraph"/>
-
-        <TextView
-            android:id="@+id/type"
-            style="@style/message_view_text"
-            />
-
-        <TextView
-            style="@style/paragraph_text"
             android:text="@string/violate"/>
 
         <TextView
