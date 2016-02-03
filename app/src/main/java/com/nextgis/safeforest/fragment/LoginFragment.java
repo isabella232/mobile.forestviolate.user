@@ -149,84 +149,93 @@ public class LoginFragment extends NGWLoginFragment {
 
         switch (v.getId()) {
             case R.id.signin:
-                mProgressDialog.setMessage(getString(R.string.signing_in));
-                mProgressDialog.setCancelable(false);
-                mProgressDialog.show();
+                Runnable signIn = new Runnable() {
+                    @Override
+                    public void run() {
+                        getLoaderManager().restartLoader(R.id.auth_token_loader, null, LoginFragment.this);
+                    }
+                };
 
-                getLoaderManager().restartLoader(R.id.auth_token_loader, null, this);
+                showUserDataDialog(R.string.signing_in, signIn);
                 break;
             case R.id.signup:
-                final UserDataDialog dialog = new UserDataDialog();
-
-                dialog.setOnPositiveClickedListener(new YesNoDialog.OnPositiveClickedListener() {
+                Runnable signUp = new Runnable() {
                     @Override
-                    public void onPositiveClicked() {
-                        mFullNameText = dialog.getFullNameText();
-                        mPhoneText = dialog.getPhoneText();
+                    public void run() {
+                        final boolean[] result = new boolean[1];
 
-                        if (TextUtils.isEmpty(mFullNameText) || TextUtils.isEmpty(mPhoneText)) {
-                            Toast.makeText(getActivity(), R.string.anonymous_hint, Toast.LENGTH_LONG).show();
-                            return;
-                        }
-
-                        if (!UiUtil.isPhoneValid(mPhoneText)) {
-                            Toast.makeText(getActivity(), R.string.phone_not_valid, Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        dialog.dismiss();
-
-                        mProgressDialog.setMessage(getString(R.string.signing_up));
-                        mProgressDialog.setCancelable(false);
-                        mProgressDialog.show();
-
-                        new Handler().post(new Runnable() {
+                        Thread t = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                final boolean[] result = new boolean[1];
-
-                                Thread t = new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        result[0] = NGWUtil.signUp(mURL.getText().toString().trim(),
-                                                mLogin.getText().toString(), mPassword.getText().toString(), null, null);
-                                    }
-                                });
-                                t.start();
-
-                                while (t.isAlive())
-                                    SystemClock.sleep(300);
-
-                                if (result[0]) {
-                                    getLoaderManager().restartLoader(R.id.auth_token_loader, null, LoginFragment.this);
-
-                                    mSignUpButton.setEnabled(false);
-                                    mSignInButton.setEnabled(false);
-                                    mSkipButton.setEnabled(false);
-                                } else
-                                    Toast.makeText(getActivity(), R.string.error_sign_up, Toast.LENGTH_LONG).show();
-
-                                mProgressDialog.dismiss();
+                                result[0] = NGWUtil.signUp(mURL.getText().toString().trim(),
+                                        mLogin.getText().toString(), mPassword.getText().toString(), null, null);
                             }
                         });
-                    }
-                });
+                        t.start();
 
-                dialog.setOnNegativeClickedListener(new YesNoDialog.OnNegativeClickedListener() {
-                    @Override
-                    public void onNegativeClicked() {
-                        dialog.dismiss();
-                    }
-                });
+                        while (t.isAlive())
+                            SystemClock.sleep(300);
 
-                dialog.hideEmailField();
-                dialog.setKeepInstance(true);
-                dialog.show(getFragmentManager(), Constants.FRAGMENT_USER_DATA_DIALOG);
+                        if (result[0]) {
+                            getLoaderManager().restartLoader(R.id.auth_token_loader, null, LoginFragment.this);
+
+                            mSignUpButton.setEnabled(false);
+                            mSignInButton.setEnabled(false);
+                            mSkipButton.setEnabled(false);
+                        } else
+                            Toast.makeText(getActivity(), R.string.error_sign_up, Toast.LENGTH_LONG).show();
+
+                        if (mProgressDialog.isShowing())
+                            mProgressDialog.dismiss();
+                    }
+                };
+                showUserDataDialog(R.string.signing_up, signUp);
                 break;
             case R.id.skip:
                 getLoaderManager().restartLoader(R.id.non_auth_token_loader, null, this);
                 break;
         }
+    }
+
+    private void showUserDataDialog(final int message, final Runnable runnable) {
+        final UserDataDialog dialog = new UserDataDialog();
+
+        dialog.setOnPositiveClickedListener(new YesNoDialog.OnPositiveClickedListener() {
+            @Override
+            public void onPositiveClicked() {
+                mFullNameText = dialog.getFullNameText();
+                mPhoneText = dialog.getPhoneText();
+
+                if (TextUtils.isEmpty(mFullNameText) || TextUtils.isEmpty(mPhoneText)) {
+                    Toast.makeText(getActivity(), R.string.anonymous_hint, Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                if (!UiUtil.isPhoneValid(mPhoneText)) {
+                    Toast.makeText(getActivity(), R.string.phone_not_valid, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                dialog.dismiss();
+
+                mProgressDialog.setMessage(getString(message));
+                mProgressDialog.setCancelable(false);
+                mProgressDialog.show();
+
+                new Handler().post(runnable);
+            }
+        });
+
+        dialog.setOnNegativeClickedListener(new YesNoDialog.OnNegativeClickedListener() {
+            @Override
+            public void onNegativeClicked() {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.hideEmailField();
+        dialog.setKeepInstance(true);
+        dialog.show(getFragmentManager(), Constants.FRAGMENT_USER_DATA_DIALOG);
     }
 
     @Override
