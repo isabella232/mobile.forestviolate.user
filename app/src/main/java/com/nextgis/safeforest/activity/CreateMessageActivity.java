@@ -33,6 +33,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -412,7 +413,12 @@ public class CreateMessageActivity
     }
 
     protected void getCurrentLocation() {
-        final ProgressDialog progress = new ProgressDialog(this);
+        final ProgressDialog progress;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            progress = new ProgressDialog(this, android.R.style.Theme_Material_Light_Dialog_Alert);
+        else
+            progress = new ProgressDialog(this);
+
         progress.setIndeterminate(true);
         progress.setCanceledOnTouchOutside(false);
         progress.setMessage(getString(R.string.location_getting_current));

@@ -23,6 +23,7 @@
 package com.nextgis.safeforest.fragment;
 
 import android.app.ProgressDialog;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -80,7 +81,10 @@ public class LoginFragment extends NGWLoginFragment {
         mLogin.addTextChangedListener(new EmailWatcher());
         mPassword.addTextChangedListener(new PasswordWatcher());
 
-        mProgressDialog = new ProgressDialog(getActivity());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            mProgressDialog = new ProgressDialog(getActivity(), android.R.style.Theme_Material_Light_Dialog_Alert);
+        else
+            mProgressDialog = new ProgressDialog(getActivity());
 
         return view;
     }
