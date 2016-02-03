@@ -32,6 +32,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -175,8 +176,14 @@ public class RegionSyncFragment extends Fragment {
     }
 
     public static void createChooseRegionDialog(final FragmentActivity activity, final onRegionReceive callback) {
-        final ProgressDialog waitDownload = new ProgressDialog(activity);
+        final ProgressDialog waitDownload;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            waitDownload = new ProgressDialog(activity, android.R.style.Theme_Material_Light_Dialog_Alert);
+        else
+            waitDownload = new ProgressDialog(activity);
+
         waitDownload.setMessage(activity.getString(R.string.sf_getting_regions));
+        waitDownload.setCanceledOnTouchOutside(false);
         waitDownload.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
