@@ -119,7 +119,7 @@ public final class MapUtil {
 
                 Feature feature = layer.getFeature(changeFeatureId);
                 if (feature != null) {
-                    int type = (Integer) feature.getFieldValue(Constants.FIELD_MTYPE);
+                    int type = (int) feature.getFieldValue(Constants.FIELD_MTYPE);
                     long diff = System.currentTimeMillis() - (Long) feature.getFieldValue(Constants.FIELD_MDATE);
                     boolean outdated = false;
                     switch (type) {
