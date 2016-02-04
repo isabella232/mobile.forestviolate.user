@@ -295,7 +295,6 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     @Override
     public void onAddAccount(Account account, String token, boolean accountAdded) {
         if(accountAdded) {
-
             final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
             float minX = prefs.getFloat(SettingsConstants.KEY_PREF_USERMINX, -2000.0f);
             float minY = prefs.getFloat(SettingsConstants.KEY_PREF_USERMINY, -2000.0f);
@@ -322,8 +321,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
             // goto step 2
             refreshActivityView();
-        }
-        else
+        } else
             Toast.makeText(this, R.string.error_init, Toast.LENGTH_SHORT).show();
     }
 

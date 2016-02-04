@@ -320,13 +320,15 @@ public class LoginFragment extends NGWLoginFragment {
             }
         }
         else{
-            if (mForNewAccount) {
-                app.setUserData(accountName, SettingsConstants.KEY_USER_FULLNAME, mFullNameText);
-                app.setUserData(accountName, SettingsConstants.KEY_USER_PHONE, mPhoneText);
-            } else if (null != mOnAddAccountListener)
+            if (null != mOnAddAccountListener)
                 mOnAddAccountListener.onAddAccount(app.getAccount(accountName), token, false);
 
             super.onTokenReceived(accountName, token);
+
+            if (mForNewAccount) {
+                app.setUserData(accountName, SettingsConstants.KEY_USER_FULLNAME, mFullNameText);
+                app.setUserData(accountName, SettingsConstants.KEY_USER_PHONE, mPhoneText);
+            }
         }
     }
 

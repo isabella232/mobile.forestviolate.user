@@ -93,6 +93,9 @@
     <string name="change_server">Изменить сервер</string>
     <string name="pref_full_name">ФИО</string>
     <string name="pref_phone">Телефон</string>
+    <string name="pref_full_name_summary">Укажите ваше ФИО</string>
+    <string name="pref_phone_summary">Укажите контактный телефон</string>
+    <string name="pref_email_summary">Укажите электронную почту</string>
     <string name="theme">Тема приложения</string>
     <string name="sync_switch">Вкл./выкл. синхронизацию</string>
     <string name="get_citizen_messages">Получение сообщений</string>

@@ -168,12 +168,15 @@ public class AccountActivity extends SFActivity {
             login.setTitle(emailLogin);
 
             EditTextPreference fullName = (EditTextPreference) findPreference(SettingsConstants.KEY_USER_FULLNAME);
-            fullName.setSummary(mApp.getAccountUserData(mAccount, SettingsConstants.KEY_USER_FULLNAME));
+            String data = mApp.getAccountUserData(mAccount, SettingsConstants.KEY_USER_FULLNAME);
+            fullName.setSummary(TextUtils.isEmpty(data) ? getString(R.string.pref_full_name_summary) : data);
 
             EditTextPreference phone = (EditTextPreference) findPreference(SettingsConstants.KEY_USER_PHONE);
-            phone.setSummary(mApp.getAccountUserData(mAccount, SettingsConstants.KEY_USER_PHONE));
+            data = mApp.getAccountUserData(mAccount, SettingsConstants.KEY_USER_PHONE);
+            phone.setSummary(TextUtils.isEmpty(data) ? getString(R.string.pref_phone_summary) : data);
 
-            mEmail.setSummary(mApp.getAccountUserData(mAccount, SettingsConstants.KEY_USER_EMAIL));
+            data = mApp.getAccountUserData(mAccount, SettingsConstants.KEY_USER_EMAIL);
+            mEmail.setSummary(TextUtils.isEmpty(data) ? getString(R.string.pref_email_summary) : data);
 
             if (!emailLogin.equals(Constants.ANONYMOUS))
                 login.removePreference(mEmail);

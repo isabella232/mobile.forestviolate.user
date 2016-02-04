@@ -91,6 +91,9 @@
     <string name="change_server">Change server</string>
     <string name="pref_full_name">Full name</string>
     <string name="pref_phone">Phone</string>
+    <string name="pref_full_name_summary">Enter your full name</string>
+    <string name="pref_phone_summary">Enter your contact phone</string>
+    <string name="pref_email_summary">Enter your email</string>
     <string name="theme">Application theme</string>
     <string name="sync_switch">Switch sync on/off</string>
     <string name="get_citizen_messages">Get messages</string>

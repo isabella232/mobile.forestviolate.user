@@ -26,11 +26,11 @@
         <EditTextPreference
             android:inputType="textPersonName"
             android:key="user_full_name"
-            android:title="@string/full_name_hint"/>
+            android:title="@string/pref_full_name"/>
         <EditTextPreference
             android:inputType="phone"
             android:key="user_phone"
-            android:title="@string/phone_hint"/>
+            android:title="@string/pref_phone"/>
         <EditTextPreference
             android:inputType="textEmailAddress"
             android:key="user_email"
