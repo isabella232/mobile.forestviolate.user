@@ -307,6 +307,7 @@ public class CreateMessageActivity
     }
 
     protected void sendMessage() {
+        mSend.setEnabled(false);
         saveLocation(mMapFragment.getSelectedLocation());
 
         try {
@@ -322,7 +323,6 @@ public class CreateMessageActivity
             if (result == null) {
                 Log.d(TAG, "MessageFragment, saveMessage(), Layer: " + Constants.KEY_CITIZEN_MESSAGES + ", insert FAILED");
                 Toast.makeText(mApp, R.string.error_create_message, Toast.LENGTH_LONG).show();
-                // TODO: not close activity
             } else {
                 long id = Long.parseLong(result.getLastPathSegment());
                 Log.d(TAG, "MessageFragment, saveMessage(), Layer: " + Constants.KEY_CITIZEN_MESSAGES
@@ -330,10 +330,15 @@ public class CreateMessageActivity
 
                 putAttaches(Uri.parse("content://" + mApp.getAuthority() + "/" +
                         Constants.KEY_CITIZEN_MESSAGES + "/" + id + "/attach"));
+
+                Toast.makeText(mApp, R.string.message_created, Toast.LENGTH_SHORT).show();
+                finish();
             }
         } catch (RuntimeException e) {
             Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
+
+        mSend.setEnabled(true);
     }
 
     private void putAttaches(Uri uri) {
