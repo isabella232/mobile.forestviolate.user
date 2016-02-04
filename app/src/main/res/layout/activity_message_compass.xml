@@ -43,8 +43,9 @@
         android:id="@+id/ll_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:orientation="horizontal">
+        android:background="@color/primary_dark"
+        android:orientation="horizontal"
+        android:padding="5dp">
 
         <EditText
             android:id="@+id/et_distance"
@@ -54,6 +55,7 @@
             android:layout_weight="1"
             android:background="@drawable/message_box"
             android:hint="@string/location_distance_to"
+            android:imeOptions="actionSend|flagNoEnterAction"
             android:inputType="number|numberDecimal"
             android:maxLines="1"
             android:padding="5dp"/>

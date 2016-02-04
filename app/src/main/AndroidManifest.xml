@@ -115,6 +115,7 @@
 
         <activity
             android:name=".activity.MessageCompassActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"
             android:label="@string/location_from_compass"
             />
 
