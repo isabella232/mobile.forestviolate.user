@@ -616,4 +616,8 @@ public class MapFragment
         if (mSelectLocationOverlay != null)
             mSelectLocationOverlay.setVisibility(isVisible);
     }
+
+    public void centerSelectedPoint() {
+        mSelectLocationOverlay.centerSelectedLocation();
+    }
 }

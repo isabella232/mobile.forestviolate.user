@@ -47,7 +47,7 @@ import com.nextgis.safeforest.R;
 public class SelectLocationOverlay extends Overlay implements MapViewEventListener {
     protected final static int VERTEX_RADIUS = 20;
 
-    protected GeoPoint mSelectedPoint;
+    protected GeoPoint mSelectedPoint, mCenter;
     protected DrawItem mSelectedItem;
     protected PointF mTempPointOffset;
 
@@ -62,10 +62,10 @@ public class SelectLocationOverlay extends Overlay implements MapViewEventListen
         super(context, mapViewOverlays);
         mMapViewOverlays.addListener(this);
 
-        GeoPoint center = mMapViewOverlays.getMap().getFullScreenBounds().getCenter();
+        mCenter = mMapViewOverlays.getMap().getFullScreenBounds().getCenter();
         float[] geoPoints = new float[2];
-        geoPoints[0] = (float) center.getX();
-        geoPoints[1] = (float) center.getY();
+        geoPoints[0] = (float) mCenter.getX();
+        geoPoints[1] = (float) mCenter.getY();
         mSelectedItem = new DrawItem(DrawItem.TYPE_VERTEX, geoPoints);
         fillGeometry();
 
@@ -83,6 +83,11 @@ public class SelectLocationOverlay extends Overlay implements MapViewEventListen
         mAnchorCenterY = mAnchor.getHeight() * 0.75f;
         mAnchorTolerancePX = mAnchor.getScaledWidth(context.getResources().getDisplayMetrics());
         mTolerancePX = context.getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
+    }
+
+    public void centerSelectedLocation() {
+        mSelectedItem.setSelectedPointCoordinates((float) mCenter.getX(), (float) mCenter.getY());
+        fillGeometry();
     }
 
     public void setSelectedLocation(Location location) {

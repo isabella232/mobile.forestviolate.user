@@ -199,6 +199,9 @@ public class CreateMessageActivity
         int itemId = item.getItemId();
 
         switch (itemId) {
+            case R.id.action_center:
+                mMapFragment.centerSelectedPoint();
+                break;
             case R.id.action_locate:
                 if (mPhotos.getVisibility() == View.GONE)
                     mMapFragment.locateCurrentPosition();

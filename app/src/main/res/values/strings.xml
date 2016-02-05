@@ -27,6 +27,7 @@
     <string name="title_notes">Notifications</string>
     <string name="title_map">Map</string>
     <string name="title_current_location">Current location</string>
+    <string name="title_center_point">Center point</string>
     <string name="title_orientation">Orientation</string>
     <string name="action_settings">Settings</string>
     <string name="app_description">The application for see the forest violations notifications, notify about new forest violations and check theirs status.</string>
