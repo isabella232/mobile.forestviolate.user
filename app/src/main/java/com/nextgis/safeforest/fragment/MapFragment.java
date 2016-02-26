@@ -87,7 +87,7 @@ public class MapFragment
 
     protected boolean mShowStatusPanel, mShowSelectLocation;
     protected GeoPoint mCurrentCenter;
-    protected int mCoordinatesFormat;
+    protected int mCoordinatesFormat, mCoordinatesFraction;
 
     @Override
     public View onCreateView(
@@ -280,6 +280,7 @@ public class MapFragment
             resumeGps();
 
         mCoordinatesFormat = prefs.getInt(SettingsConstants.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);
+        mCoordinatesFraction = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FRACTION, 6);
         mShowStatusPanel = prefs.getBoolean(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL, true);
 
         if (null != mStatusPanel) {
@@ -540,11 +541,11 @@ public class MapFragment
                             "%.1f %s/%s", location.getSpeed() * 3600 / 1000,
                             getString(R.string.unit_kilometer), getString(R.string.unit_hour)));
             mStatusLatitude.setText(
-                    LocationUtil.formatCoordinate(location.getLatitude(), mCoordinatesFormat) +
+                    LocationUtil.formatCoordinate(location.getLatitude(), mCoordinatesFormat, mCoordinatesFraction) +
                             " " +
                             getString(R.string.latitude_caption_short));
             mStatusLongitude.setText(
-                    LocationUtil.formatCoordinate(location.getLongitude(), mCoordinatesFormat) +
+                    LocationUtil.formatCoordinate(location.getLongitude(), mCoordinatesFormat, mCoordinatesFraction) +
                             " " +
                             getString(R.string.longitude_caption_short));
         }
