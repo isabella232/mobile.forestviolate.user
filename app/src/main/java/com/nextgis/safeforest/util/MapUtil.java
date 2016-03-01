@@ -129,6 +129,10 @@ public final class MapUtil {
                         case Constants.MSG_TYPE_FELLING:
                             outdated = diff >= Constants.MAX_DIFF_FELLING;
                             break;
+                        case Constants.MSG_TYPE_GARBAGE:
+                        case Constants.MSG_TYPE_MISC:
+                            outdated = diff >= Constants.MAX_DIFF_OTHER;
+                            break;
                     }
 
                     if (outdated)

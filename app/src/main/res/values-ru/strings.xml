@@ -44,6 +44,8 @@
     <string name="documents">Документы</string>
     <string name="contact">Контакт</string>
     <string name="fire">Пожар</string>
+    <string name="garbage">Замусоривание</string>
+    <string name="misc">Прочее</string>
     <string name="geomixer_fv_tiles">Лесонарушения растр (GeoMixer)</string>
     <string name="sf_login_title">Аккаунт</string>
     <string
@@ -142,8 +144,6 @@
     <string name="not_accepted_message_status">Не принятое сообщение</string>
     <string name="checked_message_status">Проверенное сообщение</string>
     <string name="unknown_message_type">Неизвестный тип</string>
-    <string name="message_type_fire">Пожар</string>
-    <string name="message_type_felling">Незаконная рубка</string>
     <string name="doc_type_indictment">Акт о лесонарушении</string>
     <string name="doc_type_field_works">Акт полевых мероприятий</string>
     <string name="user_contact_info">Контактные данные</string>

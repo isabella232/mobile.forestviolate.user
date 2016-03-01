@@ -115,6 +115,12 @@ public class CreateMessageActivity
                 case Constants.MSG_TYPE_FIRE:
                     mTitle = R.string.fire;
                     break;
+                case Constants.MSG_TYPE_GARBAGE:
+                    mTitle = R.string.garbage;
+                    break;
+                case Constants.MSG_TYPE_MISC:
+                    mTitle = R.string.misc;
+                    break;
             }
 
             mToolbar.setTitle(mTitle);
@@ -135,8 +141,6 @@ public class CreateMessageActivity
 
         mLocationCompass = (FloatingActionButton) findViewById(R.id.action_compass);
         mLocationCompass.setOnClickListener(this);
-        Drawable drawable = getResources().getDrawable(R.drawable.ic_compass);
-        mLocationCompass.setIconDrawable(UiUtil.tintIcon(drawable, getResources().getColor(R.color.color_white)));
 
         mUserDataDialog = (UserDataDialog) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_USER_DATA_DIALOG);
         mAuthDialog = (YesNoDialog) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_USER_AUTH);

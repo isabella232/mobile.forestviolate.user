@@ -118,8 +118,11 @@ public interface Constants
     int MSG_TYPE_UNKNOWN    = 0;
     int MSG_TYPE_FIRE       = 1;
     int MSG_TYPE_FELLING    = 2;
-    long MAX_DIFF_FIRE = 2 * 24 * 60 * 60 * 1000;
-    long MAX_DIFF_FELLING = 15 * 24 * 60 * 60 * 1000;
+    int MSG_TYPE_GARBAGE    = 3;
+    int MSG_TYPE_MISC       = 4;
+    long MAX_DIFF_FIRE = 2 * 24 * 60 * 60 * 1000L;
+    long MAX_DIFF_FELLING = 15 * 24 * 60 * 60 * 1000L;
+    long MAX_DIFF_OTHER = 30 * 24 * 60 * 60 * 1000L;
 
     int MAX_LOCATION_MEASURES = 5;
     float MAX_LOCATION_ACCURACY = 5f;

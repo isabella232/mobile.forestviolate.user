@@ -75,7 +75,7 @@ public class MessageListFragment
     protected SharedPreferences mPreferences;
 
     protected boolean mIsAuthorized;
-    protected boolean mShowFires, mShowFelling, mShowDocs;
+    protected boolean mShowFires, mShowFelling, mShowGarbage, mShowMisc, mShowDocs;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -105,7 +105,9 @@ public class MessageListFragment
         boolean[] filter = getFilter();
         mShowFires = filter[0];
         mShowFelling = filter[1];
-        mShowDocs = mIsAuthorized && filter[2];
+        mShowGarbage = filter[2];
+        mShowMisc = filter[3];
+        mShowDocs = mIsAuthorized && filter[4];
 
         getActivity().getSupportLoaderManager().initLoader(LIST_LOADER, null, this).forceLoad();
     }
@@ -245,7 +247,7 @@ public class MessageListFragment
     {
         switch (loaderID) {
             case LIST_LOADER:
-                return new MessagesLoader(getActivity(), mShowFires, mShowFelling, mShowDocs);
+                return new MessagesLoader(getActivity(), mShowFires, mShowFelling, mShowGarbage, mShowMisc, mShowDocs);
             default:
                 return null;
         }
@@ -268,7 +270,8 @@ public class MessageListFragment
 
     public void showFilter() {
         final boolean[] values = getFilter();
-        CharSequence[] titles = new CharSequence[]{getString(R.string.fires), getString(R.string.action_felling), getString(R.string.documents)};
+        CharSequence[] titles = new CharSequence[]{getString(R.string.fires), getString(R.string.action_felling),
+                getString(R.string.garbage), getString(R.string.misc), getString(R.string.documents)};
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), R.style.AppCompatDialog);
 
         dialog.setTitle(R.string.action_filter)
@@ -284,7 +287,9 @@ public class MessageListFragment
                     public void onClick(DialogInterface dialog, int which) {
                         mShowFires = values[0];
                         mShowFelling = values[1];
-                        mShowDocs = mIsAuthorized && values[2];
+                        mShowGarbage = values[2];
+                        mShowMisc = values[3];
+                        mShowDocs = mIsAuthorized && values[4];
                         mPreferences.edit().putString(SettingsConstants.KEY_PREF_FILTER, Arrays.toString(values)).commit();
                         getLoaderManager().restartLoader(LIST_LOADER, null, MessageListFragment.this).forceLoad();
                     }
@@ -296,13 +301,13 @@ public class MessageListFragment
         items.post(new Runnable() {
             @Override
             public void run() {
-                items.getChildAt(2).setEnabled(mIsAuthorized);
+                items.getChildAt(4).setEnabled(mIsAuthorized);
             }
         });
     }
 
     private boolean[] getFilter() {
-        String string = mPreferences.getString(SettingsConstants.KEY_PREF_FILTER, "[true, true, true]");
+        String string = mPreferences.getString(SettingsConstants.KEY_PREF_FILTER, "[true, true, true, true, true]");
         string = string.replaceAll("\\s|\\[|\\]", "");
         String[] parts = string.split(",");
         boolean[] result = new boolean[parts.length];

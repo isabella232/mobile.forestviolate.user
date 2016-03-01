@@ -43,6 +43,8 @@
     <string name="documents">Documents</string>
     <string name="contact">Contact</string>
     <string name="fire">Fire</string>
+    <string name="garbage">Garbage</string>
+    <string name="misc">Miscellaneous</string>
     <string name="geomixer_fv_tiles">GeoMixer violation tiles</string>
     <string name="sf_login_title">Account</string>
     <string
@@ -140,8 +142,6 @@
     <string name="not_accepted_message_status">Not accepted message</string>
     <string name="checked_message_status">Checked message</string>
     <string name="unknown_message_type">Unknown type</string>
-    <string name="message_type_fire">Fire</string>
-    <string name="message_type_felling">Illegal felling</string>
     <string name="doc_type_indictment">Forestry violations</string>
     <string name="doc_type_field_works">Field activities</string>
     <string name="user_contact_info">Contact info</string>

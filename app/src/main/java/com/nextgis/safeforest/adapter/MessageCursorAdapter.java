@@ -107,6 +107,12 @@ public class MessageCursorAdapter
                     case Constants.MSG_TYPE_FELLING:
                         typeIcon.setImageResource(R.drawable.ic_axe_light);
                         break;
+                    case Constants.MSG_TYPE_GARBAGE:
+                        typeIcon.setImageResource(R.drawable.ic_garbage_light);
+                        break;
+                    case Constants.MSG_TYPE_MISC:
+                        typeIcon.setImageResource(R.drawable.ic_misc_light);
+                        break;
                 }
                 break;
             case 1:

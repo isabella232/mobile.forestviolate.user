@@ -185,10 +185,16 @@ public class ViewMessageFragment
                     data = getString(R.string.unknown_message_type);
                     break;
                 case Constants.MSG_TYPE_FIRE:
-                    data = getString(R.string.message_type_fire);
+                    data = getString(R.string.fire);
                     break;
                 case Constants.MSG_TYPE_FELLING:
-                    data = getString(R.string.message_type_felling);
+                    data = getString(R.string.action_felling);
+                    break;
+                case Constants.MSG_TYPE_GARBAGE:
+                    data = getString(R.string.garbage);
+                    break;
+                case Constants.MSG_TYPE_MISC:
+                    data = getString(R.string.misc);
                     break;
             }
             ((ViewMessageActivity) getActivity()).setTitle(data);

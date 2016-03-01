@@ -65,7 +65,7 @@ import com.nextgis.safeforest.util.SettingsConstants;
 
 import java.util.Locale;
 
-public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAccountListener {
+public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAccountListener, View.OnClickListener {
     enum CURRENT_VIEW {ACCOUNT, INITIAL, NORMAL}
     protected static final String KEY_CURRENT_VIEW = "current_view";
 
@@ -166,7 +166,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     }
 
 
-    protected void createNormalView(){
+    protected void createNormalView() {
         mCurrentView = CURRENT_VIEW.NORMAL.ordinal();
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
@@ -220,39 +220,31 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             }
         }
 
-        final View call = findViewById(R.id.call);
-        if (null != call) {
-            call.setOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            call();
-                        }
-                    });
-        }
+        findViewById(R.id.call).setOnClickListener(this);
+        findViewById(R.id.add_fire).setOnClickListener(this);
+        findViewById(R.id.add_felling).setOnClickListener(this);
+        findViewById(R.id.add_garbage).setOnClickListener(this);
+        findViewById(R.id.add_misc).setOnClickListener(this);
+    }
 
-        final View addFire = findViewById(R.id.add_fire);
-        if (null != addFire) {
-            addFire.setOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            addFire();
-                        }
-                    });
-        }
-
-        final View addFelling = findViewById(R.id.add_felling);
-        if (null != addFelling) {
-            addFelling.setOnClickListener(
-                    new View.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View v)
-                        {
-                            addFelling();
-                        }
-                    });
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.call:
+                call();
+                break;
+            case R.id.add_fire:
+                newMessage(Constants.MSG_TYPE_FIRE);
+                break;
+            case R.id.add_felling:
+                newMessage(Constants.MSG_TYPE_FELLING);
+                break;
+            case R.id.add_garbage:
+                newMessage(Constants.MSG_TYPE_GARBAGE);
+                break;
+            case R.id.add_misc:
+                newMessage(Constants.MSG_TYPE_MISC);
+                break;
         }
     }
 
@@ -260,15 +252,9 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         return mTabLayout.getSelectedTabPosition() == 1;
     }
 
-    private void addFire() {
+    private void newMessage(int type) {
         Intent intent = new Intent(this, CreateMessageActivity.class);
-        intent.putExtra(Constants.FIELD_MTYPE, Constants.MSG_TYPE_FIRE);
-        startActivity(intent);
-    }
-
-    private void addFelling() {
-        Intent intent = new Intent(this, CreateMessageActivity.class);
-        intent.putExtra(Constants.FIELD_MTYPE, Constants.MSG_TYPE_FELLING);
+        intent.putExtra(Constants.FIELD_MTYPE, type);
         startActivity(intent);
     }
 
@@ -357,7 +343,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
         switch (id) {
             case R.id.action_filter:
-                mSectionsPagerAdapter.mMessageFragment.showFilter();
+                ((MessageListFragment) mSectionsPagerAdapter.getItem(0)).showFilter();
                 return true;
 
             case R.id.action_sync:
@@ -417,18 +403,26 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            if (position == 0) {
-                if (mMessageFragment == null)
-                    mMessageFragment = new MessageListFragment();
+            // getItem is called to instantiate or find existed fragment for the given page.
+            String tag = getFragmentTag(mViewPager.getId(), position);
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
 
-                return mMessageFragment;
-            } else {
-                if (mMapFragment == null)
-                    mMapFragment = new MapFragment();
-
-                return mMapFragment;
+            if (fragment == null) {
+                switch (position) {
+                    case 0:
+                        mMessageFragment = new MessageListFragment();
+                        return mMessageFragment;
+                    case 1:
+                        mMapFragment = new MapFragment();
+                        return mMapFragment;
+                }
             }
+
+            return fragment;
+        }
+
+        public String getFragmentTag(int viewPagerId, int fragmentPosition) {
+            return "android:switcher:" + viewPagerId + ":" + fragmentPosition;
         }
 
         @Override

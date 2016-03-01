@@ -32,13 +32,16 @@ import com.nextgis.safeforest.util.Constants;
 
 public class MessagesLoader extends AsyncTaskLoader<Cursor> {
     private MapEventSource mMap;
-    private boolean mShowFires, mShowFelling, mShowDocs;
+    private boolean mShowFires, mShowFelling, mShowGarbage, mShowMisc, mShowDocs;
 
-    public MessagesLoader(Context context, boolean showFires, boolean showFelling, boolean showDocs) {
+    public MessagesLoader(Context context, boolean showFires, boolean showFelling,
+                          boolean showGarbage, boolean showMisc, boolean showDocs) {
         super(context);
         mMap = (MapEventSource) MapBase.getInstance();
         mShowFelling = showFelling;
         mShowFires = showFires;
+        mShowGarbage = showGarbage;
+        mShowMisc = showMisc;
         mShowDocs = showDocs;
     }
 
@@ -53,14 +56,10 @@ public class MessagesLoader extends AsyncTaskLoader<Cursor> {
         String query = "";
         String selection = "";
 
-        if (mShowFires)
-            selection += Constants.MSG_TYPE_FIRE;
-
-        if (mShowFelling) {
-            if (selection.length() > 0)
-                selection += ",";
-            selection += Constants.MSG_TYPE_FELLING;
-        }
+        selection = addition(selection, mShowFires, Constants.MSG_TYPE_FIRE);
+        selection = addition(selection, mShowFelling, Constants.MSG_TYPE_FELLING);
+        selection = addition(selection, mShowGarbage, Constants.MSG_TYPE_GARBAGE);
+        selection = addition(selection, mShowMisc, Constants.MSG_TYPE_MISC);
 
         String messages = String.format("select %s, %s, %s, %s, %s, %s, %s, 0 as %s from %s where %s in (%s)",
                 Constants.FIELD_ID, Constants.FIELD_MDATE, Constants.FIELD_AUTHOR, Constants.FIELD_STATUS, Constants.FIELD_MTYPE, Constants.FIELD_MESSAGE,
@@ -72,7 +71,7 @@ public class MessagesLoader extends AsyncTaskLoader<Cursor> {
                 Constants.FIELD_DOC_VIOLATE, Constants.FIELD_MESSAGE, com.nextgis.maplib.util.Constants.FIELD_GEOM, Constants.FIELD_DATA_TYPE,
                 Constants.KEY_FV_DOCS, Constants.FIELD_DOC_TYPE, Constants.DOC_TYPE_FIELD_WORKS, Constants.DOC_TYPE_INDICTMENT);
 
-        boolean showMessages = mShowFires || mShowFelling;
+        boolean showMessages = mShowFires || mShowFelling || mShowGarbage || mShowMisc;
         if (showMessages && mShowDocs)
             query += messages + " union all " + docs;
         else if (showMessages)
@@ -85,5 +84,16 @@ public class MessagesLoader extends AsyncTaskLoader<Cursor> {
         query += String.format(" order by %s desc", Constants.FIELD_MDATE);
 
         return db.rawQuery(query, null);
+    }
+
+    private String addition(String selection, boolean show, int type) {
+        if (show) {
+            if (selection.length() > 0)
+                selection += ",";
+
+            selection += type;
+        }
+
+        return selection;
     }
 }
