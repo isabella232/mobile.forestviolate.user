@@ -44,7 +44,9 @@ public class MessagesLoader extends AsyncTaskLoader<Cursor> {
 
     @Override
     public Cursor loadInBackground() {
-        if (null == mMap)
+        if (null == mMap || !mMap.isValid() ||
+                mMap.getLayerByName(Constants.KEY_CITIZEN_MESSAGES) == null || mMap.getLayerByName(Constants.KEY_FV_DOCS) ==
+                null)
             return null;
 
         SQLiteDatabase db = mMap.getDatabase(true);

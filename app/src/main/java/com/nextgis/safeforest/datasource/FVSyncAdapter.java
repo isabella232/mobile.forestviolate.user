@@ -26,6 +26,7 @@ import android.content.SyncResult;
 
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.map.LayerGroup;
+import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.safeforest.util.Constants;
 import com.nextgis.safeforest.util.MapUtil;
@@ -37,6 +38,9 @@ public class FVSyncAdapter extends SyncAdapter {
 
     @Override
     protected void sync(LayerGroup layerGroup, String authority, SyncResult syncResult) {
+        if (!MapBase.getInstance().isValid())
+            return;
+
         MapUtil.removeOutdatedChanges((NGWVectorLayer) layerGroup.getLayerByName(Constants.KEY_CITIZEN_MESSAGES));
         super.sync(layerGroup, authority, syncResult);
     }
