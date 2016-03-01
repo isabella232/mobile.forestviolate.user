@@ -85,6 +85,7 @@
             android:layout_marginRight="5dp"
             fab:fab_addButtonColorNormal="?attr/colorPrimary"
             fab:fab_addButtonColorPressed="?attr/colorAccent"
+            fab:fab_icon="@drawable/ic_explore_white_24dp"
             fab:fab_size="mini"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton

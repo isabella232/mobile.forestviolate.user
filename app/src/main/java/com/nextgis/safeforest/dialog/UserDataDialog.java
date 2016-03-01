@@ -61,8 +61,7 @@ public class UserDataDialog
         mPhone.setText(mPhoneText);
 
         setTitle(R.string.user_contact_info);
-        // TODO: change icon
-        setIcon(R.drawable.ic_phone_dark);
+        setIcon(R.drawable.ic_action_information_light);
         setView(view);
         setPositiveText(android.R.string.ok);
         setNegativeText(android.R.string.cancel);
