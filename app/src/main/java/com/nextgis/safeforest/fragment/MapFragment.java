@@ -29,6 +29,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,6 +44,7 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.nextgis.maplib.api.GpsEventListener;
+import com.nextgis.maplib.datasource.Feature;
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.location.GpsEventSource;
@@ -50,28 +52,32 @@ import com.nextgis.maplib.map.Layer;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.RemoteTMSLayer;
-import com.nextgis.maplib.util.Constants;
+import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.LocationUtil;
 import com.nextgis.maplibui.api.MapViewEventListener;
 import com.nextgis.maplibui.mapui.MapViewOverlays;
 import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
+import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.activity.MainActivity;
 import com.nextgis.safeforest.overlay.SelectLocationOverlay;
+import com.nextgis.safeforest.util.Constants;
 import com.nextgis.safeforest.util.SettingsConstants;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class MapFragment
         extends Fragment
         implements MapViewEventListener, GpsEventListener {
 
+    protected MainApplication mApp;
     protected MapViewOverlays mMap;
     protected FloatingActionButton mivZoomIn;
     protected FloatingActionButton mivZoomOut;
@@ -89,19 +95,23 @@ public class MapFragment
     protected GeoPoint mCurrentCenter;
     protected int mCoordinatesFormat, mCoordinatesFraction;
 
+    protected float mTolerancePX;
+
     @Override
     public View onCreateView(
             LayoutInflater inflater,
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_map, container, false);
-        MainApplication app = (MainApplication) getActivity().getApplication();
+        mTolerancePX = getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
 
-        mMap = new MapViewOverlays(getActivity(), (MapDrawable) app.getMap());
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
+        mApp = (MainApplication) getActivity().getApplication();
+
+        mMap = new MapViewOverlays(getActivity(), (MapDrawable) mApp.getMap());
         mMap.setId(999);
 
-        mGpsEventSource = app.getGpsEventSource();
+        mGpsEventSource = mApp.getGpsEventSource();
         mCurrentLocationOverlay = new CurrentLocationOverlay(getActivity(), mMap);
         mCurrentLocationOverlay.setStandingMarker(R.drawable.ic_location_standing);
         mCurrentLocationOverlay.setMovingMarker(R.drawable.ic_location_moving);
@@ -234,7 +244,7 @@ public class MapFragment
         boolean showControls = prefs.getBoolean(SettingsConstants.KEY_PREF_SHOW_ZOOM_CONTROLS, false);
         showMapButtons(showControls, mMapRelativeLayout);
 
-        Log.d(Constants.TAG, "KEY_PREF_SHOW_ZOOM_CONTROLS: " + (showControls ? "ON" : "OFF"));
+        Log.d(com.nextgis.maplib.util.Constants.TAG, "KEY_PREF_SHOW_ZOOM_CONTROLS: " + (showControls ? "ON" : "OFF"));
 
         if (null != mMap) {
             if(prefs.getBoolean(SettingsConstants.KEY_PREF_MAP_FIRST_VIEW, true)){
@@ -296,31 +306,30 @@ public class MapFragment
     }
 
     private void setLayers() {
-        MainApplication app = (MainApplication) getActivity().getApplication();
-        Account account = app.getAccount(getString(R.string.account_name));
-        String auth = app.getAccountUserData(account, com.nextgis.safeforest.util.Constants.KEY_IS_AUTHORIZED);
-        boolean isAuthorized = auth != null && !auth.equals(com.nextgis.safeforest.util.Constants.ANONYMOUS);
+        Account account = mApp.getAccount(getString(R.string.account_name));
+        String auth = mApp.getAccountUserData(account, Constants.KEY_IS_AUTHORIZED);
+        boolean isAuthorized = auth != null && !auth.equals(Constants.ANONYMOUS);
 
-        Layer layer = (RemoteTMSLayer) app.getMap().getLayerByName(getString(R.string.lv));
+        Layer layer = (RemoteTMSLayer) mApp.getMap().getLayerByName(getString(R.string.lv));
         if (layer != null)
             layer.setVisible(isAuthorized);
 
-        layer = (RemoteTMSLayer) app.getMap().getLayerByName(getString(R.string.ulv));
+        layer = (RemoteTMSLayer) mApp.getMap().getLayerByName(getString(R.string.ulv));
         if (layer != null)
             layer.setVisible(isAuthorized);
 
-        layer = (RemoteTMSLayer) app.getMap().getLayerByName(getString(R.string.geomixer_fv_tiles));
+        layer = (RemoteTMSLayer) mApp.getMap().getLayerByName(getString(R.string.geomixer_fv_tiles));
         if (layer != null)
             layer.setVisible(isAuthorized);
 
-        layer = (NGWVectorLayer) app.getMap().getLayerByName(com.nextgis.safeforest.util.Constants.KEY_FV_DOCS);
+        layer = (NGWVectorLayer) mApp.getMap().getLayerByName(Constants.KEY_FV_DOCS);
         if (layer != null) {
             layer.setVisible(isAuthorized);
-            int sync = isAuthorized ? Constants.SYNC_ALL : Constants.SYNC_NONE;
+            int sync = isAuthorized ? com.nextgis.maplib.util.Constants.SYNC_ALL : com.nextgis.maplib.util.Constants.SYNC_NONE;
             ((NGWVectorLayer) layer).setSyncType(sync);
         }
 
-        layer = (RemoteTMSLayer) app.getMap().getLayerByName(getString(R.string.fires));
+        layer = (RemoteTMSLayer) mApp.getMap().getLayerByName(getString(R.string.fires));
         if (layer != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             Calendar calendar = Calendar.getInstance();
@@ -395,7 +404,40 @@ public class MapFragment
 
     @Override
     public void onSingleTapUp(MotionEvent event) {
+        selectGeometryInScreenCoordinates(event.getX(), event.getY());
+    }
 
+    public void selectGeometryInScreenCoordinates(float x, float y) {
+        VectorLayer layer = (VectorLayer) mApp.getMap().getLayerByName(Constants.KEY_FV_FOREST);
+        if (null == layer)
+            return;
+
+        double dMinX = x - mTolerancePX;
+        double dMaxX = x + mTolerancePX;
+        double dMinY = y - mTolerancePX;
+        double dMaxY = y + mTolerancePX;
+        GeoEnvelope screenEnv = new GeoEnvelope(dMinX, dMaxX, dMinY, dMaxY);
+
+        GeoEnvelope mapEnv = mMap.screenToMap(screenEnv);
+        if (null == mapEnv)
+            return;
+
+        List<Long> items = layer.query(mapEnv);
+        if (items.isEmpty())
+            return;
+
+        Feature feature = layer.getFeature(items.get(0));
+        String message = feature.getFieldValue(Constants.FIELD_FV_DATE) + "\r\n\r\n";
+        message += getString(R.string.region) + ": " + feature.getFieldValue(Constants.FIELD_FV_REGION) + "\r\n";
+        message += getString(R.string.forestry) + ": " + feature.getFieldValue(Constants.FIELD_FV_FORESTRY) + "\r\n";
+        message += getString(R.string.precinct) + ": " + feature.getFieldValue(Constants.FIELD_FV_PRECINCT) + "\r\n";
+        message += getString(R.string.territory) + ": " + feature.getFieldValue(Constants.FIELD_FV_TERRITORY) + "\r\n\r\n";
+        message += feature.getFieldValue(Constants.FIELD_FV_STATUS);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), R.style.AppCompatDialog);
+        dialog.setMessage(message)
+                .setTitle("#" + items.get(0))
+                .setPositiveButton(android.R.string.ok, null);
+        dialog.show();
     }
 
     @Override

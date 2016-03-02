@@ -106,6 +106,13 @@ public interface Constants
     String FIELD_DOC_REGION     = "region";
     String FIELD_DOC_DATE_VIOLATE   = "date_violate";
 
+    String FIELD_FV_DATE        = "date";
+    String FIELD_FV_REGION      = "region";
+    String FIELD_FV_FORESTRY    = "forestery";
+    String FIELD_FV_PRECINCT    = "precinct";
+    String FIELD_FV_TERRITORY   = "territory";
+    String FIELD_FV_STATUS      = "status";
+
     int MSG_STATUS_UNKNOWN      = 0;
     int MSG_STATUS_NEW          = 1;
     int MSG_STATUS_SENT         = 2;

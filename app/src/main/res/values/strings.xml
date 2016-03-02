@@ -32,7 +32,7 @@
     <string name="action_settings">Settings</string>
     <string name="app_description">The application for see the forest violations notifications, notify about new forest violations and check theirs status.</string>
     <string name="credits_intro">Credits</string>
-    <string name="credits">Compass icon by Dmitry Baranovskiy from <a href="http://thenounproject.com/search/?q=compass&amp;i=7895">the Noun Project</a>, filter icon by Austin Andrews from <a href="http://materialdesignicons.com/icon/filter">Material Design Icons</a> and some icons used in the application are from <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a>, licensed under a <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
+    <string name="credits">Filter icon by Austin Andrews from <a href="http://materialdesignicons.com/icon/filter">Material Design Icons</a> and some icons used in the application are from <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a>, licensed under a <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2015]]></string>
     <string name="action_about">About</string>
     <string name="topo">Topo</string>
@@ -114,6 +114,8 @@
     <string name="forest_category">Forest category</string>
     <string name="territory">Territory</string>
     <string name="region">Region</string>
+    <string name="forestry">Forestry</string>
+    <string name="precinct">Precinct</string>
     <string name="set_location">Define location</string>
     <string name="location_current">Current</string>
     <string name="location_from_map">Map</string>
