@@ -85,6 +85,7 @@ public interface Constants
     String FIELD_MDATE     = "mdate";
     String FIELD_AUTHOR    = "author";
     String FIELD_CONTACT   = "contact";
+    String FIELD_USER_PHONE= "phone";
     String FIELD_STATUS    = "status";
     String FIELD_MTYPE     = "mtype";
     String FIELD_MESSAGE   = "message";

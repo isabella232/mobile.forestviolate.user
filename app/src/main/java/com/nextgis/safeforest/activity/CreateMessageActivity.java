@@ -29,7 +29,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -322,7 +321,8 @@ public class CreateMessageActivity
             mValues.put(Constants.FIELD_STATUS, Constants.MSG_STATUS_NEW);
             mValues.put(Constants.FIELD_MESSAGE, mMessage.getText().toString());
             mValues.put(Constants.FIELD_AUTHOR, mEmailText);
-            mValues.put(Constants.FIELD_CONTACT, mPhoneText + ", " + mFullNameText);
+            mValues.put(Constants.FIELD_CONTACT, mFullNameText);
+            mValues.put(Constants.FIELD_USER_PHONE, mPhoneText);
 
             Uri uri = Uri.parse("content://" + mApp.getAuthority() + "/" + Constants.KEY_CITIZEN_MESSAGES);
             Uri result = mApp.getContentResolver().insert(uri, mValues);
