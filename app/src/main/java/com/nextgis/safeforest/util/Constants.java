@@ -88,6 +88,7 @@ public interface Constants
     String FIELD_USER_PHONE= "phone";
     String FIELD_STATUS    = "status";
     String FIELD_MTYPE     = "mtype";
+    String FIELD_MTYPE_STR = "mtype_str";
     String FIELD_MESSAGE   = "message";
     String FIELD_STMESSAGE = "stmessage";
     String FIELD_NAME      = "NAME_";

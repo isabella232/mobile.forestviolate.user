@@ -318,6 +318,7 @@ public class CreateMessageActivity
 
         try {
             mValues.put(Constants.FIELD_MTYPE, mMessageType);
+            mValues.put(Constants.FIELD_MTYPE_STR, getDescription());
             mValues.put(Constants.FIELD_STATUS, Constants.MSG_STATUS_NEW);
             mValues.put(Constants.FIELD_MESSAGE, mMessage.getText().toString());
             mValues.put(Constants.FIELD_AUTHOR, mEmailText);
@@ -492,4 +493,18 @@ public class CreateMessageActivity
         }
     }
 
+    public String getDescription() {
+        switch (mMessageType) {
+            case Constants.MSG_TYPE_FELLING:
+                return "Незаконная рубка леса";
+            case Constants.MSG_TYPE_FIRE:
+                return "Лесной пожар";
+            case Constants.MSG_TYPE_GARBAGE:
+                return "Мусор в лесу";
+            case Constants.MSG_TYPE_MISC:
+                return "Прочее";
+        }
+
+        return null;
+    }
 }
