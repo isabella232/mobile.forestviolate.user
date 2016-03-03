@@ -21,22 +21,20 @@
 
 package com.nextgis.safeforest;
 
-import android.accounts.Account;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
+
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
-import com.nextgis.maplib.util.NetworkUtil;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.GISApplication;
 import com.nextgis.maplibui.mapui.LayerFactoryUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.safeforest.activity.PreferencesActivity;
+import com.nextgis.safeforest.util.MapUtil;
 
 import java.io.File;
 
@@ -74,6 +72,7 @@ public class MainApplication
         mMap = new MapDrawable(bkBitmap, this, mapFullPath, new LayerFactoryUI());
         mMap.setName(mapName);
         mMap.load();
+        MapUtil.setMessageRenderer(mMap);
 
         return mMap;
     }

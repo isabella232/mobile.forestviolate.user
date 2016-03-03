@@ -103,9 +103,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             mFirstRun = true;
             createFirstStartView();
         } else {
-            MapBase map = app.getMap();
-            map.load();
-            if (!hasBasicLayers(map) || currentView == CURRENT_VIEW.INITIAL.ordinal()) {
+            if (!hasBasicLayers(app.getMap()) || currentView == CURRENT_VIEW.INITIAL.ordinal()) {
                 Log.d(Constants.SFTAG, "Account " + getString(R.string.account_name) + " created. Run second step.");
                 mFirstRun = true;
                 createSecondStartView();

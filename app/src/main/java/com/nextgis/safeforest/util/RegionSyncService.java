@@ -210,6 +210,7 @@ public class RegionSyncService extends Service {
 
                 //TODO: load additional tables
 
+                MapUtil.setMessageRenderer(mMap);
                 mMap.save();
 
                 mStep++;

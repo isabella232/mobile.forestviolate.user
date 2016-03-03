@@ -32,13 +32,15 @@ import com.nextgis.maplib.datasource.ngw.Resource;
 import com.nextgis.maplib.datasource.ngw.ResourceGroup;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.NGWVectorLayer;
+import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.FeatureChanges;
+import com.nextgis.safeforest.display.MessageFeatureRenderer;
 
 import java.util.Map;
 
 public final class MapUtil {
     public static boolean hasLayer(MapBase map, String layer) {
-        return map.getLayerByName(layer) != null;
+        return map != null && map.getLayerByName(layer) != null;
     }
 
     public static boolean isRegionSet(SharedPreferences preferences) {
@@ -144,6 +146,14 @@ public final class MapUtil {
             changeCursor.close();
         } catch (SQLiteException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void setMessageRenderer(MapBase map) {
+        VectorLayer messages = ((VectorLayer) map.getLayerByName(Constants.KEY_CITIZEN_MESSAGES));
+        if (messages != null) {
+            MessageFeatureRenderer renderer = new MessageFeatureRenderer(messages);
+            messages.setRenderer(renderer);
         }
     }
 }
