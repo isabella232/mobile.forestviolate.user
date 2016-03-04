@@ -23,6 +23,8 @@
 
 package com.nextgis.safeforest.util;
 
+import android.graphics.Color;
+
 /**
  * Constants
  */
@@ -136,6 +138,10 @@ public interface Constants
     int MAX_LOCATION_MEASURES = 5;
     float MAX_LOCATION_ACCURACY = 5f;
     long MAX_LOCATION_TIME = 30000L;
+
+    int COLOR_OUTLINE = Color.BLACK;
+    int COLOR_OWNER = Color.YELLOW;
+    int COLOR_OTHERS = Color.GREEN;
 
     /**
      * Patterns

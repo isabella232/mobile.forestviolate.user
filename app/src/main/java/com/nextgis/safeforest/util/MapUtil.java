@@ -21,6 +21,7 @@
 
 package com.nextgis.safeforest.util;
 
+import android.accounts.Account;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
@@ -34,6 +35,8 @@ import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.FeatureChanges;
+import com.nextgis.safeforest.MainApplication;
+import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.display.MessageFeatureRenderer;
 
 import java.util.Map;
@@ -149,10 +152,15 @@ public final class MapUtil {
         }
     }
 
-    public static void setMessageRenderer(MapBase map) {
+    public static void setMessageRenderer(MapBase map, MainApplication app) {
         VectorLayer messages = ((VectorLayer) map.getLayerByName(Constants.KEY_CITIZEN_MESSAGES));
         if (messages != null) {
             MessageFeatureRenderer renderer = new MessageFeatureRenderer(messages);
+
+            Account account = app.getAccount(app.getString(R.string.account_name));
+            String email = app.getAccountUserData(account, com.nextgis.safeforest.util.SettingsConstants.KEY_USER_EMAIL);
+            renderer.setAccount(email);
+
             messages.setRenderer(renderer);
         }
     }

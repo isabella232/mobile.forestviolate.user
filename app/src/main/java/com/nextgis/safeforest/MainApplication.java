@@ -3,7 +3,7 @@
  * Purpose: Mobile application for registering facts of the forest violations.
  * Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
  * *****************************************************************************
- * Copyright (c) 2015-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ public class MainApplication
         mMap = new MapDrawable(bkBitmap, this, mapFullPath, new LayerFactoryUI());
         mMap.setName(mapName);
         mMap.load();
-        MapUtil.setMessageRenderer(mMap);
+        MapUtil.setMessageRenderer(mMap, this);
 
         return mMap;
     }

@@ -21,8 +21,6 @@
 
 package com.nextgis.safeforest.display;
 
-import android.graphics.Color;
-
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.display.GISDisplay;
 import com.nextgis.maplib.display.SimpleMarkerStyle;
@@ -33,10 +31,9 @@ public class MessageMarkerStyle extends SimpleMarkerStyle {
         super();
         mWidth = 1;
         mSize = 8;
-        mColor = Color.GREEN;
-        mOutColor = Color.BLACK;
-        mOutPaint.setColor(Color.BLACK);
-        mFillPaint.setColor(Color.GREEN);
+        mColor = Constants.COLOR_OTHERS;
+        mOutColor = Constants.COLOR_OUTLINE;
+        setPaintsColors();
     }
 
     protected void onDraw(GeoPoint pt, GISDisplay display) {

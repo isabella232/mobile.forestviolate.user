@@ -21,6 +21,8 @@
 
 package com.nextgis.safeforest.display;
 
+import android.text.TextUtils;
+
 import com.nextgis.maplib.datasource.Feature;
 import com.nextgis.maplib.display.SimpleFeatureRenderer;
 import com.nextgis.maplib.display.Style;
@@ -34,6 +36,8 @@ import org.json.JSONObject;
 import static com.nextgis.maplib.util.Constants.JSON_NAME_KEY;
 
 public class MessageFeatureRenderer extends SimpleFeatureRenderer {
+    private String mAccount;
+
     public MessageFeatureRenderer(Layer layer) {
         super(layer);
         mStyle = new MessageMarkerStyle();
@@ -55,9 +59,15 @@ public class MessageFeatureRenderer extends SimpleFeatureRenderer {
     protected Style getStyle(long featureId) {
         Feature feature = ((VectorLayer) mLayer).getFeature(featureId);
         long type = (long) feature.getFieldValue(Constants.FIELD_MTYPE);
+        String account = (String) feature.getFieldValue(Constants.FIELD_AUTHOR);
+        boolean isOwner = !TextUtils.isEmpty(account) && account.equals(mAccount);
+        mStyle.setColor(isOwner ? Constants.COLOR_OWNER : Constants.COLOR_OTHERS);
         ((MessageMarkerStyle) mStyle).setType((int) type);
 
         return mStyle;
     }
 
+    public void setAccount(String account) {
+        mAccount = account;
+    }
 }
