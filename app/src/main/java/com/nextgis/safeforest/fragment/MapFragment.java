@@ -155,6 +155,7 @@ public class MapFragment
         }
 
         mStatusPanel = (FrameLayout) view.findViewById(R.id.fl_status_panel);
+        view.findViewById(R.id.ll_legend).getBackground().setAlpha(128);
 
         return view;
     }

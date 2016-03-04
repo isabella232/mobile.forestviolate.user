@@ -44,7 +44,9 @@
     <string name="contact">Contact</string>
     <string name="fire">Fire</string>
     <string name="garbage">Garbage</string>
+    <string name="garbage_short">@string/garbage</string>
     <string name="misc">Miscellaneous</string>
+    <string name="misc_short">Misc</string>
     <string name="geomixer_fv_tiles">GeoMixer violation tiles</string>
     <string name="sf_login_title">Account</string>
     <string
@@ -149,4 +151,5 @@
     <string name="user_contact_info">Contact info</string>
     <string name="no_region_selected">Region is not selected</string>
     <string name="region_has_no_phone">No phone for this region</string>
+    <string name="felling_short">Felling</string>
 </resources>

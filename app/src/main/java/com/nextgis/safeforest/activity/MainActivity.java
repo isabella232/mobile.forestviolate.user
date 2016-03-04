@@ -44,6 +44,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.nextgis.maplib.api.IGISApplication;
@@ -189,10 +190,12 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
                 if (tab.getPosition() == 0) {
                     ((MapFragment) mSectionsPagerAdapter.getItem(1)).pauseGps();
                     mFilter.setVisible(true);
+                    setMarginsToFAB(false);
                 } else {
                     ((MapFragment) mSectionsPagerAdapter.getItem(1)).resumeGps();
                     ((MapFragment) mSectionsPagerAdapter.getItem(1)).addMap();
                     mFilter.setVisible(false);
+                    setMarginsToFAB(true);
                 }
             }
 
@@ -223,6 +226,23 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         findViewById(R.id.add_felling).setOnClickListener(this);
         findViewById(R.id.add_garbage).setOnClickListener(this);
         findViewById(R.id.add_misc).setOnClickListener(this);
+    }
+
+    private void setMarginsToFAB(boolean add) {
+        View fab = findViewById(R.id.multiple_actions);
+        View legend = findViewById(R.id.ll_legend);
+        View status = findViewById(R.id.fl_status_panel);
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) fab.getLayoutParams();
+
+        int bottom = lp.bottomMargin;
+        if (add)
+            bottom += legend.getMeasuredHeight() + status.getMeasuredHeight();
+        else
+            bottom -= legend.getMeasuredHeight() - status.getMeasuredHeight();
+
+        lp.setMargins(lp.leftMargin, lp.topMargin, lp.rightMargin, bottom);
+        fab.setLayoutParams(lp);
+        fab.requestLayout();
     }
 
     @Override

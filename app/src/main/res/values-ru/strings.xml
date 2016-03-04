@@ -45,7 +45,9 @@
     <string name="contact">Контакт</string>
     <string name="fire">Пожар</string>
     <string name="garbage">Замусоривание</string>
+    <string name="garbage_short">Мусор</string>
     <string name="misc">Прочее</string>
+    <string name="misc_short">@string/misc</string>
     <string name="geomixer_fv_tiles">Лесонарушения растр (GeoMixer)</string>
     <string name="sf_login_title">Аккаунт</string>
     <string
@@ -151,4 +153,5 @@
     <string name="user_contact_info">Контактные данные</string>
     <string name="no_region_selected">Не выбран регион</string>
     <string name="region_has_no_phone">Для этого региона нет телефона</string>
+    <string name="felling_short">Рубка</string>
 </resources>
