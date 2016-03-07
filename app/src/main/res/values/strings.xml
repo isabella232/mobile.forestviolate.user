@@ -152,4 +152,6 @@
     <string name="no_region_selected">Region is not selected</string>
     <string name="region_has_no_phone">No phone for this region</string>
     <string name="felling_short">Felling</string>
+    <string name="own">Own</string>
+    <string name="others">Others</string>
 </resources>

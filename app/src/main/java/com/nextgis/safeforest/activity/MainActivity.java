@@ -63,6 +63,7 @@ import com.nextgis.safeforest.fragment.RegionSyncFragment;
 import com.nextgis.safeforest.util.Constants;
 import com.nextgis.safeforest.util.MapUtil;
 import com.nextgis.safeforest.util.SettingsConstants;
+import com.nextgis.safeforest.util.UiUtil;
 
 import java.util.Locale;
 
@@ -194,7 +195,10 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
                 } else {
                     ((MapFragment) mSectionsPagerAdapter.getItem(1)).resumeGps();
                     ((MapFragment) mSectionsPagerAdapter.getItem(1)).addMap();
-                    mFilter.setVisible(false);
+
+                    if (mFilter != null)
+                        mFilter.setVisible(false);
+
                     setMarginsToFAB(true);
                 }
             }
@@ -228,21 +232,32 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         findViewById(R.id.add_misc).setOnClickListener(this);
     }
 
-    private void setMarginsToFAB(boolean add) {
-        View fab = findViewById(R.id.multiple_actions);
-        View legend = findViewById(R.id.ll_legend);
-        View status = findViewById(R.id.fl_status_panel);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) fab.getLayoutParams();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setMarginsToFAB(mTabLayout.getSelectedTabPosition() == 1);
+    }
 
-        int bottom = lp.bottomMargin;
-        if (add)
-            bottom += legend.getMeasuredHeight() + status.getMeasuredHeight();
-        else
-            bottom -= legend.getMeasuredHeight() - status.getMeasuredHeight();
+    private void setMarginsToFAB(final boolean add) {
+        final View fab = findViewById(R.id.multiple_actions);
+        final View legend = findViewById(R.id.fl_legend);
+        final View status = findViewById(R.id.fl_status_panel);
+        final RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) fab.getLayoutParams();
 
-        lp.setMargins(lp.leftMargin, lp.topMargin, lp.rightMargin, bottom);
-        fab.setLayoutParams(lp);
-        fab.requestLayout();
+        fab.post(new Runnable() {
+            @Override
+            public void run() {
+                int bottom;
+                if (add)
+                    bottom = legend.getMeasuredHeight() + status.getMeasuredHeight();
+                else
+                    bottom = (int) UiUtil.dpToPx(MainActivity.this, 5);
+
+                lp.setMargins(lp.leftMargin, lp.topMargin, lp.rightMargin, bottom);
+                fab.setLayoutParams(lp);
+                fab.requestLayout();
+            }
+        });
     }
 
     @Override

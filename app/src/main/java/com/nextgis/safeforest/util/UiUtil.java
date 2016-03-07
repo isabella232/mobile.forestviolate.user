@@ -21,6 +21,7 @@
 
 package com.nextgis.safeforest.util;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.drawable.DrawableCompat;
 
@@ -38,6 +39,10 @@ public final class UiUtil {
         Date calendarTime = calendar.getTime();
         DateFormat df = DateFormat.getDateInstance(style, Locale.getDefault());
         return df.format(calendarTime);
+    }
+
+    public static float dpToPx(Context context, float dp) {
+        return dp * context.getResources().getDisplayMetrics().density;
     }
 
     public static Drawable tintIcon(Drawable drawable, int color) {

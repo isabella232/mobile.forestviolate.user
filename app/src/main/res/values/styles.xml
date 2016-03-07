@@ -58,6 +58,9 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
+    <style name="legend_text" parent="status_panel_text">
+        <item name="android:textSize">14sp</item>
+    </style>
 
     <style name="status_panel_text_land"
            parent="status_panel_text">

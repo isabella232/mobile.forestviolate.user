@@ -46,48 +46,11 @@
         android:layout_above="@id/fl_status_panel"
         android:background="@drawable/divider"/>
 
-    <LinearLayout
-        android:id="@+id/ll_legend"
+    <FrameLayout
+        android:id="@+id/fl_legend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/divider"
-        android:background="?attr/colorPrimary"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="5dp">
-
-        <com.nextgis.safeforest.util.AutoFitTextView
-            style="@style/status_panel_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_legend_felling"
-            android:drawableStart="@drawable/ic_legend_felling"
-            android:text="@string/felling_short"/>
-
-        <com.nextgis.safeforest.util.AutoFitTextView
-            style="@style/status_panel_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_legend_fire"
-            android:drawableStart="@drawable/ic_legend_fire"
-            android:text="@string/fire"/>
-
-        <com.nextgis.safeforest.util.AutoFitTextView
-            style="@style/status_panel_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_legend_garbage"
-            android:drawableStart="@drawable/ic_legend_garbage"
-            android:text="@string/garbage_short"/>
-
-        <com.nextgis.safeforest.util.AutoFitTextView
-            style="@style/status_panel_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_legend_misc"
-            android:drawableStart="@drawable/ic_legend_misc"
-            android:text="@string/misc_short"/>
-    </LinearLayout>
+        android:layout_above="@id/divider"/>
 
     <com.getbase.floatingactionbutton.FloatingActionButton
         android:id="@+id/action_zoom_in"

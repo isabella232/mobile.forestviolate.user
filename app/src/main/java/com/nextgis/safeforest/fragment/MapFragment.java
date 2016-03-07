@@ -155,9 +155,33 @@ public class MapFragment
         }
 
         mStatusPanel = (FrameLayout) view.findViewById(R.id.fl_status_panel);
-        view.findViewById(R.id.ll_legend).getBackground().setAlpha(128);
+
+        FrameLayout legend = (FrameLayout) view.findViewById(R.id.fl_legend);
+        fitLegend(legend);
 
         return view;
+    }
+
+
+    protected void fitLegend(FrameLayout legend) {
+        View content = getActivity().getLayoutInflater().inflate(R.layout.legend_land, legend, false);
+
+        if (!isLegendFitsOneLine(content))
+            content = getActivity().getLayoutInflater().inflate(R.layout.legend, legend, false);
+
+        content.getBackground().setAlpha(128);
+        legend.removeAllViews();
+        legend.addView(content);
+    }
+
+
+    protected boolean isLegendFitsOneLine(View content) {
+        content.measure(0, 0);
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        return content.getMeasuredWidth() < metrics.widthPixels;
     }
 
 

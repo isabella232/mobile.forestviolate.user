@@ -25,7 +25,7 @@
 <resources>
     <string name="app_name">Сохрани лес</string>
     <string name="account_name">Сохрани лес</string>
-    <string name="title_notes">Сообщения</string>
+    <string name="title_notes">Оповещения</string>
     <string name="title_map">Карта</string>
     <string name="title_current_location">Текущее местоположение</string>
     <string name="title_center_point">Центрировать точку</string>
@@ -154,4 +154,6 @@
     <string name="no_region_selected">Не выбран регион</string>
     <string name="region_has_no_phone">Для этого региона нет телефона</string>
     <string name="felling_short">Рубка</string>
+    <string name="own">Своё</string>
+    <string name="others">Чужое</string>
 </resources>
