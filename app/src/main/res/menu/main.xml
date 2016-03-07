@@ -35,6 +35,7 @@
         android:id="@+id/action_sync"
         android:orderInCategory="100"
         android:title="@string/action_sync"
+        android:visible="false"
         app:showAsAction="never"/>
     <item
         android:id="@+id/action_settings"

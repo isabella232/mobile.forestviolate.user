@@ -56,6 +56,7 @@ import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplibui.fragment.NGWLoginFragment;
+import com.nextgis.safeforest.BuildConfig;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.fragment.LoginFragment;
@@ -416,6 +417,9 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (mViewPager != null)
             mFilter.setVisible(mViewPager.getCurrentItem() == 0);
+
+        if (BuildConfig.DEBUG)
+            menu.findItem(R.id.action_sync).setVisible(true);
 
         return true;
     }
