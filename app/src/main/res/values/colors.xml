@@ -31,7 +31,7 @@
     <color name="tabTextColor">#ffffff</color>
 
     <color name="color_black">#000000</color>
-    <color name="color_a_black">#55000000</color>
+    <color name="color_a_black">#88000000</color>
     <color name="color_white">#ffffff</color>
 
     <color name="color_undobar_background">@color/primary_dark</color>

@@ -87,7 +87,7 @@ public class CreateMessageActivity
     protected ActionBar mToolbar;
     protected FrameLayout mPhotos;
     protected int mTitle;
-    protected MenuItem mItem;
+    protected Menu mMenu;
     protected PhotoPicker mPhotoPicker;
     protected UserDataDialog mUserDataDialog;
     protected YesNoDialog mAuthDialog;
@@ -193,7 +193,7 @@ public class CreateMessageActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.message, menu);
-        mItem = menu.getItem(0);
+        mMenu = menu;
         return true;
     }
 
@@ -202,14 +202,14 @@ public class CreateMessageActivity
         int itemId = item.getItemId();
 
         switch (itemId) {
+            case R.id.action_done:
+                hidePhotos();
+                break;
             case R.id.action_center:
                 mMapFragment.centerSelectedPoint();
                 break;
             case R.id.action_locate:
-                if (mPhotos.getVisibility() == View.GONE)
-                    mMapFragment.locateCurrentPosition();
-                else
-                    hidePhotos();
+                mMapFragment.locateCurrentPosition();
                 return true;
         }
 
@@ -409,14 +409,18 @@ public class CreateMessageActivity
         mPhotos.setVisibility(View.VISIBLE);
         mToolbar.setDisplayHomeAsUpEnabled(false);
         mToolbar.setTitle(R.string.photo_add);
-        mItem.setIcon(R.drawable.ic_action_apply_dark);
+        mMenu.findItem(R.id.action_done).setVisible(true);
+        mMenu.findItem(R.id.action_locate).setVisible(false);
+        mMenu.findItem(R.id.action_center).setVisible(false);
     }
 
     private void hidePhotos() {
         mPhotos.setVisibility(View.GONE);
         mToolbar.setDisplayHomeAsUpEnabled(true);
         mToolbar.setTitle(mTitle);
-        mItem.setIcon(R.drawable.ic_my_location_white_24dp);
+        mMenu.findItem(R.id.action_done).setVisible(false);
+        mMenu.findItem(R.id.action_locate).setVisible(true);
+        mMenu.findItem(R.id.action_center).setVisible(true);
     }
 
     @Override

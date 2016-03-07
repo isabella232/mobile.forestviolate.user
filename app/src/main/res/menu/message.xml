@@ -27,15 +27,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_done"
+        android:icon="@drawable/ic_action_apply_dark"
+        android:orderInCategory="0"
+        android:title="@string/done"
+        android:visible="false"
+        app:showAsAction="ifRoom"/>
+    <item
         android:id="@+id/action_center"
         android:icon="@drawable/ic_image_filter_center_focus_white_24dp"
-        android:orderInCategory="0"
+        android:orderInCategory="1"
         android:title="@string/title_center_point"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/action_locate"
         android:icon="@drawable/ic_my_location_white_24dp"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
         android:title="@string/title_current_location"
         app:showAsAction="ifRoom"/>
 </menu>
