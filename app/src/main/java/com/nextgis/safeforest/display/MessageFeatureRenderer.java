@@ -30,29 +30,12 @@ import com.nextgis.maplib.map.Layer;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.safeforest.util.Constants;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import static com.nextgis.maplib.util.Constants.JSON_NAME_KEY;
-
 public class MessageFeatureRenderer extends SimpleFeatureRenderer {
     private String mAccount;
 
     public MessageFeatureRenderer(Layer layer) {
         super(layer);
         mStyle = new MessageMarkerStyle();
-    }
-
-    @Override
-    public JSONObject toJSON() throws JSONException {
-        JSONObject rootJsonObject = new JSONObject();
-        rootJsonObject.put(JSON_NAME_KEY, "MessageFeatureRenderer");
-        return rootJsonObject;
-    }
-
-    @Override
-    public void fromJSON(JSONObject jsonObject) throws JSONException {
-
     }
 
     @Override
