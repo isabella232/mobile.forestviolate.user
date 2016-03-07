@@ -698,5 +698,6 @@ public class MapFragment
 
     public void centerSelectedPoint() {
         mSelectLocationOverlay.centerSelectedLocation();
+        mMap.postInvalidate();
     }
 }
