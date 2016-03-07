@@ -143,6 +143,8 @@ public class CreateMessageActivity
 
         mUserDataDialog = (UserDataDialog) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_USER_DATA_DIALOG);
         mAuthDialog = (YesNoDialog) getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_USER_AUTH);
+
+        addMap();
     }
 
     private void addMap() {
@@ -172,9 +174,7 @@ public class CreateMessageActivity
         if (isAuthorized)
             mEmailText = mApp.getAccountLogin(account);
 
-        if (isAuthorized || isUserDataValid)
-            addMap();
-        else
+        if (!isAuthorized && !isUserDataValid)
             showUserDialog();
     }
 
@@ -182,8 +182,8 @@ public class CreateMessageActivity
     protected void onResume() {
         super.onResume();
 
-        if (mMapFragment != null)
-            mMapFragment.addMap();
+        mMapFragment.setLegendVisible(false);
+        mMapFragment.setStatusVisible(false);
     }
 
     private boolean hasPhoneAndName() {
@@ -256,7 +256,6 @@ public class CreateMessageActivity
                 mApp.setUserData(accountName, SettingsConstants.KEY_USER_EMAIL, mEmailText);
 
                 mUserDataDialog.dismiss();
-                addMap();
             }
         });
         mUserDataDialog.setOnNegativeClickedListener(new YesNoDialog.OnNegativeClickedListener() {
@@ -297,7 +296,6 @@ public class CreateMessageActivity
                     Toast.makeText(CreateMessageActivity.this, R.string.error_network_unavailable, Toast.LENGTH_SHORT).show();
 
                 mAuthDialog.dismiss();
-                addMap();
             }
         });
         mAuthDialog.setOnNegativeClickedListener(new YesNoDialog.OnNegativeClickedListener() {

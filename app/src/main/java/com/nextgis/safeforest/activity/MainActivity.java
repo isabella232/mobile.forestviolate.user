@@ -28,6 +28,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SyncResult;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -47,6 +48,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.GeoPoint;
@@ -64,6 +66,10 @@ import com.nextgis.safeforest.util.Constants;
 import com.nextgis.safeforest.util.MapUtil;
 import com.nextgis.safeforest.util.SettingsConstants;
 import com.nextgis.safeforest.util.UiUtil;
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ObjectAnimator;
+import com.nineoldandroids.view.ViewHelper;
 
 import java.util.Locale;
 
@@ -190,11 +196,14 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
                 if (tab.getPosition() == 0) {
                     ((MapFragment) mSectionsPagerAdapter.getItem(1)).pauseGps();
-                    mFilter.setVisible(true);
+
+                    if (mFilter != null)
+                        mFilter.setVisible(true);
+
                     setMarginsToFAB(false);
                 } else {
                     ((MapFragment) mSectionsPagerAdapter.getItem(1)).resumeGps();
-                    ((MapFragment) mSectionsPagerAdapter.getItem(1)).addMap();
+                    animateFAB(0, 1, false);
 
                     if (mFilter != null)
                         mFilter.setVisible(false);
@@ -235,7 +244,9 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     @Override
     protected void onResume() {
         super.onResume();
-        setMarginsToFAB(mTabLayout.getSelectedTabPosition() == 1);
+
+        if (mTabLayout != null)
+            setMarginsToFAB(mTabLayout.getSelectedTabPosition() == 1);
     }
 
     private void setMarginsToFAB(final boolean add) {
@@ -258,6 +269,52 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
                 fab.requestLayout();
             }
         });
+    }
+
+    public void animateFAB(float from, float to, final boolean isHidden) {
+        final FloatingActionsMenu fab = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
+
+        if (to == 1 && fab.getVisibility() == View.VISIBLE ||
+                to == 0 && fab.getVisibility() == View.GONE)
+            return;
+
+        fab.collapse();
+        int orientation = getResources().getConfiguration().orientation;
+        float x = orientation == Configuration.ORIENTATION_PORTRAIT ? fab.getWidth() / 2 : fab.getWidth() - fab.getHeight() / 2;
+        float y = orientation == Configuration.ORIENTATION_PORTRAIT ? fab.getHeight() - fab.getWidth() / 2 : fab.getHeight() / 2;
+        ViewHelper.setPivotX(fab, x);
+        ViewHelper.setPivotY(fab, y);
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(
+                ObjectAnimator.ofFloat(fab, "scaleX", from, to),
+                ObjectAnimator.ofFloat(fab, "scaleY", from, to)
+        );
+
+        set.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                if (!isHidden)
+                    fab.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (isHidden)
+                    fab.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
+        set.setDuration(300).start();
     }
 
     @Override

@@ -85,7 +85,8 @@ public class MapFragment
 
     protected TextView mStatusSource, mStatusAccuracy, mStatusSpeed, mStatusAltitude,
             mStatusLatitude, mStatusLongitude;
-    protected FrameLayout mStatusPanel;
+    protected FrameLayout mStatusPanel, mLegend;
+    protected boolean mShowStatus = true;
 
     protected GpsEventSource mGpsEventSource;
     protected CurrentLocationOverlay mCurrentLocationOverlay;
@@ -123,6 +124,7 @@ public class MapFragment
 
         //search relative view of map, if not found - add it
         mMapRelativeLayout = (RelativeLayout) view.findViewById(R.id.maprl);
+        addMap();
 
         mivZoomIn = (FloatingActionButton) view.findViewById(R.id.action_zoom_in);
         if (null != mivZoomIn) {
@@ -155,23 +157,33 @@ public class MapFragment
         }
 
         mStatusPanel = (FrameLayout) view.findViewById(R.id.fl_status_panel);
-
-        FrameLayout legend = (FrameLayout) view.findViewById(R.id.fl_legend);
-        fitLegend(legend);
+        mLegend = (FrameLayout) view.findViewById(R.id.fl_legend);
+        fitLegend();
 
         return view;
     }
 
+    public void setLegendVisible(boolean visible) {
+        if (mLegend != null)
+            mLegend.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
 
-    protected void fitLegend(FrameLayout legend) {
-        View content = getActivity().getLayoutInflater().inflate(R.layout.legend_land, legend, false);
+    public void setStatusVisible(boolean visible) {
+        if (mStatusPanel != null)
+            mStatusPanel.setVisibility(visible ? View.VISIBLE : View.GONE);
+
+        mShowStatus = visible;
+    }
+
+    protected void fitLegend() {
+        View content = getActivity().getLayoutInflater().inflate(R.layout.legend_land, mLegend, false);
 
         if (!isLegendFitsOneLine(content))
-            content = getActivity().getLayoutInflater().inflate(R.layout.legend, legend, false);
+            content = getActivity().getLayoutInflater().inflate(R.layout.legend, mLegend, false);
 
         content.getBackground().setAlpha(128);
-        legend.removeAllViews();
-        legend.addView(content);
+        mLegend.removeAllViews();
+        mLegend.addView(content);
     }
 
 
@@ -227,13 +239,12 @@ public class MapFragment
         rl.invalidate();
     }
 
-    public void addMap() {
+    private void addMap() {
         if (mMapRelativeLayout != null) {
             FrameLayout map = (FrameLayout) mMapRelativeLayout.findViewById(R.id.mapfl);
-            if (map.getChildCount() == 0)
-                map.addView(mMap, 0, new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.MATCH_PARENT,
-                        RelativeLayout.LayoutParams.MATCH_PARENT));
+            map.addView(mMap, 0, new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.MATCH_PARENT));
         }
     }
 
@@ -319,7 +330,7 @@ public class MapFragment
         mShowStatusPanel = prefs.getBoolean(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL, true);
 
         if (null != mStatusPanel) {
-            if (mShowStatusPanel) {
+            if (mShowStatusPanel && mShowStatus) {
                 mStatusPanel.setVisibility(View.VISIBLE);
                 fillStatusPanel(null);
             } else {

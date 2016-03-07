@@ -30,7 +30,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -45,7 +44,6 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.nextgis.maplib.datasource.GeoGeometryFactory;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
 import com.nextgis.safeforest.MainApplication;
@@ -54,10 +52,6 @@ import com.nextgis.safeforest.activity.MainActivity;
 import com.nextgis.safeforest.adapter.MessageCursorAdapter;
 import com.nextgis.safeforest.adapter.MessagesLoader;
 import com.nextgis.safeforest.util.SettingsConstants;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorSet;
-import com.nineoldandroids.animation.ObjectAnimator;
-import com.nineoldandroids.view.ViewHelper;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -168,7 +162,6 @@ public class MessageListFragment
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                final FloatingActionsMenu fab = (FloatingActionsMenu) getActivity().findViewById(R.id.multiple_actions);
                 float from = 0, to = 0;
                 boolean needAnimation = false;
 
@@ -192,45 +185,8 @@ public class MessageListFragment
                         break;
                 }
 
-                if (needAnimation) {
-                    fab.collapse();
-                    int orientation = getResources().getConfiguration().orientation;
-                    float x = orientation == Configuration.ORIENTATION_PORTRAIT ? fab.getWidth() / 2 : fab.getWidth() - fab.getHeight() / 2;
-                    float y = orientation == Configuration.ORIENTATION_PORTRAIT ? fab.getHeight() - fab.getWidth() / 2 : fab.getHeight() / 2;
-                    ViewHelper.setPivotX(fab, x);
-                    ViewHelper.setPivotY(fab, y);
-                    AnimatorSet set = new AnimatorSet();
-                    set.playTogether(
-                            ObjectAnimator.ofFloat(fab, "scaleX", from, to),
-                            ObjectAnimator.ofFloat(fab, "scaleY", from, to)
-                    );
-
-                    set.addListener(new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                            if (!mIsHidden)
-                                fab.setVisibility(View.VISIBLE);
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            if (mIsHidden)
-                                fab.setVisibility(View.GONE);
-                        }
-
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {
-
-                        }
-                    });
-
-                    set.setDuration(300).start();
-                }
+                if (needAnimation)
+                    ((MainActivity) getActivity()).animateFAB(from, to, mIsHidden);
 
                 mLastFirstVisibleItem = firstVisibleItem;
             }
