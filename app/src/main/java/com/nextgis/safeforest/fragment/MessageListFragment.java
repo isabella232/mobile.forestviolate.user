@@ -36,6 +36,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,6 +69,8 @@ public class MessageListFragment
     protected BroadcastReceiver mReceiver;
     protected IntentFilter mIntentFilter;
     protected SharedPreferences mPreferences;
+
+    protected SwipeRefreshLayout mSwipeLayout;
 
     protected boolean mIsAuthorized;
     protected boolean mShowFires, mShowFelling, mShowGarbage, mShowMisc, mShowDocs;
@@ -192,6 +195,15 @@ public class MessageListFragment
             }
         });
 
+        mSwipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.message_swipe);
+        mSwipeLayout.setColorSchemeColors(R.color.tabSecondaryTextColor, R.color.accent, R.color.primary_dark);
+        mSwipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getLoaderManager().restartLoader(LIST_LOADER, null, MessageListFragment.this).forceLoad();
+            }
+        });
+
         return rootView;
     }
 
@@ -215,6 +227,7 @@ public class MessageListFragment
             Loader<Cursor> loader,
             Cursor cursor) {
         mAdapter.swapCursor(cursor);
+        mSwipeLayout.setRefreshing(false);
     }
 
 
