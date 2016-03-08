@@ -133,11 +133,11 @@ public class MessageListFragment
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Cursor cursor = (Cursor) mAdapter.getItem(position);
-                if (null == cursor)
+                if (null == cursor || cursor.getInt(cursor.getColumnIndex(com.nextgis.safeforest.util.Constants.FIELD_DATA_TYPE)) == 1)
                     return false;
 
                 try {
-                    GeoMultiPoint point = (GeoMultiPoint) GeoGeometryFactory.fromBlob(cursor.getBlob(6));
+                    GeoMultiPoint point = (GeoMultiPoint) GeoGeometryFactory.fromBlob(cursor.getBlob(cursor.getColumnIndex(Constants.FIELD_GEOM)));
                     if (point != null && point.size() > 0) {
                         ((MainActivity) getActivity()).setZoomAndCenter(15, point.get(0));
                         ((MainActivity) getActivity()).showMap();
