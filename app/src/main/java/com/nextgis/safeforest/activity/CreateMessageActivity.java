@@ -79,6 +79,7 @@ public class CreateMessageActivity
     protected MainApplication mApp;
     protected ContentValues mValues;
     protected String mEmailText, mPhoneText, mFullNameText;
+    protected boolean mIsAuthorized;
 
     protected int mMessageType = Constants.MSG_TYPE_UNKNOWN;
     protected EditText mMessage;
@@ -165,16 +166,16 @@ public class CreateMessageActivity
 
         Account account = mApp.getAccount(getString(R.string.account_name));
         String auth = mApp.getAccountUserData(account, Constants.KEY_IS_AUTHORIZED);
-        boolean isAuthorized = auth != null && !auth.equals(Constants.ANONYMOUS);
-        boolean isUserDataValid = hasPhoneAndName();
+        mIsAuthorized = auth != null && !auth.equals(Constants.ANONYMOUS);
         mPhoneText = mApp.getAccountUserData(account, SettingsConstants.KEY_USER_PHONE);
         mFullNameText = mApp.getAccountUserData(account, SettingsConstants.KEY_USER_FULLNAME);
         mEmailText = mApp.getAccountUserData(account, SettingsConstants.KEY_USER_EMAIL);
+        boolean isUserDataValid = hasPhoneAndName();
 
-        if (isAuthorized)
+        if (mIsAuthorized)
             mEmailText = mApp.getAccountLogin(account);
 
-        if (!isAuthorized && !isUserDataValid)
+        if (!mIsAuthorized || !isUserDataValid)
             showUserDialog();
     }
 
@@ -261,7 +262,13 @@ public class CreateMessageActivity
         mUserDataDialog.setOnNegativeClickedListener(new YesNoDialog.OnNegativeClickedListener() {
             @Override
             public void onNegativeClicked() {
-                showSignUpDialog();
+                if (!mIsAuthorized)
+                    showSignUpDialog();
+                else {
+                    Toast.makeText(CreateMessageActivity.this, R.string.full_name_phone_require, Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+
                 mUserDataDialog.dismiss();
             }
         });
@@ -276,7 +283,7 @@ public class CreateMessageActivity
             mAuthDialog.setCancelable(false);
             mAuthDialog.setKeepInstance(true);
             mAuthDialog.setTitle(R.string.auth_title)
-                    .setMessage(R.string.auth_require)
+                    .setMessage(getString(R.string.full_name_phone_require) + " " + getString(R.string.auth_require))
                     .setPositiveText(android.R.string.yes)
                     .setNegativeText(android.R.string.no);
         }

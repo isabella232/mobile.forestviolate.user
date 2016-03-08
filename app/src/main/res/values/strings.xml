@@ -63,7 +63,8 @@
     <string name="signing_up">Signing up…</string>
     <string name="skip">Skip</string>
     <string name="auth_title">Authorization required</string>
-    <string name="auth_require">To post message to server you have to leave your full name and contact phone. Would you like to sign in/up?</string>
+    <string name="full_name_phone_require">To post message to server you have to leave your full name and contact phone.</string>
+    <string name="auth_require">Would you like to sign in/up?</string>
     <string name="sf_region_select">Select working territory</string>
     <string name="sf_getting_regions">Fetching regions</string>
     <string name="sync_region">Syncing region</string>
