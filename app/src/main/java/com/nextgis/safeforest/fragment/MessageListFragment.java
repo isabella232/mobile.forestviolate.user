@@ -46,6 +46,7 @@ import android.widget.ListView;
 
 import com.nextgis.maplib.datasource.GeoGeometryFactory;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.activity.MainActivity;
@@ -102,14 +103,13 @@ public class MessageListFragment
         mShowGarbage = filter[2];
         mShowMisc = filter[3];
         mShowDocs = mIsAuthorized && filter[4];
-
-        getActivity().getSupportLoaderManager().initLoader(LIST_LOADER, null, this).forceLoad();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         getContext().registerReceiver(mReceiver, mIntentFilter);
+        getActivity().getSupportLoaderManager().restartLoader(LIST_LOADER, null, this).forceLoad();
     }
 
     @Override
