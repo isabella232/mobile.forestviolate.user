@@ -67,6 +67,7 @@ import com.nextgis.safeforest.overlay.SelectLocationOverlay;
 import com.nextgis.safeforest.util.Constants;
 import com.nextgis.safeforest.util.SettingsConstants;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -463,7 +464,9 @@ public class MapFragment
             return;
 
         Feature feature = layer.getFeature(items.get(0));
-        String message = feature.getFieldValue(Constants.FIELD_FV_DATE) + "\r\n\r\n";
+        Date date = (Date) feature.getFieldValue(Constants.FIELD_FV_DATE);
+        DateFormat format = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.getDefault());
+        String message = format.format(date) + "\r\n\r\n";
         message += getString(R.string.region) + ": " + feature.getFieldValue(Constants.FIELD_FV_REGION) + "\r\n";
         message += getString(R.string.forestry) + ": " + feature.getFieldValue(Constants.FIELD_FV_FORESTRY) + "\r\n";
         message += getString(R.string.precinct) + ": " + feature.getFieldValue(Constants.FIELD_FV_PRECINCT) + "\r\n";
