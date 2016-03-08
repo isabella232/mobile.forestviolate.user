@@ -22,6 +22,7 @@
 package com.nextgis.safeforest.util;
 
 import android.accounts.Account;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
@@ -162,6 +163,24 @@ public final class MapUtil {
             renderer.setAccount(email);
 
             messages.setRenderer(renderer);
+        }
+    }
+    
+    public static String getStatus(Context context, int type) {
+        switch (type) {
+            case Constants.MSG_STATUS_UNKNOWN:
+            default:
+                return context.getString(R.string.unknown_message_status);
+            case Constants.MSG_STATUS_NEW:
+                return context.getString(R.string.new_message_status);
+            case Constants.MSG_STATUS_SENT:
+                return context.getString(R.string.sent_message_status);
+            case Constants.MSG_STATUS_ACCEPTED:
+                return context.getString(R.string.accepted_message_status);
+            case Constants.MSG_STATUS_NOT_ACCEPTED:
+                return context.getString(R.string.not_accepted_message_status);
+            case Constants.MSG_STATUS_CHECKED:
+                return context.getString(R.string.checked_message_status);
         }
     }
 }

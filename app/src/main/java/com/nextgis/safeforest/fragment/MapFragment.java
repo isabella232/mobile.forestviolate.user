@@ -65,6 +65,7 @@ import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.activity.MainActivity;
 import com.nextgis.safeforest.overlay.SelectLocationOverlay;
 import com.nextgis.safeforest.util.Constants;
+import com.nextgis.safeforest.util.MapUtil;
 import com.nextgis.safeforest.util.SettingsConstants;
 
 import java.text.DateFormat;
@@ -445,10 +446,6 @@ public class MapFragment
     }
 
     public void selectGeometryInScreenCoordinates(float x, float y) {
-        VectorLayer layer = (VectorLayer) mApp.getMap().getLayerByName(Constants.KEY_FV_FOREST);
-        if (null == layer)
-            return;
-
         double dMinX = x - mTolerancePX;
         double dMaxX = x + mTolerancePX;
         double dMinY = y - mTolerancePX;
@@ -459,11 +456,29 @@ public class MapFragment
         if (null == mapEnv)
             return;
 
-        List<Long> items = layer.query(mapEnv);
-        if (items.isEmpty())
-            return;
+        List<Long> items;
+        VectorLayer layerFV = (VectorLayer) mApp.getMap().getLayerByName(Constants.KEY_FV_FOREST);
+        VectorLayer layerMessages = (VectorLayer) mApp.getMap().getLayerByName(Constants.KEY_CITIZEN_MESSAGES);
 
-        Feature feature = layer.getFeature(items.get(0));
+        if (null != layerFV) {
+            items = layerFV.query(mapEnv);
+            if (!items.isEmpty()) {
+                Feature feature = layerFV.getFeature(items.get(0));
+                showForestViolateFeatureDialog(feature);
+                return;
+            }
+        }
+
+        if (null != layerMessages) {
+            items = layerMessages.query(mapEnv);
+            if (!items.isEmpty()) {
+                Feature feature = layerMessages.getFeature(items.get(0));
+                showCitizenMessageFeatureDialog(feature);
+            }
+        }
+    }
+
+    private void showForestViolateFeatureDialog(Feature feature) {
         Date date = (Date) feature.getFieldValue(Constants.FIELD_FV_DATE);
         DateFormat format = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.getDefault());
         String message = format.format(date) + "\r\n\r\n";
@@ -474,7 +489,23 @@ public class MapFragment
         message += feature.getFieldValue(Constants.FIELD_FV_STATUS);
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), R.style.AppCompatDialog);
         dialog.setMessage(message)
-                .setTitle("#" + items.get(0))
+                .setTitle("#" + feature.getId())
+                .setPositiveButton(android.R.string.ok, null);
+        dialog.show();
+    }
+
+    private void showCitizenMessageFeatureDialog(Feature feature) {
+        Date date = (Date) feature.getFieldValue(Constants.FIELD_MDATE);
+        DateFormat format = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.getDefault());
+        String message = format.format(date) + "\r\n\r\n";
+        message += getString(R.string.type_paragraph) + ": " + feature.getFieldValue(Constants.FIELD_MTYPE_STR) + "\r\n";
+        String status = MapUtil.getStatus(getContext(), ((Long) feature.getFieldValue(Constants.FIELD_STATUS)).intValue());
+        message += getString(R.string.status_paragraph) + ": " + status + "\r\n";
+        message += getString(R.string.message_paragraph) + ": " + feature.getFieldValue(Constants.FIELD_MESSAGE) + "\r\n\r\n";
+        message += feature.getFieldValue(Constants.FIELD_STMESSAGE);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), R.style.AppCompatDialog);
+        dialog.setMessage(message)
+                .setTitle("#" + feature.getId())
                 .setPositiveButton(android.R.string.ok, null);
         dialog.show();
     }

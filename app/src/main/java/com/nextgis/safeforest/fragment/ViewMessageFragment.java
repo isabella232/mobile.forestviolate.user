@@ -45,6 +45,7 @@ import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.activity.ViewMessageActivity;
 import com.nextgis.safeforest.util.Constants;
+import com.nextgis.safeforest.util.MapUtil;
 import com.nextgis.safeforest.util.UiUtil;
 
 import java.io.IOException;
@@ -155,28 +156,7 @@ public class ViewMessageFragment
 
             String data;
             int status = cursor.getInt(cursor.getColumnIndex(Constants.FIELD_STATUS));
-            switch (status) {
-                case Constants.MSG_STATUS_UNKNOWN:
-                default:
-                    data = getString(R.string.unknown_message_status);
-                    break;
-                case Constants.MSG_STATUS_NEW:
-                    data = getString(R.string.new_message_status);
-                    break;
-                case Constants.MSG_STATUS_SENT:
-                    data = getString(R.string.sent_message_status);
-                    break;
-                case Constants.MSG_STATUS_ACCEPTED:
-                    data = getString(R.string.accepted_message_status);
-                    break;
-                case Constants.MSG_STATUS_NOT_ACCEPTED:
-                    data = getString(R.string.not_accepted_message_status);
-                    break;
-                case Constants.MSG_STATUS_CHECKED:
-                    data = getString(R.string.checked_message_status);
-                    break;
-            }
-            statusView.setText(data);
+            statusView.setText(MapUtil.getStatus(getContext(), status));
 
             int type = cursor.getInt(cursor.getColumnIndex(Constants.FIELD_MTYPE));
             switch (type) {
