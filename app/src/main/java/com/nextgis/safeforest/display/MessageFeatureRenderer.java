@@ -40,7 +40,7 @@ public class MessageFeatureRenderer extends SimpleFeatureRenderer {
 
     @Override
     protected Style getStyle(long featureId) {
-        Feature feature = ((VectorLayer) mLayer).getFeature(featureId);
+        Feature feature = ((VectorLayer) mLayerRef.get()).getFeature(featureId);
         long type = (long) feature.getFieldValue(Constants.FIELD_MTYPE);
         String account = (String) feature.getFieldValue(Constants.FIELD_AUTHOR);
         boolean isOwner = !TextUtils.isEmpty(account) && account.equals(mAccount);
