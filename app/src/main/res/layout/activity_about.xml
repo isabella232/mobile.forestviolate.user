@@ -32,7 +32,6 @@
         layout="@layout/actionbar"/>
 
     <ScrollView
-        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -46,10 +45,10 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:id="@+id/app_logo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="20dp"
                     android:minHeight="64dp"
                     android:minWidth="64dp"
                     android:src="@drawable/ic_launcher"
@@ -58,12 +57,12 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/app_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal|top"
@@ -84,12 +83,35 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/app_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text="@string/app_description"
                 android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:text="@string/wwf"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="20dp"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/wwf"
+                    tools:ignore="ContentDescription"/>
+            </LinearLayout>
 
             <Button
                 android:id="@+id/credits"
@@ -104,7 +126,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_margin="20dp"
+                android:layout_margin="10dp"
                 android:linksClickable="true"
                 android:text="@string/copyright"
                 android:textAppearance="?android:attr/textAppearanceMedium"/>
