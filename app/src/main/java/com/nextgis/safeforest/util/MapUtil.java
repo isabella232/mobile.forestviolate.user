@@ -159,8 +159,11 @@ public final class MapUtil {
             MessageFeatureRenderer renderer = new MessageFeatureRenderer(messages);
 
             Account account = app.getAccount(app.getString(R.string.account_name));
-            String email = app.getAccountUserData(account, com.nextgis.safeforest.util.SettingsConstants.KEY_USER_EMAIL);
-            renderer.setAccount(email);
+
+            if (account != null) {
+                String email = app.getAccountUserData(account, com.nextgis.safeforest.util.SettingsConstants.KEY_USER_EMAIL);
+                renderer.setAccount(email);
+            }
 
             messages.setRenderer(renderer);
         }

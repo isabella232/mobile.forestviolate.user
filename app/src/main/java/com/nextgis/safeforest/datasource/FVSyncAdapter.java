@@ -38,7 +38,7 @@ public class FVSyncAdapter extends SyncAdapter {
 
     @Override
     protected void sync(LayerGroup layerGroup, String authority, SyncResult syncResult) {
-        if (!MapBase.getInstance().isValid())
+        if (!MapBase.getInstance().isValid() || layerGroup.getLayerCount() == 0)
             return;
 
         MapUtil.removeOutdatedChanges((NGWVectorLayer) layerGroup.getLayerByName(Constants.KEY_CITIZEN_MESSAGES));
