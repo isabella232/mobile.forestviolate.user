@@ -626,16 +626,14 @@ public class MapFragment
             setDefaultTextViews();
         } else {
             if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
-                int satellites = location.getExtras().getInt("satellites");
-                if (satellites < GpsEventSource.MIN_SATELLITES_IN_FIX) {
-                    mStatusSource.setText("");
-                    mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
-                            getResources().getDrawable(R.drawable.ic_location), null, null, null);
-                } else {
-                    mStatusSource.setText(satellites + "");
-                    mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
-                            getResources().getDrawable(R.drawable.ic_location), null, null, null);
-                }
+                String text = "";
+                int satellites = location.getExtras() != null ? location.getExtras().getInt("satellites") : 0;
+                if (satellites > 0)
+                    text += satellites;
+
+                mStatusSource.setText(text);
+                mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
+                        getResources().getDrawable(R.drawable.ic_location), null, null, null);
             } else {
                 mStatusSource.setText("");
                 mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
@@ -653,16 +651,15 @@ public class MapFragment
                             "%.1f %s/%s", location.getSpeed() * 3600 / 1000,
                             getString(R.string.unit_kilometer), getString(R.string.unit_hour)));
             mStatusLatitude.setText(
-                    LocationUtil.formatCoordinate(location.getLatitude(), mCoordinatesFormat, mCoordinatesFraction) +
-                            " " +
-                            getString(R.string.latitude_caption_short));
+                    formatCoordinate(location.getLatitude(), R.string.latitude_caption_short));
             mStatusLongitude.setText(
-                    LocationUtil.formatCoordinate(location.getLongitude(), mCoordinatesFormat, mCoordinatesFraction) +
-                            " " +
-                            getString(R.string.longitude_caption_short));
+                    formatCoordinate(location.getLongitude(), R.string.longitude_caption_short));
         }
     }
 
+    private String formatCoordinate(double value, int appendix) {
+        return LocationUtil.formatCoordinate(value, mCoordinatesFormat, mCoordinatesFraction) + " " + getString(appendix);
+    }
 
     protected void setDefaultTextViews()
     {
