@@ -157,4 +157,8 @@
     <string name="felling_short">Рубка</string>
     <string name="own">Своё</string>
     <string name="others">Чужое</string>
+    <string name="permissions">Разрешения</string>
+    <string name="requested_permissions">Приложению требуются некоторые разрешения для корректной работы: запись на устройство (для хранения данных), доступ
+        к местоположению и получение контактов (для создания и управления веб аккаунтами).</string>
+    <string name="permissions_deny">Разрешения не предоставлены, приложение не может работать корректно</string>
 </resources>

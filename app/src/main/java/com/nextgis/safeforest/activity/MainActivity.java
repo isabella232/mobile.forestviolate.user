@@ -23,16 +23,19 @@
 
 package com.nextgis.safeforest.activity;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SyncResult;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -76,6 +79,7 @@ import java.util.Locale;
 
 public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAccountListener, View.OnClickListener {
     enum CURRENT_VIEW {ACCOUNT, INITIAL, NORMAL}
+    protected static final int PERMISSIONS_REQUEST = 1;
     protected static final String KEY_CURRENT_VIEW = "current_view";
 
     /**
@@ -96,23 +100,56 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     protected boolean mFirstRun;
     protected int mCurrentView;
     protected MenuItem mFilter;
+    protected int mCurrentViewState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mCurrentViewState = savedInstanceState != null ? savedInstanceState.getInt(KEY_CURRENT_VIEW) : -1;
 
+        if (!hasPermissions()) {
+            String[] permissions = new String[] {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.GET_ACCOUNTS, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            requestPermissions(R.string.permissions, R.string.requested_permissions, PERMISSIONS_REQUEST, permissions);
+        } else
+            start();
+    }
+
+    protected boolean hasPermissions() {
+        return isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION) &&
+                isPermissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION) &&
+                isPermissionGranted(Manifest.permission.GET_ACCOUNTS) &&
+                isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST:
+                if (isGrantedResult(grantResults))
+                    start();
+                else {
+                    Toast.makeText(this, R.string.permissions_deny, Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    private void start() {
         // check if first run
         // get from properties if first time
         // and registered or guest user
         final MainApplication app = (MainApplication) getApplication();
         final Account account = app.getAccount(getString(R.string.account_name));
-        int currentView = savedInstanceState != null ? savedInstanceState.getInt(KEY_CURRENT_VIEW) : -1;
-        if (account == null || currentView == CURRENT_VIEW.ACCOUNT.ordinal()) {
+        if (account == null || mCurrentViewState == CURRENT_VIEW.ACCOUNT.ordinal()) {
             Log.d(Constants.SFTAG, "No account. " + getString(R.string.account_name) + " created. Run first step.");
             mFirstRun = true;
             createFirstStartView();
         } else {
-            if (!hasBasicLayers(app.getMap()) || currentView == CURRENT_VIEW.INITIAL.ordinal()) {
+            if (!hasBasicLayers(app.getMap()) || mCurrentViewState == CURRENT_VIEW.INITIAL.ordinal()) {
                 Log.d(Constants.SFTAG, "Account " + getString(R.string.account_name) + " created. Run second step.");
                 mFirstRun = true;
                 createSecondStartView();
@@ -122,6 +159,13 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
                 createNormalView();
             }
         }
+    }
+
+    private boolean isGrantedResult(int[] grantResults) {
+        return grantResults.length == 4 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                && grantResults[2] == PackageManager.PERMISSION_GRANTED
+                && grantResults[3] == PackageManager.PERMISSION_GRANTED;
     }
 
     protected boolean hasBasicLayers(MapBase map) {
