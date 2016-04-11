@@ -127,7 +127,6 @@
         <service
             android:name="com.nextgis.safeforest.datasource.FVSyncService"
             android:exported="true"
-            android:process=":sync"
             >
             <intent-filter>
                 <action
