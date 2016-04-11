@@ -40,6 +40,7 @@ import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.display.MessageFeatureRenderer;
 
+import java.util.Date;
 import java.util.Map;
 
 public final class MapUtil {
@@ -126,7 +127,15 @@ public final class MapUtil {
                 Feature feature = layer.getFeature(changeFeatureId);
                 if (feature != null) {
                     int type = ((Long) feature.getFieldValue(Constants.FIELD_MTYPE)).intValue();
-                    long diff = System.currentTimeMillis() - (Long) feature.getFieldValue(Constants.FIELD_MDATE);
+
+                    long mdate = 0;
+                    Object field = feature.getFieldValue(Constants.FIELD_MDATE);
+                    if (field instanceof Date)
+                        mdate = ((Date) field).getTime();
+                    if (field instanceof Long)
+                        mdate = (Long) field;
+
+                    long diff = System.currentTimeMillis() - mdate;
                     boolean outdated = false;
                     switch (type) {
                         case Constants.MSG_TYPE_FIRE:
