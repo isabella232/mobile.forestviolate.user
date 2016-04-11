@@ -112,7 +112,7 @@ public class MapFragment
         mApp = (MainApplication) getActivity().getApplication();
 
         mMap = new MapViewOverlays(getActivity(), (MapDrawable) mApp.getMap());
-        mMap.setId(999);
+        mMap.setId(R.id.map_view);
 
         mGpsEventSource = mApp.getGpsEventSource();
         mCurrentLocationOverlay = new CurrentLocationOverlay(getActivity(), mMap);
