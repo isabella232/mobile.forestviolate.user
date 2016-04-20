@@ -30,8 +30,10 @@
     <string name="title_center_point">Center point</string>
     <string name="title_orientation">Orientation</string>
     <string name="action_settings">Settings</string>
+    <string name="version" translatable="false">v. %1$s (rev. %2$d)</string>
     <string name="app_description">The application for see the forest violations notifications, notify about new forest violations and check theirs status.</string>
     <string name="wwf">The application is developed within the project with the WWF to identify forest violations.</string>
+    <string name="wwf_link">http://wwf.org</string>
     <string name="credits_intro">Credits</string>
     <string name="credits">Filter icon by Austin Andrews from <a href="http://materialdesignicons.com/icon/filter">Material Design Icons</a> and some icons used in the application are from <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a>, licensed under a <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2015]]></string>
