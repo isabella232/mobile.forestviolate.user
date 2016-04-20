@@ -279,6 +279,13 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             }
         }
 
+        mViewPager.post(new Runnable() {
+            @Override
+            public void run() {
+                mViewPager.setCurrentItem(1);
+            }
+        });
+
         findViewById(R.id.call).setOnClickListener(this);
         findViewById(R.id.add_fire).setOnClickListener(this);
         findViewById(R.id.add_felling).setOnClickListener(this);
