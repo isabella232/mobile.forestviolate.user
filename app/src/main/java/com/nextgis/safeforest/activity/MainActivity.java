@@ -289,9 +289,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (mTabLayout != null)
-            setMarginsToFAB(mTabLayout.getSelectedTabPosition() == 1);
+        setMarginsToFAB(isMapShown());
     }
 
     private void setMarginsToFAB(final boolean add) {
@@ -299,6 +297,9 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         final View legend = findViewById(R.id.fl_legend);
         final View status = findViewById(R.id.fl_status_panel);
         final RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) fab.getLayoutParams();
+
+        if (legend == null || status == null)
+            return;
 
         fab.post(new Runnable() {
             @Override
@@ -384,7 +385,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     }
 
     public boolean isMapShown() {
-        return mTabLayout.getSelectedTabPosition() == 1;
+        return mTabLayout != null && mTabLayout.getSelectedTabPosition() == 1;
     }
 
     private void newMessage(int type) {
