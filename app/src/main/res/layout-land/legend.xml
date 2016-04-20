@@ -89,12 +89,12 @@
             android:drawableStart="@drawable/ic_legend_garbage"
             android:text="@string/garbage_short"/>
 
-        <com.nextgis.safeforest.util.AutoFitTextView
-            style="@style/status_panel_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_legend_misc"
-            android:drawableStart="@drawable/ic_legend_misc"
-            android:text="@string/misc_short"/>
+        <!--<com.nextgis.safeforest.util.AutoFitTextView-->
+            <!--style="@style/status_panel_text"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:drawableLeft="@drawable/ic_legend_misc"-->
+            <!--android:drawableStart="@drawable/ic_legend_misc"-->
+            <!--android:text="@string/misc_short"/>-->
     </LinearLayout>
 </LinearLayout>

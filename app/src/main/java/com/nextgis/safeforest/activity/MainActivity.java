@@ -290,7 +290,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         findViewById(R.id.add_fire).setOnClickListener(this);
         findViewById(R.id.add_felling).setOnClickListener(this);
         findViewById(R.id.add_garbage).setOnClickListener(this);
-        findViewById(R.id.add_misc).setOnClickListener(this);
+//        findViewById(R.id.add_misc).setOnClickListener(this);
     }
 
     @Override

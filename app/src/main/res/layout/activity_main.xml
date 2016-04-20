@@ -110,15 +110,15 @@
                 fab:fab_size="mini"
                 fab:fab_title="@string/garbage"/>
 
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/add_misc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                fab:fab_colorNormal="?attr/colorPrimary"
-                fab:fab_colorPressed="?attr/colorAccent"
-                fab:fab_icon="@drawable/ic_misc_dark"
-                fab:fab_size="mini"
-                fab:fab_title="@string/misc"/>
+            <!--<com.getbase.floatingactionbutton.FloatingActionButton-->
+                <!--android:id="@+id/add_misc"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--fab:fab_colorNormal="?attr/colorPrimary"-->
+                <!--fab:fab_colorPressed="?attr/colorAccent"-->
+                <!--fab:fab_icon="@drawable/ic_misc_dark"-->
+                <!--fab:fab_size="mini"-->
+                <!--fab:fab_title="@string/misc"/>-->
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
     </RelativeLayout>
 </LinearLayout>
