@@ -67,6 +67,7 @@
             android:layout_marginRight="5dp"
             fab:fab_addButtonColorNormal="?attr/colorPrimary"
             fab:fab_addButtonColorPressed="?attr/colorAccent"
+            fab:fab_labelStyle="@style/menu_labels_style"
             fab:fab_addButtonPlusIconColor="@android:color/white">
 
             <com.getbase.floatingactionbutton.FloatingActionButton
@@ -76,7 +77,8 @@
                 fab:fab_colorNormal="?attr/colorPrimary"
                 fab:fab_colorPressed="?attr/colorAccent"
                 fab:fab_icon="@drawable/ic_outgoing_call_dark"
-                fab:fab_size="mini"/>
+                fab:fab_size="mini"
+                fab:fab_title="@string/call"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/add_fire"
@@ -85,7 +87,8 @@
                 fab:fab_colorNormal="?attr/colorPrimary"
                 fab:fab_colorPressed="?attr/colorAccent"
                 fab:fab_icon="@drawable/ic_fire_dark"
-                fab:fab_size="mini"/>
+                fab:fab_size="mini"
+                fab:fab_title="@string/fire"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/add_felling"
@@ -94,7 +97,8 @@
                 fab:fab_colorNormal="?attr/colorPrimary"
                 fab:fab_colorPressed="?attr/colorAccent"
                 fab:fab_icon="@drawable/ic_axe_dark"
-                fab:fab_size="mini"/>
+                fab:fab_size="mini"
+                fab:fab_title="@string/action_felling"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/add_garbage"
@@ -103,7 +107,8 @@
                 fab:fab_colorNormal="?attr/colorPrimary"
                 fab:fab_colorPressed="?attr/colorAccent"
                 fab:fab_icon="@drawable/ic_garbage_dark"
-                fab:fab_size="mini"/>
+                fab:fab_size="mini"
+                fab:fab_title="@string/garbage"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/add_misc"
@@ -112,7 +117,8 @@
                 fab:fab_colorNormal="?attr/colorPrimary"
                 fab:fab_colorPressed="?attr/colorAccent"
                 fab:fab_icon="@drawable/ic_misc_dark"
-                fab:fab_size="mini"/>
+                fab:fab_size="mini"
+                fab:fab_title="@string/misc"/>
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
     </RelativeLayout>
 </LinearLayout>

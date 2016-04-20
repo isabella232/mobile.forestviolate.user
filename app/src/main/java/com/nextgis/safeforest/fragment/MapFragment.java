@@ -329,7 +329,7 @@ public class MapFragment
 
         mCoordinatesFormat = prefs.getInt(SettingsConstants.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);
         mCoordinatesFraction = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FRACTION, 6);
-        mShowStatusPanel = prefs.getBoolean(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL, true);
+        mShowStatusPanel = prefs.getBoolean(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL, false);
 
         if (null != mStatusPanel) {
             if (mShowStatusPanel && mShowStatus) {

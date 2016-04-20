@@ -45,6 +45,7 @@
     <string name="docs">Get documents</string>
     <string name="documents">Documents</string>
     <string name="contact">Contact</string>
+    <string name="call">Call</string>
     <string name="fire">Fire</string>
     <string name="garbage">Garbage</string>
     <string name="garbage_short">@string/garbage</string>
