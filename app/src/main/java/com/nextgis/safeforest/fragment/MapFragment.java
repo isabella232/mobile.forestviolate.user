@@ -372,7 +372,7 @@ public class MapFragment
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             Calendar calendar = Calendar.getInstance();
             ((RemoteTMSLayer) layer).setEndDate(sdf.format(new Date(calendar.getTimeInMillis())));
-            calendar.add(Calendar.WEEK_OF_YEAR, -2);
+            calendar.add(Calendar.DAY_OF_MONTH, -2);
             ((RemoteTMSLayer) layer).setStartDate(sdf.format(new Date(calendar.getTimeInMillis())));
         }
     }
