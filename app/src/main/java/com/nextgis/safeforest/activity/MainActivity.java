@@ -301,12 +301,18 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
     private void setMarginsToFAB(final boolean add) {
         final View fab = findViewById(R.id.multiple_actions);
+
+        if(fab == null)
+            return;
+
         final View legend = findViewById(R.id.fl_legend);
         final View status = findViewById(R.id.fl_status_panel);
-        final RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) fab.getLayoutParams();
 
         if (legend == null || status == null)
             return;
+
+
+        final RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) fab.getLayoutParams();
 
         fab.post(new Runnable() {
             @Override

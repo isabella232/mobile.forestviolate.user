@@ -280,7 +280,6 @@ public class LoginFragment extends NGWLoginFragment {
         }
     }
 
-    @Override
     protected void updateButtonState()
     {
         if (checkEditText(mURL)) {
