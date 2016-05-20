@@ -32,6 +32,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +72,7 @@ public class LoginFragment extends NGWLoginFragment {
     {
         final View view = inflater.inflate(R.layout.fragment_login, container, false);
         mURL = (EditText) view.findViewById(R.id.url);
+        mUrlText = mURL.getText().toString().trim();
         mLogin = (EditText) view.findViewById(R.id.login);
         mPassword = (EditText) view.findViewById(R.id.password);
         mSignInButton = (Button) view.findViewById(R.id.signin);
@@ -280,54 +282,33 @@ public class LoginFragment extends NGWLoginFragment {
         }
     }
 
-    protected void updateButtonState()
-    {
-        if (checkEditText(mURL)) {
-            mSkipButton.setEnabled(true);
-
-            if (checkEditText(mLogin) && checkEditText(mPassword)) {
-                mSignInButton.setEnabled(true);
-                mSignUpButton.setEnabled(true);
-            }
-        }
-    }
-
     public void onTokenReceived(
             String accountName,
             String token)
     {
+        super.onTokenReceived(accountName, token);
+
         IGISApplication app = (IGISApplication) getActivity().getApplication();
-        if(token.equals(Constants.ANONYMOUS)){
-            if (mForNewAccount) {
-                boolean accountAdded = app.addAccount(accountName, mURL.getText().toString(), Constants.ANONYMOUS, Constants.ANONYMOUS, token);
-                if(accountAdded) {
-                    if (null != mOnAddAccountListener) {
-                        mOnAddAccountListener.onAddAccount(app.getAccount(accountName), token, true);
-                    }
-
-                    app.setUserData(accountName, SettingsConstants.KEY_USER_FULLNAME, mFullNameText);
-                    app.setUserData(accountName, SettingsConstants.KEY_USER_PHONE, mPhoneText);
-                }
-                else {
-                    if (null != mOnAddAccountListener) {
-                        mOnAddAccountListener.onAddAccount(null, token, false);
-                    }
-                }
-            } else {
-                // do nothing, guest account cannot be changed
-                getActivity().finish();
-            }
+        if (mForNewAccount) {
+            app.setUserData(accountName, SettingsConstants.KEY_USER_FULLNAME, mFullNameText);
+            app.setUserData(accountName, SettingsConstants.KEY_USER_PHONE, mPhoneText);
         }
-        else{
-            if (null != mOnAddAccountListener)
-                mOnAddAccountListener.onAddAccount(app.getAccount(accountName), token, false);
+    }
 
-            super.onTokenReceived(accountName, token);
+    public class LocalTextWatcher implements TextWatcher {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            if (mForNewAccount) {
-                app.setUserData(accountName, SettingsConstants.KEY_USER_FULLNAME, mFullNameText);
-                app.setUserData(accountName, SettingsConstants.KEY_USER_PHONE, mPhoneText);
-            }
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            mUrlText = mURL.getText().toString().trim();
         }
     }
 
