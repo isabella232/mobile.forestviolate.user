@@ -140,6 +140,15 @@ public class InitStepListAdapter extends BaseAdapter {
         return v;
     }
 
+    public void reset() {
+        for (InitStep step : mSteps) {
+            step.setState(Constants.STEP_STATE_WAIT);
+            step.setStepDescription(mContext.getString(R.string.waiting));
+        }
+
+        notifyDataSetChanged();
+    }
+
     public void setMessage(int step, int state, String message) {
         InitStep initStep = (InitStep) getItem(step);
         initStep.setState(state);

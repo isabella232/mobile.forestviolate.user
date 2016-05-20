@@ -72,8 +72,10 @@ public class RegionSyncFragment extends Fragment {
     protected IGISApplication mApp;
     protected InitStepListAdapter mAdapter;
     protected BroadcastReceiver mSyncStatusReceiver;
+    protected Button mCancelButton;
 
     protected boolean mIsRegionSet;
+    protected boolean mStarted = false;
 
     public interface onRegionReceive {
         void onRegionChosen(String regionName);
@@ -88,9 +90,6 @@ public class RegionSyncFragment extends Fragment {
         mApp = (IGISApplication) getActivity().getApplication();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mIsRegionSet = MapUtil.isRegionSet(preferences) && MapUtil.hasLayer(mApp.getMap(), Constants.KEY_FV_REGIONS);
-
-        if (mIsRegionSet)
-            startSyncService(getActivity(), false);
     }
 
     protected static void startSyncService(Activity activity, boolean isRegionsOnly) {
@@ -107,6 +106,10 @@ public class RegionSyncFragment extends Fragment {
             Toast.makeText(activity, R.string.error_network_unavailable, Toast.LENGTH_SHORT).show();
     }
 
+    protected void retry() {
+
+    }
+
     protected static void stopSyncService(Activity activity) {
         Intent syncIntent = new Intent(activity, RegionSyncService.class);
         syncIntent.setAction(RegionSyncService.ACTION_STOP);
@@ -120,15 +123,23 @@ public class RegionSyncFragment extends Fragment {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Constants.BROADCAST_MESSAGE);
         getActivity().registerReceiver(mSyncStatusReceiver, intentFilter);
+        startSync();
+    }
 
-        if (!mIsRegionSet)
+    protected void startSync() {
+        if (mIsRegionSet) {
+            startSyncService(getActivity(), false);
+            mStarted = true;
+            mCancelButton.setText(R.string.cancel);
+        } else {
             createChooseRegionDialog(getActivity(), new onRegionReceive() {
                 @Override
                 public void onRegionChosen(String regionName) {
                     mIsRegionSet = true;
-                    startSyncService(getActivity(), false);
+                    startSync();
                 }
             });
+        }
     }
 
     @Override
@@ -147,18 +158,26 @@ public class RegionSyncFragment extends Fragment {
         ListView list = (ListView) view.findViewById(R.id.stepsList);
         list.setAdapter(mAdapter);
 
-        Button cancelButton = (Button) view.findViewById(R.id.cancel);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
+        mCancelButton = (Button) view.findViewById(R.id.cancel);
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stopSyncService(getActivity());
+                if (mCancelButton.getText().equals(getString(R.string.cancel))) {
+                    stopSyncService(getActivity());
+                    mCancelButton.setText(R.string.retry);
+                    mStarted = false;
+                    mAdapter.reset();
+                } else {
+                    startSync();
+                    mCancelButton.setText(R.string.cancel);
+                }
             }
         });
 
         mSyncStatusReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (!mIsRegionSet)
+                if (!mIsRegionSet || !mStarted)
                     return;
 
                 int step = intent.getIntExtra(Constants.KEY_STEP, 0);
