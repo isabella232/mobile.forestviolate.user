@@ -97,7 +97,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
      */
     protected ViewPager mViewPager;
     protected TabLayout mTabLayout;
-    protected boolean mFirstRun;
+    protected boolean mFirstRun = true;
     protected int mCurrentView;
     protected MenuItem mFilter;
     protected int mCurrentViewState;
@@ -105,14 +105,23 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCurrentViewState = savedInstanceState != null ? savedInstanceState.getInt(KEY_CURRENT_VIEW) : -1;
+        setContentView(R.layout.activity_main_no_permissions);
+        setToolbar(R.id.main_toolbar);
+        setTitle(getText(R.string.app_name));
 
-        if (!hasPermissions()) {
-            String[] permissions = new String[] {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.GET_ACCOUNTS, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-            requestPermissions(R.string.permissions, R.string.requested_permissions, PERMISSIONS_REQUEST, permissions);
-        } else
+        mCurrentViewState = savedInstanceState != null ? savedInstanceState.getInt(KEY_CURRENT_VIEW) : -1;
+        findViewById(R.id.grant_permissions).setOnClickListener(this);
+
+        if (!hasPermissions())
+            requestPermissions();
+        else
             start();
+    }
+
+    protected void requestPermissions() {
+        String[] permissions = new String[] {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.GET_ACCOUNTS, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        requestPermissions(R.string.permissions, R.string.requested_permissions, PERMISSIONS_REQUEST, permissions);
     }
 
     protected boolean hasPermissions() {
@@ -128,10 +137,8 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             case PERMISSIONS_REQUEST:
                 if (isGrantedResult(grantResults))
                     start();
-                else {
+                else
                     Toast.makeText(this, R.string.permissions_deny, Toast.LENGTH_SHORT).show();
-                    finish();
-                }
                 break;
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -146,12 +153,10 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         final Account account = app.getAccount(getString(R.string.account_name));
         if (account == null || mCurrentViewState == CURRENT_VIEW.ACCOUNT.ordinal()) {
             Log.d(Constants.SFTAG, "No account. " + getString(R.string.account_name) + " created. Run first step.");
-            mFirstRun = true;
             createFirstStartView();
         } else {
             if (!hasBasicLayers(app.getMap()) || mCurrentViewState == CURRENT_VIEW.INITIAL.ordinal()) {
                 Log.d(Constants.SFTAG, "Account " + getString(R.string.account_name) + " created. Run second step.");
-                mFirstRun = true;
                 createSecondStartView();
             } else {
                 Log.d(Constants.SFTAG, "Account " + getString(R.string.account_name) + " created. Layers created. Run normal view.");
@@ -181,7 +186,6 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     protected void createFirstStartView(){
         mCurrentView = CURRENT_VIEW.ACCOUNT.ordinal();
         setContentView(R.layout.activity_main_first);
-
         setToolbar(R.id.main_toolbar);
         setTitle(getText(R.string.first_run));
 
@@ -192,7 +196,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             ngwLoginFragment = new LoginFragment();
             FragmentTransaction ft = fm.beginTransaction();
             ft.add(com.nextgis.maplibui.R.id.login_frame, ngwLoginFragment, Constants.FRAGMENT_LOGIN);
-            ft.commit();
+            ft.commitAllowingStateLoss();
         }
         ngwLoginFragment.setForNewAccount(true);
         ngwLoginFragment.setOnAddAccountListener(this);
@@ -201,7 +205,6 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     protected void createSecondStartView(){
         mCurrentView = CURRENT_VIEW.INITIAL.ordinal();
         setContentView(R.layout.activity_main_first);
-
         setToolbar(R.id.main_toolbar);
         setTitle(getText(R.string.initialization));
 
@@ -379,6 +382,9 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.grant_permissions:
+                requestPermissions();
+                break;
             case R.id.call:
                 call();
                 break;
@@ -463,10 +469,11 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        if(!mFirstRun) {
-            getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
+        menu.findItem(R.id.action_settings).setVisible(!mFirstRun);
+
+        if(!mFirstRun)
             mFilter = menu.findItem(R.id.action_filter);
-        }
 
         return true;
     }
