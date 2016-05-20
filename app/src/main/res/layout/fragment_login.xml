@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            tools:context=".LoginFragment">
+            tools:context=".fragment.LoginFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -104,7 +104,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:enabled="false"
                 android:text="@string/sign_in"/>
 
             <Button
@@ -112,7 +111,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:enabled="false"
                 android:text="@string/skip"/>
         </LinearLayout>
 
@@ -122,7 +120,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="10dp"
-            android:enabled="false"
             android:text="@string/sign_up"/>
 
     </LinearLayout>

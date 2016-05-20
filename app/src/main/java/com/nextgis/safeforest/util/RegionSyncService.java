@@ -390,7 +390,7 @@ public class RegionSyncService extends Service {
             lvLayer.setName(getString(R.string.lv));
             lvLayer.setAccountName(mAccount.name);
             lvLayer.setRemoteId(styleId);
-            lvLayer.setURL(NGWUtil.getTMSUrl(mURL, styleId));
+            lvLayer.setURL(NGWUtil.getTMSUrl(mURL, new long[]{styleId}));
             lvLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
             lvLayer.setMaxZoom(9);
             lvLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
@@ -410,7 +410,7 @@ public class RegionSyncService extends Service {
             ulvLayer.setName(getString(R.string.ulv));
             ulvLayer.setAccountName(mAccount.name);
             ulvLayer.setRemoteId(styleId);
-            ulvLayer.setURL(NGWUtil.getTMSUrl(mURL, styleId));
+            ulvLayer.setURL(NGWUtil.getTMSUrl(mURL, new long[]{styleId}));
             ulvLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
             ulvLayer.setMaxZoom(16);
             ulvLayer.setMinZoom(9);
