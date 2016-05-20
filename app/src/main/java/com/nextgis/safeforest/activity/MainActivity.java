@@ -397,9 +397,9 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             case R.id.add_garbage:
                 newMessage(Constants.MSG_TYPE_GARBAGE);
                 break;
-            case R.id.add_misc:
-                newMessage(Constants.MSG_TYPE_MISC);
-                break;
+//            case R.id.add_misc:
+//                newMessage(Constants.MSG_TYPE_MISC);
+//                break;
         }
     }
 
