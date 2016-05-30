@@ -25,6 +25,13 @@
 
     <attr name="tabSecondaryTextColor" format="reference"/>
     <attr name="CoordinatesPickerBackground" format="reference"/>
+    <attr name="axeIcon" format="reference"/>
+    <attr name="fireIcon" format="reference"/>
+    <attr name="garbageIcon" format="reference"/>
+    <attr name="docIcon" format="reference"/>
+    <attr name="miscIcon" format="reference"/>
+    <attr name="newMailIcon" format="reference"/>
+    <attr name="sentMailIcon" format="reference"/>
 
     <!-- Base application theme. -->
     <style name="AppTheme.Light" parent="Theme.NextGIS.AppCompat.Light">
@@ -32,6 +39,13 @@
         <item name="tabSecondaryTextColor">@color/tabSecondaryTextColor</item>
         <item name="CoordinatesPickerBackground">@drawable/ic_maps_pin_light</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="axeIcon">@drawable/ic_axe_light</item>
+        <item name="fireIcon">@drawable/ic_fire_light</item>
+        <item name="garbageIcon">@drawable/ic_garbage_light</item>
+        <item name="docIcon">@drawable/ic_doc_light</item>
+        <item name="miscIcon">@drawable/ic_misc_light</item>
+        <item name="newMailIcon">@drawable/ic_new_mail_light</item>
+        <item name="sentMailIcon">@drawable/ic_sent_mail_light</item>
     </style>
 
     <style name="AppTheme.Dark" parent="Theme.NextGIS.AppCompat.Dark">
@@ -39,6 +53,13 @@
         <item name="tabSecondaryTextColor">@color/tabSecondaryTextColor</item>
         <item name="CoordinatesPickerBackground">@drawable/ic_maps_pin_dark</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="axeIcon">@drawable/ic_axe_dark</item>
+        <item name="fireIcon">@drawable/ic_fire_dark</item>
+        <item name="garbageIcon">@drawable/ic_garbage_dark</item>
+        <item name="docIcon">@drawable/ic_doc_dark</item>
+        <item name="miscIcon">@drawable/ic_misc_dark</item>
+        <item name="newMailIcon">@drawable/ic_new_mail_dark</item>
+        <item name="sentMailIcon">@drawable/ic_sent_mail_dark</item>
     </style>
 
     <style name="status_panel">
@@ -112,7 +133,13 @@
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
 
-    <style name="AppCompatDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <style name="AppCompatDialog_Light" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+    </style>
+
+    <style name="AppCompatDialog_Dark" parent="Theme.AppCompat.Dialog.Alert">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>

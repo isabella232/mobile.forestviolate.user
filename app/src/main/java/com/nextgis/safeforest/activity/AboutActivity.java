@@ -38,7 +38,7 @@ import com.nextgis.safeforest.BuildConfig;
 import com.nextgis.safeforest.R;
 
 
-public class AboutActivity extends NGActivity implements View.OnClickListener
+public class AboutActivity extends SFActivity implements View.OnClickListener
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -66,7 +66,7 @@ public class AboutActivity extends NGActivity implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.credits:
-                AlertDialog builder = new AlertDialog.Builder(this, R.style.AppCompatDialog).setTitle(R.string.credits_intro)
+                AlertDialog builder = new AlertDialog.Builder(this, getDialogThemeId()).setTitle(R.string.credits_intro)
                         .setMessage(R.string.credits)
                         .setPositiveButton(android.R.string.ok, null).create();
                 builder.show();

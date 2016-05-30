@@ -25,6 +25,7 @@ package com.nextgis.safeforest.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
@@ -92,7 +93,7 @@ public class MessageCursorAdapter
         }
 
         ImageView typeIcon = (ImageView) view.findViewById(R.id.type_icon);
-        int type = cursor.getInt(mMessageDataType);
+        int type = cursor.getInt(mMessageDataType), icon = 0;
         switch (type) {
             case 0:
                 type = cursor.getInt(mTypeColumn);
@@ -102,22 +103,28 @@ public class MessageCursorAdapter
                     default:
                         break;
                     case Constants.MSG_TYPE_FIRE:
-                        typeIcon.setImageResource(R.drawable.ic_fire_light);
+                        icon = R.attr.fireIcon;
                         break;
                     case Constants.MSG_TYPE_FELLING:
-                        typeIcon.setImageResource(R.drawable.ic_axe_light);
+                        icon = R.attr.axeIcon;
                         break;
                     case Constants.MSG_TYPE_GARBAGE:
-                        typeIcon.setImageResource(R.drawable.ic_garbage_light);
+                        icon = R.attr.garbageIcon;
                         break;
                     case Constants.MSG_TYPE_MISC:
-                        typeIcon.setImageResource(R.drawable.ic_misc_light);
+                        icon = R.attr.miscIcon;
                         break;
                 }
                 break;
             case 1:
-                typeIcon.setImageResource(R.drawable.ic_doc_light);
+                icon = R.attr.docIcon;
                 break;
+        }
+
+        if (icon != 0) {
+            TypedArray a = mContext.obtainStyledAttributes(new int[]{icon});
+            typeIcon.setImageDrawable(a.getDrawable(0));
+            a.recycle();
         }
 
         TextView author = (TextView) view.findViewById(R.id.author);
@@ -132,11 +139,14 @@ public class MessageCursorAdapter
         // TODO: get status from database
         ImageView stateIcon = (ImageView) view.findViewById(R.id.state_icon);
         int id = cursor.getInt(mIdColumn);
-        if (id >= com.nextgis.maplib.util.Constants.MIN_LOCAL_FEATURE_ID) {
-            stateIcon.setImageResource(R.drawable.ic_new_mail_light);
-        } else {
-            stateIcon.setImageResource(R.drawable.ic_sent_mail_light);
-        }
+        if (id >= com.nextgis.maplib.util.Constants.MIN_LOCAL_FEATURE_ID)
+            icon = R.attr.newMailIcon;
+        else
+            icon = R.attr.sentMailIcon;
+
+        TypedArray a = mContext.obtainStyledAttributes(new int[]{icon});
+        stateIcon.setImageDrawable(a.getDrawable(0));
+        a.recycle();
     }
 
 

@@ -59,6 +59,7 @@ import com.nextgis.maplib.util.NetworkUtil;
 import com.nextgis.maplibui.activity.NGActivity;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
+import com.nextgis.safeforest.activity.SFActivity;
 import com.nextgis.safeforest.adapter.InitStepListAdapter;
 import com.nextgis.safeforest.util.Constants;
 import com.nextgis.safeforest.util.MapUtil;
@@ -240,7 +241,7 @@ public class RegionSyncFragment extends Fragment {
                     } while (data.moveToNext());
 
                 data.moveToPosition(defaultPosition);
-                AlertDialog.Builder dialog = new AlertDialog.Builder(activity, R.style.AppCompatDialog);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(activity, ((SFActivity) activity).getDialogThemeId());
                 dialog.setTitle(R.string.sf_region_select)
                         .setSingleChoiceItems(data, defaultPosition, locale, new DialogInterface.OnClickListener() {
                             @Override

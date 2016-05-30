@@ -55,6 +55,7 @@ import com.nextgis.maplib.util.Constants;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.activity.MainActivity;
+import com.nextgis.safeforest.activity.SFActivity;
 import com.nextgis.safeforest.adapter.MessageCursorAdapter;
 import com.nextgis.safeforest.adapter.MessagesLoader;
 import com.nextgis.safeforest.util.SettingsConstants;
@@ -264,7 +265,7 @@ public class MessageListFragment
         final boolean[] values = getFilter();
         CharSequence[] titles = new CharSequence[]{getString(R.string.fires), getString(R.string.action_felling),
                 getString(R.string.garbage), getString(R.string.misc), getString(R.string.documents)};
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), R.style.AppCompatDialog);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), ((SFActivity) getActivity()).getDialogThemeId());
 
         dialog.setTitle(R.string.action_filter)
                 .setMultiChoiceItems(titles, values, new DialogInterface.OnMultiChoiceClickListener() {

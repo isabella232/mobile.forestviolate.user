@@ -69,6 +69,7 @@ import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.activity.MainActivity;
+import com.nextgis.safeforest.activity.SFActivity;
 import com.nextgis.safeforest.overlay.SelectLocationOverlay;
 import com.nextgis.safeforest.util.Constants;
 import com.nextgis.safeforest.util.MapUtil;
@@ -228,7 +229,7 @@ public class MapFragment
 
             final boolean[] visible = new boolean[] {osmKosmosnimki, darkMatter, esri, genshtab, google, mapbox, opentopomap, osmTransport, rosreestr, topomap, wikimapia};
 
-            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), R.style.AppCompatDialog);
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), ((SFActivity) getActivity()).getDialogThemeId());
             dialog.setTitle(R.string.layers)
                     .setMultiChoiceItems(layers, visible, new DialogInterface.OnMultiChoiceClickListener() {
                         @Override
@@ -618,7 +619,7 @@ public class MapFragment
         message += getString(R.string.precinct) + ": " + feature.getFieldValue(Constants.FIELD_FV_PRECINCT) + "\r\n";
         message += getString(R.string.territory) + ": " + feature.getFieldValue(Constants.FIELD_FV_TERRITORY) + "\r\n\r\n";
         message += feature.getFieldValue(Constants.FIELD_FV_STATUS);
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), R.style.AppCompatDialog);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), ((SFActivity) getActivity()).getDialogThemeId());
         dialog.setMessage(message)
                 .setTitle("#" + feature.getId())
                 .setPositiveButton(android.R.string.ok, null);
@@ -634,7 +635,7 @@ public class MapFragment
         message += getString(R.string.status_paragraph) + ": " + status + "\r\n";
         message += getString(R.string.message_paragraph) + ": " + feature.getFieldValue(Constants.FIELD_MESSAGE) + "\r\n\r\n";
         message += feature.getFieldValue(Constants.FIELD_STMESSAGE);
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), R.style.AppCompatDialog);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), ((SFActivity) getActivity()).getDialogThemeId());
         dialog.setMessage(message)
                 .setTitle("#" + feature.getId())
                 .setPositiveButton(android.R.string.ok, null);

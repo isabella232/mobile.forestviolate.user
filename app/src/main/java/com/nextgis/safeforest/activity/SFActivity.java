@@ -33,4 +33,11 @@ public class SFActivity extends NGActivity {
         else
             return R.style.AppTheme_Light;
     }
+
+    public int getDialogThemeId() {
+        if(mIsDarkTheme)
+            return R.style.AppCompatDialog_Dark;
+        else
+            return R.style.AppCompatDialog_Light;
+    }
 }
