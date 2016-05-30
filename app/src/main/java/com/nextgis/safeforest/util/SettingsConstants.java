@@ -26,7 +26,32 @@ public interface SettingsConstants
 {
     String AUTHORITY             = "com.nextgis.safeforest.provider";
     String SITE_URL = "http://176.9.38.120/fv";
+
+    String OSM = "OpenStreetMap";
+    String OSM_URL = "http://{a,b,c}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+    String KOSMOSNIMKI = "Topo";
     String KOSMOSNIMKI_URL = "http://{a,b,c}.tile.cart.kosmosnimki.ru/rs/{z}/{x}/{y}.png";
+    String DARK_MATTER = "DarkMatter";
+    String DARK_MATTER_URL = "http://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png";
+    String ESRI = "ESRITerrain";
+    String ESRI_URL = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}";
+    String GENSHTAB = "Genshtab";
+    String GENSHTAB_URL = "http://www.in7ane.com/topomaps/tiles/{z}/{x}/{y}.jpg";
+    String GOOGLE_HYBRID = "GoogleHybrid";
+    String GOOGLE_HYBRID_URL = "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}";
+    String MAPBOX_SAT = "MapboxSat";
+    String MAPBOX_SAT_URL = "https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiaGFzdCIsImEiOiJjaWZlemZzcXgwMGZidGprbnB2cDlhM2ZmIn0.tGGwfSOhjensuUsfMOIY7A";
+    String OPENTOPOMAP = "OpenTopoMap";
+    String OPENTOPOMAP_URL = "http://tile.opentopomap.org/{z}/{x}/{y}.png";
+    String OSM_TRANSPORT = "OSMTransport";
+    String OSM_TRANSPORT_URL = "http://tile.thunderforest.com/transport/{z}/{x}/{y}.png";
+    String ROSREESTR = "RosReestr";
+    String ROSREESTR_URL = "http://maps.rosreestr.ru/arcgis/rest/services/BaseMaps/BaseMap/MapServer/tile/{z}/{y}/{x}";
+    String TOPOMAP = "TopoMap";
+    String TOPOMAP_URL = "http://maps.marshruty.ru/ml.ashx?al=1&i=1&x={x}&y={y}&z={z}";
+    String WIKIMAPIA = "Wikimapia";
+    String WIKIMAPIA_URL = "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png";
+
     String VIOLATIONS_URL = "http://maps.kosmosnimki.ru/TileService.ashx?request=gettile&layername=96BBFFE869E14CE8B739874798E39B60&srs=EPSG:3857" +
             "&z={z}&x={x}&y={y}&format=png&apikey=84RY0J61QQ";
     String FIRES_URL = "http://maps.kosmosnimki.ru/TileService.ashx?request=gettile&layername=F2840D287CD943C4B1122882C5B92565&srs=EPSG:3857" +

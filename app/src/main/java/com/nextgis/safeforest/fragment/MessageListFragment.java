@@ -36,9 +36,13 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -64,6 +68,7 @@ public class MessageListFragment
         implements LoaderManager.LoaderCallbacks<Cursor>
 {
     private static final int LIST_LOADER = 12321;
+    private static final int FILTER_MENU_ID = 321;
 
     protected MessageCursorAdapter mAdapter;
     protected BroadcastReceiver mReceiver;
@@ -80,6 +85,7 @@ public class MessageListFragment
     {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        setHasOptionsMenu(true);
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mAdapter = new MessageCursorAdapter(getContext(), null, 0);
@@ -106,6 +112,23 @@ public class MessageListFragment
         mShowGarbage = filter[2];
         mShowMisc = filter[3];
         mShowDocs = mIsAuthorized && filter[4];
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem item = menu.add(0, FILTER_MENU_ID, 0, R.string.action_filter).setIcon(R.drawable.ic_filter_white_24dp);
+        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == FILTER_MENU_ID) {
+            showFilter();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

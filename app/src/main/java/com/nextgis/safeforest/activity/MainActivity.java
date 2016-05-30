@@ -99,7 +99,6 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     protected TabLayout mTabLayout;
     protected boolean mFirstRun = true;
     protected int mCurrentView;
-    protected MenuItem mFilter;
     protected int mCurrentViewState;
 
     @Override
@@ -244,18 +243,10 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
                 if (tab.getPosition() == 0) {
                     ((MapFragment) mSectionsPagerAdapter.getItem(1)).pauseGps();
-
-                    if (mFilter != null)
-                        mFilter.setVisible(true);
-
                     setMarginsToFAB(false);
                 } else {
                     ((MapFragment) mSectionsPagerAdapter.getItem(1)).resumeGps();
                     animateFAB(0, 1, false);
-
-                    if (mFilter != null)
-                        mFilter.setVisible(false);
-
                     setMarginsToFAB(true);
                 }
             }
@@ -465,18 +456,12 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         menu.findItem(R.id.action_settings).setVisible(!mFirstRun);
-
-        if(!mFirstRun)
-            mFilter = menu.findItem(R.id.action_filter);
-
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (mViewPager != null) {
-            mFilter.setVisible(mViewPager.getCurrentItem() == 0);
-
             if (BuildConfig.DEBUG)
                 menu.findItem(R.id.action_sync).setVisible(true);
         }
@@ -496,10 +481,6 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         final MainApplication app = (MainApplication) getApplication();
 
         switch (id) {
-            case R.id.action_filter:
-                ((MessageListFragment) mSectionsPagerAdapter.getItem(0)).showFilter();
-                return true;
-
             case R.id.action_sync:
                 new Thread() {
                     @Override

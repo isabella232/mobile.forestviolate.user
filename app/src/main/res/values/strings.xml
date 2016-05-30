@@ -38,7 +38,6 @@
     <string name="credits">Filter icon by Austin Andrews from <a href="http://materialdesignicons.com/icon/filter">Material Design Icons</a> and some icons used in the application are from <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a>, licensed under a <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2015]]></string>
     <string name="action_about">About</string>
-    <string name="topo">Topo</string>
     <string name="fires">Fires</string>
     <string name="lv">Forestry</string>
     <string name="ulv">Divisional forestry</string>
@@ -164,4 +163,5 @@
         access to location services and getting contacts (to create and manage web accounts).</string>
     <string name="permissions_deny">Permissions not granted, app can not work properly</string>
     <string name="grant_permissions">Grant</string>
+    <string name="layers">Layers</string>
 </resources>

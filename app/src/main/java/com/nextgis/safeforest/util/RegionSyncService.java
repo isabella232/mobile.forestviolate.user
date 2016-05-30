@@ -43,7 +43,6 @@ import com.nextgis.maplib.util.NGException;
 import com.nextgis.maplib.util.NGWUtil;
 import com.nextgis.maplibui.mapui.NGWVectorLayerUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
-import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 
@@ -318,12 +317,10 @@ public class RegionSyncService extends Service {
             publishProgress(getString(R.string.working), Constants.STEP_STATE_WORK);
 
             //add OpenStreetMap layer on application first run
-            String layerName = getString(R.string.osm);
-            String layerURL = SettingsConstantsUI.OSM_URL;
             final RemoteTMSLayerUI osmLayer =
                     new RemoteTMSLayerUI(getApplicationContext(), map.createLayerStorage());
-            osmLayer.setName(layerName);
-            osmLayer.setURL(layerURL);
+            osmLayer.setName(SettingsConstants.OSM);
+            osmLayer.setURL(SettingsConstants.OSM_URL);
             osmLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
             osmLayer.setMaxZoom(20);
             osmLayer.setMinZoom(12.4f);
@@ -341,12 +338,10 @@ public class RegionSyncService extends Service {
             }
         }*/
 
-            String kosmosnimkiLayerName = getString(R.string.topo);
-            String kosmosnimkiLayerURL = SettingsConstants.KOSMOSNIMKI_URL;
             RemoteTMSLayerUI ksLayer =
                     new RemoteTMSLayerUI(getApplicationContext(), map.createLayerStorage());
-            ksLayer.setName(kosmosnimkiLayerName);
-            ksLayer.setURL(kosmosnimkiLayerURL);
+            ksLayer.setName(SettingsConstants.KOSMOSNIMKI);
+            ksLayer.setURL(SettingsConstants.KOSMOSNIMKI_URL);
             ksLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
             ksLayer.setMaxZoom(12.4f);
             ksLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
@@ -361,6 +356,24 @@ public class RegionSyncService extends Service {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+            }
+
+            String[] names = new String[]{SettingsConstants.DARK_MATTER, SettingsConstants.ESRI, SettingsConstants.GENSHTAB,
+                    SettingsConstants.GOOGLE_HYBRID, SettingsConstants.MAPBOX_SAT, SettingsConstants.OPENTOPOMAP, SettingsConstants.OSM_TRANSPORT,
+                    SettingsConstants.ROSREESTR, SettingsConstants.TOPOMAP, SettingsConstants.WIKIMAPIA};
+            String[] urls = new String[]{SettingsConstants.DARK_MATTER_URL, SettingsConstants.ESRI_URL, SettingsConstants.GENSHTAB_URL,
+                    SettingsConstants.GOOGLE_HYBRID_URL, SettingsConstants.MAPBOX_SAT_URL, SettingsConstants.OPENTOPOMAP_URL,
+                    SettingsConstants.OSM_TRANSPORT_URL, SettingsConstants.ROSREESTR_URL, SettingsConstants.TOPOMAP_URL, SettingsConstants.WIKIMAPIA_URL};
+
+            for (int i = 0; i < names.length; i++) {
+                RemoteTMSLayerUI layer = new RemoteTMSLayerUI(getApplicationContext(), map.createLayerStorage());
+                layer.setName(names[i]);
+                layer.setURL(urls[i]);
+                layer.setTMSType(GeoConstants.TMSTYPE_OSM);
+                layer.setMaxZoom(GeoConstants.DEFAULT_MAX_ZOOM);
+                layer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
+                layer.setVisible(false);
+                map.addLayer(layer);
             }
 
             String mixerLayerName = getString(R.string.geomixer_fv_tiles);
@@ -390,7 +403,7 @@ public class RegionSyncService extends Service {
             lvLayer.setName(getString(R.string.lv));
             lvLayer.setAccountName(mAccount.name);
             lvLayer.setRemoteId(styleId);
-            lvLayer.setURL(NGWUtil.getTMSUrl(mURL, new long[]{styleId}));
+            lvLayer.setURL(NGWUtil.getTMSUrl(mURL, new Long[]{styleId}));
             lvLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
             lvLayer.setMaxZoom(9);
             lvLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
@@ -410,7 +423,7 @@ public class RegionSyncService extends Service {
             ulvLayer.setName(getString(R.string.ulv));
             ulvLayer.setAccountName(mAccount.name);
             ulvLayer.setRemoteId(styleId);
-            ulvLayer.setURL(NGWUtil.getTMSUrl(mURL, new long[]{styleId}));
+            ulvLayer.setURL(NGWUtil.getTMSUrl(mURL, new Long[]{styleId}));
             ulvLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
             ulvLayer.setMaxZoom(16);
             ulvLayer.setMinZoom(9);

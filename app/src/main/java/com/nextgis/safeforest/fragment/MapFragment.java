@@ -23,16 +23,21 @@
 package com.nextgis.safeforest.fragment;
 
 import android.accounts.Account;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +49,7 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.nextgis.maplib.api.GpsEventListener;
+import com.nextgis.maplib.api.ILayerView;
 import com.nextgis.maplib.datasource.Feature;
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoPoint;
@@ -78,6 +84,7 @@ import java.util.Locale;
 public class MapFragment
         extends Fragment
         implements MapViewEventListener, GpsEventListener {
+    protected static final int LAYERS_MENU_ID = 123;
 
     protected MainApplication mApp;
     protected MapViewOverlays mMap;
@@ -106,6 +113,7 @@ public class MapFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
+        setHasOptionsMenu(true);
         mTolerancePX = getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
 
         View view = inflater.inflate(R.layout.fragment_map, container, false);
@@ -163,6 +171,129 @@ public class MapFragment
         fitLegend();
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem item = menu.add(0, LAYERS_MENU_ID, 0, R.string.layers).setIcon(R.drawable.ic_maps_layers);
+        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == LAYERS_MENU_ID) {
+            CharSequence[] layers = new CharSequence[]{"OSM + Kosmosnimki", "Dark Matter", "ESRI Terrain", "GenShtab", "Google Hybrid", "Mapbox Satellite",
+                    "OpenTopoMap", "OSM Transport", "RosReestr", "TopoMap", "WikiMapia"};
+            boolean osmKosmosnimki, darkMatter, esri, genshtab, google, mapbox, opentopomap, osmTransport, rosreestr, topomap, wikimapia;
+            osmKosmosnimki = darkMatter = esri = genshtab = google = mapbox = opentopomap = osmTransport = rosreestr = topomap = wikimapia = false;
+
+            final MapDrawable map = mMap.getMap();
+            ILayerView layer = (ILayerView) map.getLayerByName(SettingsConstants.OSM);
+            if (layer != null)
+                osmKosmosnimki = layer.isVisible();
+            layer = (ILayerView) map.getLayerByName(SettingsConstants.KOSMOSNIMKI);
+            if (layer != null)
+                osmKosmosnimki &= layer.isVisible();
+            layer = (ILayerView) map.getLayerByName(SettingsConstants.DARK_MATTER);
+            if (layer != null)
+                darkMatter = layer.isVisible();
+            layer = (ILayerView) map.getLayerByName(SettingsConstants.ESRI);
+            if (layer != null)
+                esri = layer.isVisible();
+            layer = (ILayerView) map.getLayerByName(SettingsConstants.GENSHTAB);
+            if (layer != null)
+                genshtab = layer.isVisible();
+            layer = (ILayerView) map.getLayerByName(SettingsConstants.GOOGLE_HYBRID);
+            if (layer != null)
+                google = layer.isVisible();
+            layer = (ILayerView) map.getLayerByName(SettingsConstants.MAPBOX_SAT);
+            if (layer != null)
+                mapbox = layer.isVisible();
+            layer = (ILayerView) map.getLayerByName(SettingsConstants.OPENTOPOMAP);
+            if (layer != null)
+                opentopomap = layer.isVisible();
+            layer = (ILayerView) map.getLayerByName(SettingsConstants.OSM_TRANSPORT);
+            if (layer != null)
+                osmTransport = layer.isVisible();
+            layer = (ILayerView) map.getLayerByName(SettingsConstants.ROSREESTR);
+            if (layer != null)
+                rosreestr = layer.isVisible();
+            layer = (ILayerView) map.getLayerByName(SettingsConstants.TOPOMAP);
+            if (layer != null)
+                topomap = layer.isVisible();
+            layer = (ILayerView) map.getLayerByName(SettingsConstants.WIKIMAPIA);
+            if (layer != null)
+                wikimapia = layer.isVisible();
+
+            final boolean[] visible = new boolean[] {osmKosmosnimki, darkMatter, esri, genshtab, google, mapbox, opentopomap, osmTransport, rosreestr, topomap, wikimapia};
+
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), R.style.AppCompatDialog);
+            dialog.setTitle(R.string.layers)
+                    .setMultiChoiceItems(layers, visible, new DialogInterface.OnMultiChoiceClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                            visible[which] = isChecked;
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ILayerView layer = null;
+                            for (int i = 0; i < visible.length; i++) {
+                                switch (i) {
+                                    case 0:
+                                        layer = (ILayerView) map.getLayerByName(SettingsConstants.OSM);
+                                        if (layer != null)
+                                            layer.setVisible(visible[i]);
+                                        layer = (ILayerView) map.getLayerByName(SettingsConstants.KOSMOSNIMKI);
+                                        break;
+                                    case 1:
+                                        layer = (ILayerView) map.getLayerByName(SettingsConstants.DARK_MATTER);
+                                        break;
+                                    case 2:
+                                        layer = (ILayerView) map.getLayerByName(SettingsConstants.ESRI);
+                                        break;
+                                    case 3:
+                                        layer = (ILayerView) map.getLayerByName(SettingsConstants.GENSHTAB);
+                                        break;
+                                    case 4:
+                                        layer = (ILayerView) map.getLayerByName(SettingsConstants.GOOGLE_HYBRID);
+                                        break;
+                                    case 5:
+                                        layer = (ILayerView) map.getLayerByName(SettingsConstants.MAPBOX_SAT);
+                                        break;
+                                    case 6:
+                                        layer = (ILayerView) map.getLayerByName(SettingsConstants.OPENTOPOMAP);
+                                        break;
+                                    case 7:
+                                        layer = (ILayerView) map.getLayerByName(SettingsConstants.OSM_TRANSPORT);
+                                        break;
+                                    case 8:
+                                        layer = (ILayerView) map.getLayerByName(SettingsConstants.ROSREESTR);
+                                        break;
+                                    case 9:
+                                        layer = (ILayerView) map.getLayerByName(SettingsConstants.TOPOMAP);
+                                        break;
+                                    case 10:
+                                        layer = (ILayerView) map.getLayerByName(SettingsConstants.WIKIMAPIA);
+                                        break;
+                                }
+
+                                if (layer != null)
+                                    layer.setVisible(visible[i]);
+                            }
+
+                            map.save();
+                        }
+                    });
+
+            dialog.show().setCanceledOnTouchOutside(false);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void setLegendVisible(boolean visible) {
