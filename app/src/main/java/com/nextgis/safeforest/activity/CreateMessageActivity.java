@@ -182,8 +182,6 @@ public class CreateMessageActivity
     @Override
     protected void onResume() {
         super.onResume();
-
-        mMapFragment.setLegendVisible(false);
         mMapFragment.setStatusVisible(false);
     }
 

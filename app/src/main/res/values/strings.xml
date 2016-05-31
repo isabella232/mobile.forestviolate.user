@@ -47,9 +47,7 @@
     <string name="call">Call</string>
     <string name="fire">Fire</string>
     <string name="garbage">Garbage</string>
-    <string name="garbage_short">@string/garbage</string>
     <string name="misc">Miscellaneous</string>
-    <string name="misc_short">Misc</string>
     <string name="geomixer_fv_tiles">GeoMixer violation tiles</string>
     <string name="sf_login_title">Account</string>
     <string
@@ -155,13 +153,17 @@
     <string name="user_contact_info">Contact info</string>
     <string name="no_region_selected">Region is not selected</string>
     <string name="region_has_no_phone">No phone for this region</string>
-    <string name="felling_short">Felling</string>
-    <string name="own">Own</string>
-    <string name="others">Others</string>
+    <string name="felling_legend">Illegal logging</string>
+    <string name="fire_legend">Wildfire</string>
+    <string name="garbage_legend">Landfill in the depths of the forest</string>
+    <string name="own">Your message</string>
+    <string name="others">Posted by others</string>
+    <string name="space">Info from the space</string>
     <string name="permissions">Permissions</string>
     <string name="requested_permissions">Application needs some permissions to work properly. It includes writing to external storage (to save data on card),
         access to location services and getting contacts (to create and manage web accounts).</string>
     <string name="permissions_deny">Permissions not granted, app can not work properly</string>
     <string name="grant_permissions">Grant</string>
     <string name="layers">Layers</string>
+    <string name="legend">Legend</string>
 </resources>

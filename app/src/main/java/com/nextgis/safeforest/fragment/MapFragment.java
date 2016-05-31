@@ -86,6 +86,7 @@ public class MapFragment
         extends Fragment
         implements MapViewEventListener, GpsEventListener {
     protected static final int LAYERS_MENU_ID = 123;
+    protected static final int LEGEND_MENU_ID = 323;
 
     protected MainApplication mApp;
     protected MapViewOverlays mMap;
@@ -95,7 +96,7 @@ public class MapFragment
 
     protected TextView mStatusSource, mStatusAccuracy, mStatusSpeed, mStatusAltitude,
             mStatusLatitude, mStatusLongitude;
-    protected FrameLayout mStatusPanel, mLegend;
+    protected FrameLayout mStatusPanel;
     protected boolean mShowStatus = true;
 
     protected GpsEventSource mGpsEventSource;
@@ -168,8 +169,6 @@ public class MapFragment
         }
 
         mStatusPanel = (FrameLayout) view.findViewById(R.id.fl_status_panel);
-        mLegend = (FrameLayout) view.findViewById(R.id.fl_legend);
-        fitLegend();
 
         return view;
     }
@@ -179,6 +178,8 @@ public class MapFragment
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem item = menu.add(0, LAYERS_MENU_ID, 1, R.string.layers).setIcon(R.drawable.ic_layers_white_24dp);
         MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
+        item = menu.add(0, LEGEND_MENU_ID, 0, R.string.legend).setIcon(R.drawable.ic_help_outline_white_24dp);
+        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
     }
 
     @Override
@@ -186,6 +187,9 @@ public class MapFragment
         switch (item.getItemId()) {
             case LAYERS_MENU_ID:
                 showLayersDialog();
+                return true;
+            case LEGEND_MENU_ID:
+                showLegend();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -284,31 +288,20 @@ public class MapFragment
         map.save();
     }
 
+
     private void showLegend() {
-
+        SFActivity activity = (SFActivity) getActivity();
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity, activity.getDialogThemeId());
+        builder.setTitle(R.string.legend).setPositiveButton(android.R.string.ok, null).setView(R.layout.dialog_legend);
+        builder.create().show();
     }
 
-    public void setLegendVisible(boolean visible) {
-        if (mLegend != null)
-            mLegend.setVisibility(visible ? View.VISIBLE : View.GONE);
-    }
 
     public void setStatusVisible(boolean visible) {
         if (mStatusPanel != null)
             mStatusPanel.setVisibility(visible ? View.VISIBLE : View.GONE);
 
         mShowStatus = visible;
-    }
-
-    protected void fitLegend() {
-        View content = getActivity().getLayoutInflater().inflate(R.layout.legend_land, mLegend, false);
-
-        if (!isLegendFitsOneLine(content))
-            content = getActivity().getLayoutInflater().inflate(R.layout.legend, mLegend, false);
-
-        content.getBackground().setAlpha(128);
-        mLegend.removeAllViews();
-        mLegend.addView(content);
     }
 
 

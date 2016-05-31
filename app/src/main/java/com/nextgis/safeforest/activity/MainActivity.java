@@ -295,10 +295,9 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
     private void setMarginsToFAB(final boolean add) {
         final View fab = findViewById(R.id.multiple_actions);
-        final View legend = findViewById(R.id.fl_legend);
         final View status = findViewById(R.id.fl_status_panel);
 
-        if (fab == null || legend == null || status == null)
+        if (fab == null || status == null)
             return;
 
         final RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) fab.getLayoutParams();
@@ -307,7 +306,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             public void run() {
                 int bottom;
                 if (add)
-                    bottom = legend.getMeasuredHeight() + status.getMeasuredHeight();
+                    bottom = status.getMeasuredHeight();
                 else
                     bottom = (int) UiUtil.dpToPx(MainActivity.this, 5);
 

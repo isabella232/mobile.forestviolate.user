@@ -47,9 +47,7 @@
     <string name="call">Позвонить</string>
     <string name="fire">Пожар</string>
     <string name="garbage">Замусоривание</string>
-    <string name="garbage_short">Мусор</string>
     <string name="misc">Прочее</string>
-    <string name="misc_short">@string/misc</string>
     <string name="geomixer_fv_tiles">Лесонарушения растр (GeoMixer)</string>
     <string name="sf_login_title">Аккаунт</string>
     <string
@@ -155,13 +153,17 @@
     <string name="user_contact_info">Контактные данные</string>
     <string name="no_region_selected">Не выбран регион</string>
     <string name="region_has_no_phone">Для этого региона нет телефона</string>
-    <string name="felling_short">Рубка</string>
-    <string name="own">Своё</string>
-    <string name="others">Чужое</string>
+    <string name="felling_legend">Нелегальная рубка в лесу</string>
+    <string name="fire_legend">Лесной пожар</string>
+    <string name="garbage_legend">Мусорная свалка в глубине леса</string>
+    <string name="own">Твое сообщение</string>
+    <string name="others">Сообщение других людей</string>
+    <string name="space">Информация из космоса</string>
     <string name="permissions">Разрешения</string>
     <string name="requested_permissions">Приложению требуются некоторые разрешения для корректной работы: запись на устройство (для хранения данных), доступ
         к местоположению и получение контактов (для создания и управления веб аккаунтами).</string>
     <string name="permissions_deny">Разрешения не предоставлены, приложение не может работать корректно</string>
     <string name="grant_permissions">Разрешить</string>
     <string name="layers">Слои</string>
+    <string name="legend">Легенда</string>
 </resources>

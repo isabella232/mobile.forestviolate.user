@@ -39,19 +39,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"/>
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:layout_above="@id/fl_status_panel"
-        android:background="@drawable/divider"/>
-
-    <FrameLayout
-        android:id="@+id/fl_legend"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/divider"/>
-
     <com.getbase.floatingactionbutton.FloatingActionButton
         android:id="@+id/action_zoom_in"
         android:layout_width="wrap_content"
