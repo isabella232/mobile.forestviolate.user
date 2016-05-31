@@ -359,17 +359,10 @@ public class RegionSyncService extends Service {
                 }
             }
 
-            String[] names = new String[]{SettingsConstants.DARK_MATTER, SettingsConstants.ESRI, SettingsConstants.GENSHTAB,
-                    SettingsConstants.GOOGLE_HYBRID, SettingsConstants.MAPBOX_SAT, SettingsConstants.OPENTOPOMAP, SettingsConstants.OSM_TRANSPORT,
-                    SettingsConstants.ROSREESTR, SettingsConstants.TOPOMAP, SettingsConstants.WIKIMAPIA};
-            String[] urls = new String[]{SettingsConstants.DARK_MATTER_URL, SettingsConstants.ESRI_URL, SettingsConstants.GENSHTAB_URL,
-                    SettingsConstants.GOOGLE_HYBRID_URL, SettingsConstants.MAPBOX_SAT_URL, SettingsConstants.OPENTOPOMAP_URL,
-                    SettingsConstants.OSM_TRANSPORT_URL, SettingsConstants.ROSREESTR_URL, SettingsConstants.TOPOMAP_URL, SettingsConstants.WIKIMAPIA_URL};
-
-            for (int i = 0; i < names.length; i++) {
+            for (int i = 0; i < SettingsConstants.LAYER_NAMES.length; i++) {
                 RemoteTMSLayerUI layer = new RemoteTMSLayerUI(getApplicationContext(), map.createLayerStorage());
-                layer.setName(names[i]);
-                layer.setURL(urls[i]);
+                layer.setName(SettingsConstants.LAYER_NAMES[i]);
+                layer.setURL(SettingsConstants.LAYER_URLS[i]);
                 layer.setTMSType(GeoConstants.TMSTYPE_OSM);
                 layer.setMaxZoom(GeoConstants.DEFAULT_MAX_ZOOM);
                 layer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);

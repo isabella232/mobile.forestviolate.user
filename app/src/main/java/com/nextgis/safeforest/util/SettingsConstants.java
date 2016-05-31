@@ -52,6 +52,13 @@ public interface SettingsConstants
     String WIKIMAPIA = "Wikimapia";
     String WIKIMAPIA_URL = "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png";
 
+    String[] LAYER_NAMES = new String[]{SettingsConstants.DARK_MATTER, SettingsConstants.ESRI, SettingsConstants.GENSHTAB,
+            SettingsConstants.GOOGLE_HYBRID, SettingsConstants.MAPBOX_SAT, SettingsConstants.OPENTOPOMAP, SettingsConstants.OSM_TRANSPORT,
+            SettingsConstants.ROSREESTR, SettingsConstants.TOPOMAP, SettingsConstants.WIKIMAPIA};
+    String[] LAYER_URLS = new String[]{SettingsConstants.DARK_MATTER_URL, SettingsConstants.ESRI_URL, SettingsConstants.GENSHTAB_URL,
+            SettingsConstants.GOOGLE_HYBRID_URL, SettingsConstants.MAPBOX_SAT_URL, SettingsConstants.OPENTOPOMAP_URL,
+            SettingsConstants.OSM_TRANSPORT_URL, SettingsConstants.ROSREESTR_URL, SettingsConstants.TOPOMAP_URL, SettingsConstants.WIKIMAPIA_URL};
+
     String VIOLATIONS_URL = "http://maps.kosmosnimki.ru/TileService.ashx?request=gettile&layername=96BBFFE869E14CE8B739874798E39B60&srs=EPSG:3857" +
             "&z={z}&x={x}&y={y}&format=png&apikey=84RY0J61QQ";
     String FIRES_URL = "http://maps.kosmosnimki.ru/TileService.ashx?request=gettile&layername=F2840D287CD943C4B1122882C5B92565&srs=EPSG:3857" +
