@@ -145,6 +145,7 @@ public class RegionSyncService extends Service {
                 mKeys.put(Constants.KEY_FV_LV, null);
                 mKeys.put(Constants.KEY_FV_ULV, null);
                 mKeys.put(Constants.KEY_FV_DOCS, null);
+                mKeys.put(Constants.KEY_LANDSAT, null);
             }
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(RegionSyncService.this);
@@ -375,6 +376,17 @@ public class RegionSyncService extends Service {
                 layer.setVisible(false);
                 map.addLayer(layer);
             }
+
+            long id = mKeys.get(Constants.KEY_LANDSAT).getRemoteId();
+            NGWRasterLayer landsat = new NGWRasterLayer(getApplicationContext(), map.createLayerStorage());
+            landsat.setName(Constants.KEY_LANDSAT);
+            landsat.setAccountName(mAccount.name);
+            landsat.setRemoteId(id);
+            landsat.setURL(NGWUtil.getTMSUrl(mURL, new Long[]{id}));
+            landsat.setTMSType(GeoConstants.TMSTYPE_OSM);
+            landsat.setMaxZoom(GeoConstants.DEFAULT_MAX_ZOOM);
+            landsat.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
+            map.addLayer(landsat);
 
             String mixerLayerName = getString(R.string.geomixer_fv_tiles);
             String mixerLayerURL = SettingsConstants.VIOLATIONS_URL;

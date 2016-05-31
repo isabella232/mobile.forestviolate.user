@@ -65,6 +65,7 @@ public interface Constants
     String KEY_FV_LV = "lv";
     String KEY_FV_ULV = "ulv";
     String KEY_FV_DOCS = "docs";
+    String KEY_LANDSAT = "landsat";
     String KEY_IS_AUTHORIZED = "is_authorised";
 
     /**

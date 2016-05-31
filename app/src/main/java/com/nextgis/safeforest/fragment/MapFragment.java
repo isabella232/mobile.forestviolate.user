@@ -480,7 +480,11 @@ public class MapFragment
         String auth = mApp.getAccountUserData(account, Constants.KEY_IS_AUTHORIZED);
         boolean isAuthorized = auth != null && !auth.equals(Constants.ANONYMOUS);
 
-        Layer layer = (RemoteTMSLayer) mApp.getMap().getLayerByName(getString(R.string.lv));
+        Layer layer = (RemoteTMSLayer) mApp.getMap().getLayerByName(Constants.KEY_LANDSAT);
+        if (layer != null)
+            layer.setVisible(isAuthorized);
+
+        layer = (RemoteTMSLayer) mApp.getMap().getLayerByName(getString(R.string.lv));
         if (layer != null)
             layer.setVisible(isAuthorized);
 
