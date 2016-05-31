@@ -44,7 +44,7 @@
     <string name="docs">Get documents</string>
     <string name="documents">Documents</string>
     <string name="contact">Contact</string>
-    <string name="call">Call</string>
+    <string name="call">Call supervisor</string>
     <string name="fire">Fire</string>
     <string name="garbage">Garbage</string>
     <string name="misc">Miscellaneous</string>
@@ -166,4 +166,6 @@
     <string name="grant_permissions">Grant</string>
     <string name="layers">Layers</string>
     <string name="legend">Legend</string>
+    <string name="showcase_title">Main button</string>
+    <string name="showcase_msg">Do you see the forest in trouble? Press it!</string>
 </resources>

@@ -51,6 +51,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.espian.showcaseview.ShowcaseView;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
@@ -227,6 +228,19 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         setToolbar(R.id.main_toolbar);
         setTitle(getText(R.string.app_name));
 
+        final ShowcaseView sv = (ShowcaseView) findViewById(R.id.showcase);
+        sv.setShotType(ShowcaseView.TYPE_ONE_SHOT);
+        sv.setShowcaseView(findViewById(R.id.showcase_template));
+        sv.post(new Runnable() {
+            @Override
+            public void run() {
+                sv.overrideButtonClick(MainActivity.this);
+            }
+        });
+
+        FloatingActionsMenu fab = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
+        fab.overrideAddButton(this);
+
         // Create the adapter that will return a fragment for each of the primary sections of the
         // activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -365,9 +379,24 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
     @Override
     public void onClick(View v) {
+        FloatingActionsMenu fab = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
+
         switch (v.getId()) {
             case R.id.grant_permissions:
                 requestPermissions();
+                break;
+            case R.id.showcase_button:
+                showLabels();
+                fab.toggle();
+                break;
+            case R.id.fab_expand_menu_button:
+                ShowcaseView sv = (ShowcaseView) findViewById(R.id.showcase);
+                if (sv != null && sv.getVisibility() == View.VISIBLE)
+                    showLabels();
+                else
+                    removeLabels();
+
+                fab.toggle();
                 break;
             case R.id.call:
                 call();
@@ -385,6 +414,21 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 //                newMessage(Constants.MSG_TYPE_MISC);
 //                break;
         }
+    }
+
+    private void showLabels() {
+        ShowcaseView sv = (ShowcaseView) findViewById(R.id.showcase);
+        sv.onClick(sv);
+
+        FloatingActionsMenu fab = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
+        fab.setLabelsStyle(R.style.menu_labels_style);
+        fab.createLabels();
+    }
+
+    private void removeLabels() {
+        FloatingActionsMenu fab = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
+        fab.setLabelsStyle(0);
+        fab.removeLabels();
     }
 
     public boolean isMapShown() {
@@ -584,5 +628,6 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     public void showMap() {
         mViewPager.setCurrentItem(1, true);
         mTabLayout.setScrollPosition(1, 0, true);
+
     }
 }

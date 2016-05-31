@@ -20,97 +20,101 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:fab="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              tools:context=".activity.MainActivity">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:fab="http://schemas.android.com/apk/res-auto"
+             xmlns:showcase="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".activity.MainActivity">
 
-    <include
-        layout="@layout/actionbar"/>
-
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tabs"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="36dp"
-        android:background="?attr/colorPrimary"
-        android:gravity="bottom"
-        app:elevation="2dp"
-        app:tabIndicatorColor="?attr/colorAccent"
-        app:tabIndicatorHeight="4dp"
-        app:tabMode="fixed"
-        app:tabSelectedTextColor="?attr/tabTextColor"
-        app:tabTextColor="?attr/tabSecondaryTextColor"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <include
+            layout="@layout/actionbar"/>
 
-        <com.nextgis.safeforest.util.AppViewPager
-            android:id="@+id/pager"
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".MainActivity"/>
+            android:layout_height="36dp"
+            android:background="?attr/colorPrimary"
+            android:gravity="bottom"
+            app:elevation="2dp"
+            app:tabIndicatorColor="?attr/colorAccent"
+            app:tabIndicatorHeight="4dp"
+            app:tabMode="fixed"
+            app:tabSelectedTextColor="?attr/tabTextColor"
+            app:tabTextColor="?attr/tabSecondaryTextColor"/>
 
-        <com.getbase.floatingactionbutton.FloatingActionsMenu
-            android:id="@+id/multiple_actions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginRight="5dp"
-            fab:fab_addButtonColorNormal="?attr/colorPrimary"
-            fab:fab_addButtonColorPressed="?attr/colorAccent"
-            fab:fab_labelStyle="@style/menu_labels_style"
-            fab:fab_addButtonPlusIconColor="@android:color/white">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/call"
+            <com.nextgis.safeforest.util.AppViewPager
+                android:id="@+id/pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".MainActivity"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionsMenu
+                android:id="@+id/multiple_actions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                fab:fab_colorNormal="?attr/colorPrimary"
-                fab:fab_colorPressed="?attr/colorAccent"
-                fab:fab_icon="@drawable/ic_outgoing_call_dark"
-                fab:fab_size="mini"
-                fab:fab_title="@string/call"/>
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
+                fab:fab_addButtonColorNormal="?attr/colorPrimary"
+                fab:fab_addButtonColorPressed="?attr/colorAccent"
+                fab:fab_addButtonPlusIconColor="@android:color/white">
 
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/add_fire"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                fab:fab_colorNormal="?attr/colorPrimary"
-                fab:fab_colorPressed="?attr/colorAccent"
-                fab:fab_icon="@drawable/ic_fire_dark"
-                fab:fab_size="mini"
-                fab:fab_title="@string/fire"/>
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/call"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_colorNormal="?attr/colorPrimary"
+                    fab:fab_colorPressed="?attr/colorAccent"
+                    fab:fab_icon="@drawable/ic_outgoing_call_dark"
+                    fab:fab_size="mini"
+                    fab:fab_title="@string/call"/>
 
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/add_felling"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                fab:fab_colorNormal="?attr/colorPrimary"
-                fab:fab_colorPressed="?attr/colorAccent"
-                fab:fab_icon="@drawable/ic_axe_dark"
-                fab:fab_size="mini"
-                fab:fab_title="@string/action_felling"/>
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/add_fire"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_colorNormal="?attr/colorPrimary"
+                    fab:fab_colorPressed="?attr/colorAccent"
+                    fab:fab_icon="@drawable/ic_fire_dark"
+                    fab:fab_size="mini"
+                    fab:fab_title="@string/fire_legend"/>
 
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/add_garbage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                fab:fab_colorNormal="?attr/colorPrimary"
-                fab:fab_colorPressed="?attr/colorAccent"
-                fab:fab_icon="@drawable/ic_garbage_dark"
-                fab:fab_size="mini"
-                fab:fab_title="@string/garbage"/>
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/add_felling"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_colorNormal="?attr/colorPrimary"
+                    fab:fab_colorPressed="?attr/colorAccent"
+                    fab:fab_icon="@drawable/ic_axe_dark"
+                    fab:fab_size="mini"
+                    fab:fab_title="@string/felling_legend"/>
 
-            <!--<com.getbase.floatingactionbutton.FloatingActionButton-->
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/add_garbage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_colorNormal="?attr/colorPrimary"
+                    fab:fab_colorPressed="?attr/colorAccent"
+                    fab:fab_icon="@drawable/ic_garbage_dark"
+                    fab:fab_size="mini"
+                    fab:fab_title="@string/garbage_legend"/>
+
+                <!--<com.getbase.floatingactionbutton.FloatingActionButton-->
                 <!--android:id="@+id/add_misc"-->
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="wrap_content"-->
@@ -119,6 +123,57 @@
                 <!--fab:fab_icon="@drawable/ic_misc_dark"-->
                 <!--fab:fab_size="mini"-->
                 <!--fab:fab_title="@string/misc"/>-->
-        </com.getbase.floatingactionbutton.FloatingActionsMenu>
-    </RelativeLayout>
-</LinearLayout>
+            </com.getbase.floatingactionbutton.FloatingActionsMenu>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <com.getbase.floatingactionbutton.FloatingActionButton
+        android:id="@+id/showcase_template"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:visibility="invisible"/>
+
+    <com.espian.showcaseview.ShowcaseView
+        android:id="@+id/showcase"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        showcase:backgroundColor="#3333B5E5">
+
+        <!--suppress AndroidElementNotAllowed -->
+        <TextView
+            android:id="@+id/textView"
+            style="@style/ShowcaseTitleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="160dp"
+            android:text="@string/showcase_title"/>
+
+        <!--suppress AndroidElementNotAllowed -->
+        <TextView
+            android:id="@+id/textView1"
+            style="@style/ShowcaseText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/textView"
+            android:layout_alignStart="@id/textView"
+            android:layout_below="@id/textView"
+            android:text="@string/showcase_msg"/>
+
+        <!--suppress AndroidElementNotAllowed -->
+        <Button
+            android:id="@id/showcase_button"
+            style="@style/ShowcaseButton"
+            android:layout_below="@id/textView1"
+            android:layout_marginBottom="6dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginStart="6dp"
+            android:text="@android:string/ok"/>
+    </com.espian.showcaseview.ShowcaseView>
+</FrameLayout>

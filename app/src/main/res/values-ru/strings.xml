@@ -44,7 +44,7 @@
     <string name="docs">Получение документов</string>
     <string name="documents">Документы</string>
     <string name="contact">Контакт</string>
-    <string name="call">Позвонить</string>
+    <string name="call">Звонок диспетчеру</string>
     <string name="fire">Пожар</string>
     <string name="garbage">Замусоривание</string>
     <string name="misc">Прочее</string>
@@ -155,7 +155,7 @@
     <string name="region_has_no_phone">Для этого региона нет телефона</string>
     <string name="felling_legend">Нелегальная рубка в лесу</string>
     <string name="fire_legend">Лесной пожар</string>
-    <string name="garbage_legend">Мусорная свалка в глубине леса</string>
+    <string name="garbage_legend">Мусорная свалка в лесу</string>
     <string name="own">Твое сообщение</string>
     <string name="others">Сообщение других людей</string>
     <string name="space">Информация из космоса</string>
@@ -166,4 +166,6 @@
     <string name="grant_permissions">Разрешить</string>
     <string name="layers">Слои</string>
     <string name="legend">Легенда</string>
+    <string name="showcase_title">Основная кнопка</string>
+    <string name="showcase_msg">Увидел, что лес в беде - нажми на кнопку!</string>
 </resources>

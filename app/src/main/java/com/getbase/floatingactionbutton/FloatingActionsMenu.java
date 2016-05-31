@@ -158,6 +158,10 @@ public class FloatingActionsMenu
         createAddButton(context);
     }
 
+    public void setLabelsStyle(int id) {
+        mLabelsStyle = id;
+    }
+
 
     public void setOnFloatingActionsMenuUpdateListener(OnFloatingActionsMenuUpdateListener listener)
     {
@@ -265,6 +269,10 @@ public class FloatingActionsMenu
         addView(mAddButton, super.generateDefaultLayoutParams());
     }
 
+
+    public void overrideAddButton(OnClickListener listener) {
+        mAddButton.setOnClickListener(listener);
+    }
 
     public void addButton(FloatingActionButton button)
     {
@@ -608,7 +616,7 @@ public class FloatingActionsMenu
     }
 
 
-    private void createLabels()
+    public void createLabels()
     {
         Context context = new ContextThemeWrapper(getContext(), mLabelsStyle);
 
@@ -626,6 +634,16 @@ public class FloatingActionsMenu
             addView(label);
 
             button.setTag(R.id.fab_label, label);
+        }
+    }
+
+
+    public void removeLabels() {
+        for (int i = 0; i < mButtonsCount; i++) {
+            View child = getChildAt(i);
+            TextView label = (TextView) child.getTag(R.id.fab_label);
+            removeView(label);
+            child.setTag(R.id.fab_label, null);
         }
     }
 
