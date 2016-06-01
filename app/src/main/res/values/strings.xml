@@ -37,6 +37,7 @@
     <string name="credits_intro">Credits</string>
     <string name="credits">Filter icon by Austin Andrews from <a href="http://materialdesignicons.com/icon/filter">Material Design Icons</a> and some icons used in the application are from <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a>, licensed under a <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2015]]></string>
+    <string name="intro">Intro</string>
     <string name="action_about">About</string>
     <string name="fires">Fires</string>
     <string name="lv">Forestry</string>
@@ -168,4 +169,8 @@
     <string name="legend">Legend</string>
     <string name="showcase_title">Main button</string>
     <string name="showcase_msg">Do you see the forest in trouble? Press it!</string>
+    <string name="intro1">«Safe forest» application is intended for those who like traveling, fishing, hunting - thoughtful and courageous people willing to lend a helping hand to the nature of the Russian Far East.</string>
+    <string name="intro2">If you see a fire in the forest, illegal felling or illegal dumps, send a message. Supervisors of the Forestry Department and LesAviaOhrana will receive your message.</string>
+    <string name="intro3">Forest Rangers will go to extinguish the fire, detain forest poachers or look for culprits landfill. As soon as the measures to be taken, you will be immediately notified about it.</string>
+    <string name="intro4">This app is created by the World Wide Fund for Nature - WWF Russia, which protects environment of the Far East. If you are interested, you are willing to help, please visit us: taigastory.ru</string>
 </resources>

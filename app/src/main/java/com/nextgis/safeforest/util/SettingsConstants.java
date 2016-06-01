@@ -91,6 +91,7 @@ public interface SettingsConstants
     String KEY_PREF_MAP_FIRST_VIEW = "map_first_view";
     String KEY_PREF_SHOW_LOCATION = "map_show_loc";
     String KEY_PREF_SHOW_INFO     = "map_show_info";
+    String KEY_PREF_INTRO         = "intro_shown";
 
     /**
      * Preference keys - in UI

@@ -51,7 +51,7 @@
                     android:layout_margin="20dp"
                     android:minHeight="64dp"
                     android:minWidth="64dp"
-                    android:src="@drawable/ic_launcher"
+                    android:src="@mipmap/ic_launcher"
                     tools:ignore="ContentDescription"/>
 
                 <LinearLayout

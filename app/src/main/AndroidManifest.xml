@@ -98,6 +98,11 @@
             />
 
         <activity
+            android:name=".activity.IntroActivity"
+            android:label="@string/intro"
+            />
+
+        <activity
             android:name=".activity.PreferencesActivity"
             android:label="@string/action_settings"
             />

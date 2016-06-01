@@ -105,6 +105,13 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!mPreferences.getBoolean(SettingsConstants.KEY_PREF_INTRO, false)) {
+            startActivity(new Intent(this, IntroActivity.class));
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_main_no_permissions);
         setToolbar(R.id.main_toolbar);
         setTitle(getText(R.string.app_name));
@@ -290,7 +297,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         mViewPager.post(new Runnable() {
             @Override
             public void run() {
-                mViewPager.setCurrentItem(1);
+                showMap();
             }
         });
 
@@ -628,6 +635,5 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     public void showMap() {
         mViewPager.setCurrentItem(1, true);
         mTabLayout.setScrollPosition(1, 0, true);
-
     }
 }

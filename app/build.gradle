@@ -57,4 +57,5 @@ dependencies {
     compile 'com.android.support:preference-v7:23.1.0'
     compile 'com.android.support:design:23.1.0'
     compile project(path: ':ShowcaseView')
+    compile 'com.github.TechFreak:WizardPager:1.0.3'
 }
