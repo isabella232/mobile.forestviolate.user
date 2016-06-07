@@ -305,16 +305,6 @@ public class MapFragment
     }
 
 
-    protected boolean isLegendFitsOneLine(View content) {
-        content.measure(0, 0);
-
-        DisplayMetrics metrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-        return content.getMeasuredWidth() < metrics.widthPixels;
-    }
-
-
     @Override
     public void onDestroyView()
     {
@@ -520,12 +510,6 @@ public class MapFragment
         mMap.setZoomAndCenter(zoom, center);
     }
 
-    public void refresh()
-    {
-        if (null != mMap) {
-            mMap.drawMapDrawable();
-        }
-    }
 
     @Override
     public void onLocationChanged(Location location) {
@@ -599,9 +583,7 @@ public class MapFragment
     }
 
     private void showForestViolateFeatureDialog(Feature feature) {
-        Date date = (Date) feature.getFieldValue(Constants.FIELD_FV_DATE);
-        DateFormat format = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.getDefault());
-        String message = format.format(date) + "\r\n\r\n";
+        String message = getDate(feature, Constants.FIELD_FV_DATE);
         message += getString(R.string.region) + ": " + feature.getFieldValue(Constants.FIELD_FV_REGION) + "\r\n";
         message += getString(R.string.forestry) + ": " + feature.getFieldValue(Constants.FIELD_FV_FORESTRY) + "\r\n";
         message += getString(R.string.precinct) + ": " + feature.getFieldValue(Constants.FIELD_FV_PRECINCT) + "\r\n";
@@ -615,9 +597,7 @@ public class MapFragment
     }
 
     private void showCitizenMessageFeatureDialog(Feature feature) {
-        Date date = (Date) feature.getFieldValue(Constants.FIELD_MDATE);
-        DateFormat format = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.getDefault());
-        String message = format.format(date) + "\r\n\r\n";
+        String message = getDate(feature, Constants.FIELD_MDATE);
         message += getString(R.string.type_paragraph) + ": " + feature.getFieldValue(Constants.FIELD_MTYPE_STR) + "\r\n";
         String status = MapUtil.getStatus(getContext(), ((Long) feature.getFieldValue(Constants.FIELD_STATUS)).intValue());
         message += getString(R.string.status_paragraph) + ": " + status + "\r\n";
@@ -628,6 +608,20 @@ public class MapFragment
                 .setTitle("#" + feature.getId())
                 .setPositiveButton(android.R.string.ok, null);
         dialog.show();
+    }
+
+    private String getDate(Feature feature, String field) {
+        DateFormat format = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.getDefault());
+        String message;
+        Object date = feature.getFieldValue(field);
+        if (date instanceof Date)
+            message = format.format((Date) date);
+        else if (date instanceof Long)
+            message = format.format(new Date((Long) date));
+        else
+            message = feature.getFieldValueAsString(field);
+
+        return message + "\r\n\r\n";
     }
 
     @Override
@@ -740,6 +734,7 @@ public class MapFragment
     }
 
 
+    @SuppressWarnings("deprecation")
     protected void fillTextViews(Location location)
     {
         if (null == location) {
@@ -760,20 +755,13 @@ public class MapFragment
                         getResources().getDrawable(R.drawable.ic_signal_wifi), null, null, null);
             }
 
-            mStatusAccuracy.setText(
-                    String.format(
-                            "%.1f %s", location.getAccuracy(), getString(R.string.unit_meter)));
-            mStatusAltitude.setText(
-                    String.format(
-                            "%.1f %s", location.getAltitude(), getString(R.string.unit_meter)));
+            mStatusAccuracy.setText(LocationUtil.formatLength(getActivity(), location.getAccuracy(), 1));
+            mStatusAltitude.setText(LocationUtil.formatLength(getActivity(), location.getAltitude(), 1));
             mStatusSpeed.setText(
-                    String.format(
-                            "%.1f %s/%s", location.getSpeed() * 3600 / 1000,
+                    String.format(Locale.getDefault(), "%.1f %s/%s", location.getSpeed() * 3600 / 1000,
                             getString(R.string.unit_kilometer), getString(R.string.unit_hour)));
-            mStatusLatitude.setText(
-                    formatCoordinate(location.getLatitude(), R.string.latitude_caption_short));
-            mStatusLongitude.setText(
-                    formatCoordinate(location.getLongitude(), R.string.longitude_caption_short));
+            mStatusLatitude.setText(formatCoordinate(location.getLatitude(), R.string.latitude_caption_short));
+            mStatusLongitude.setText(formatCoordinate(location.getLongitude(), R.string.longitude_caption_short));
         }
     }
 
