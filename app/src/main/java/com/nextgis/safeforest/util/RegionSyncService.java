@@ -43,8 +43,10 @@ import com.nextgis.maplib.util.NGException;
 import com.nextgis.maplib.util.NGWUtil;
 import com.nextgis.maplibui.mapui.NGWVectorLayerUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
+import com.nextgis.safeforest.BuildConfig;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
+import com.nextgis.safeforest.mapui.MessageLayerUI;
 
 import org.json.JSONException;
 
@@ -289,8 +291,13 @@ public class RegionSyncService extends Service {
         }
 
         private boolean loadNGWLayer(String layerName, String accountName, MapBase map) {
-            NGWVectorLayerUI ngwVectorLayer = new NGWVectorLayerUI(getApplicationContext(),
-                    map.createLayerStorage(layerName));
+            NGWVectorLayerUI ngwVectorLayer;
+            if (layerName.equals(Constants.KEY_CITIZEN_MESSAGES)) {
+                MessageLayerUI messageLayer = new MessageLayerUI(getApplicationContext(), map.createLayerStorage(layerName));
+                messageLayer.setQueryRemoteId(mKeys.get(Constants.KEY_CITIZEN_FILTER_MESSAGES).getRemoteId());
+                ngwVectorLayer = messageLayer;
+            } else
+                ngwVectorLayer = new NGWVectorLayerUI(getApplicationContext(), map.createLayerStorage(layerName));
 
             ngwVectorLayer.setName(layerName);
             ngwVectorLayer.setRemoteId(mKeys.get(layerName).getRemoteId());
@@ -443,6 +450,8 @@ public class RegionSyncService extends Service {
         }
 
         private void downloadTiles(final RemoteTMSLayer layer, GeoEnvelope loadBounds, int zoomFrom, int zoomTo) throws InterruptedException {
+            if (BuildConfig.DEBUG)
+                return;
             //download
             publishProgress(getString(R.string.form_tiles_list), Constants.STEP_STATE_WORK);
             final List<TileItem> tilesList = new LinkedList<>();

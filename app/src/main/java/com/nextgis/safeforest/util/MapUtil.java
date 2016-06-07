@@ -32,14 +32,22 @@ import com.nextgis.maplib.datasource.ngw.Connection;
 import com.nextgis.maplib.datasource.ngw.INGWResource;
 import com.nextgis.maplib.datasource.ngw.Resource;
 import com.nextgis.maplib.datasource.ngw.ResourceGroup;
+import com.nextgis.maplib.datasource.ngw.ResourceWithoutChildren;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.FeatureChanges;
+import com.nextgis.maplib.util.NGException;
+import com.nextgis.maplib.util.NetworkUtil;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.display.MessageFeatureRenderer;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
@@ -68,6 +76,35 @@ public final class MapUtil {
             if (keys.containsKey(childResource.getKey()) && childResource instanceof Resource) {
                 Resource ngwResource = (Resource) childResource;
                 keys.put(ngwResource.getKey(), ngwResource);
+
+                if (ngwResource.getKey().equals(Constants.KEY_CITIZEN_MESSAGES)) {
+                    Resource queryLayer = null;
+                    try {
+                        Connection connection = ngwResource.getConnection();
+                        String url = connection.getURL() + "/resource/" + ngwResource.getRemoteId() + "/child/";
+                        String response = NetworkUtil.get(url, connection.getLogin(), connection.getPassword());
+                        if (null != response) {
+                            JSONArray children = new JSONArray(response);
+                            for (int k = 0; k < children.length(); ++k) {
+                                JSONObject data = children.getJSONObject(k);
+                                try {
+                                    String type = data.getJSONObject("resource").getString("cls");
+                                    if (!type.equals("query_layer"))
+                                        continue;
+                                } catch (JSONException e) {
+                                    continue;
+                                }
+
+                                queryLayer = new ResourceWithoutChildren(data, connection);
+                            }
+                        }
+                    } catch (IOException | JSONException | NGException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (null != queryLayer)
+                        keys.put(Constants.KEY_CITIZEN_FILTER_MESSAGES, queryLayer);
+                }
             }
 
             boolean bIsFill = true;

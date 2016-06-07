@@ -60,6 +60,7 @@ public interface Constants
      * NGW layer keys
      */
     String KEY_CITIZEN_MESSAGES = "citizen_messages";
+    String KEY_CITIZEN_FILTER_MESSAGES = "citizen_filter";
     String KEY_FV_REGIONS = "fv_regions";
     String KEY_FV_FOREST = "fv";
     String KEY_FV_LV = "lv";
