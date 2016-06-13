@@ -51,6 +51,7 @@ import android.widget.ListView;
 
 import com.nextgis.maplib.datasource.GeoGeometryFactory;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
+import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
@@ -101,6 +102,7 @@ public class MessageListFragment
         mIntentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_UPDATE_ALL);
         mIntentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_UPDATE_FIELDS);
         mIntentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_FEATURE_ID_CHANGE);
+        mIntentFilter.addAction(SyncAdapter.SYNC_FINISH);
 
         MainApplication app = (MainApplication) getActivity().getApplication();
         Account account = app.getAccount(getString(R.string.account_name));
@@ -220,7 +222,7 @@ public class MessageListFragment
         });
 
         mSwipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.message_swipe);
-        mSwipeLayout.setColorSchemeColors(R.color.tabSecondaryTextColor, R.color.accent, R.color.primary_dark);
+        mSwipeLayout.setColorSchemeResources(R.color.accent, R.color.primary, R.color.primary_dark);
         mSwipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -321,9 +323,6 @@ public class MessageListFragment
             // extreme logging commented
             //Log.d(TAG, "Receive notify: " + intent.getAction());
 
-            if(!intent.hasExtra(com.nextgis.maplib.util.Constants.NOTIFY_LAYER_NAME))
-                return;
-
             switch (intent.getAction()) {
                 case com.nextgis.maplib.util.Constants.NOTIFY_DELETE:
                 case com.nextgis.maplib.util.Constants.NOTIFY_DELETE_ALL:
@@ -332,7 +331,10 @@ public class MessageListFragment
                 case com.nextgis.maplib.util.Constants.NOTIFY_UPDATE_ALL:
                 case com.nextgis.maplib.util.Constants.NOTIFY_UPDATE_FIELDS:
                 case com.nextgis.maplib.util.Constants.NOTIFY_FEATURE_ID_CHANGE:
-                    mAdapter.notifyDataSetChanged();
+                    if(!intent.hasExtra(com.nextgis.maplib.util.Constants.NOTIFY_LAYER_NAME))
+                        return;
+                case SyncAdapter.SYNC_FINISH:
+                    getLoaderManager().restartLoader(LIST_LOADER, null, MessageListFragment.this).forceLoad();
                     break;
             }
         }
