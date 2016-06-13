@@ -483,12 +483,7 @@ public class CreateMessageActivity
         mValues.put(Constants.FIELD_MDATE, location.getTime());
 
         try {
-            GeoPoint pt;
-            if (com.nextgis.maplib.util.Constants.DEBUG_MODE) {
-                pt = new GeoPoint(0, 0);
-            } else {
-                pt = new GeoPoint(location.getLongitude(), location.getLatitude());
-            }
+            GeoPoint pt = new GeoPoint(location.getLongitude(), location.getLatitude());
             pt.setCRS(CRS_WGS84);
             pt.project(CRS_WEB_MERCATOR);
             GeoMultiPoint mpt = new GeoMultiPoint();
