@@ -185,10 +185,10 @@ public class IntroActivity extends SFActivity implements PageFragmentCallbacks, 
 
         @Override
         protected PageList onNewRootPageList() {
-            return new PageList(new IntroPage(this, "1").setText(R.string.intro1).setImage(R.mipmap.ic_launcher),
+            return new PageList(new IntroPage(this, "1").setText(R.string.intro1).setImage(R.drawable.logo),
                     new IntroPage(this, "2").setText(R.string.intro2).setImage(R.drawable.intro2),
-                    new IntroPage(this, "3").setText(R.string.intro3).setImage(R.drawable.ic_outgoing_call_light),
-                    new IntroPage(this, "4").setText(R.string.intro4).setImage(R.drawable.wwf));
+                    new IntroPage(this, "3").setText(R.string.intro3).setImage(R.drawable.phone),
+                    new IntroPage(this, "4").setText(R.string.intro4).setImage(R.drawable.wwf_logo));
         }
     }
 
