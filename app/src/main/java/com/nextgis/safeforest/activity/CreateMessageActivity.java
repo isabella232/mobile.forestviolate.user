@@ -415,6 +415,8 @@ public class CreateMessageActivity
         mMenu.findItem(R.id.action_done).setVisible(true);
         mMenu.findItem(R.id.action_locate).setVisible(false);
         mMenu.findItem(R.id.action_center).setVisible(false);
+        mMenu.findItem(MapFragment.LAYERS_MENU_ID).setVisible(false);
+        mMenu.findItem(MapFragment.LEGEND_MENU_ID).setVisible(false);
     }
 
     private void hidePhotos() {
@@ -424,6 +426,8 @@ public class CreateMessageActivity
         mMenu.findItem(R.id.action_done).setVisible(false);
         mMenu.findItem(R.id.action_locate).setVisible(true);
         mMenu.findItem(R.id.action_center).setVisible(true);
+        mMenu.findItem(MapFragment.LAYERS_MENU_ID).setVisible(true);
+        mMenu.findItem(MapFragment.LEGEND_MENU_ID).setVisible(true);
     }
 
     @Override

@@ -85,8 +85,8 @@ import java.util.Locale;
 public class MapFragment
         extends Fragment
         implements MapViewEventListener, GpsEventListener {
-    protected static final int LAYERS_MENU_ID = 123;
-    protected static final int LEGEND_MENU_ID = 323;
+    public static final int LAYERS_MENU_ID = 123;
+    public static final int LEGEND_MENU_ID = 323;
 
     protected MainApplication mApp;
     protected MapViewOverlays mMap;
@@ -176,9 +176,9 @@ public class MapFragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        MenuItem item = menu.add(0, LAYERS_MENU_ID, 1, R.string.layers).setIcon(R.drawable.ic_layers_white_24dp);
+        MenuItem item = menu.add(0, LAYERS_MENU_ID, 10, R.string.layers).setIcon(R.drawable.ic_layers_white_24dp);
         MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
-        item = menu.add(0, LEGEND_MENU_ID, 0, R.string.legend).setIcon(R.drawable.ic_help_outline_white_24dp);
+        item = menu.add(0, LEGEND_MENU_ID, 5, R.string.legend).setIcon(R.drawable.ic_help_outline_white_24dp);
         MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
     }
 
