@@ -39,6 +39,9 @@
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2015]]></string>
     <string name="intro">Intro</string>
     <string name="action_about">About</string>
+    <string name="inspector_polygons">Inspectors\' polygons</string>
+    <string name="citizen_messages">Citizen messages</string>
+    <string name="violations">Forestry violations</string>
     <string name="fires">Fires</string>
     <string name="lv">Forestry</string>
     <string name="ulv">Divisional forestry</string>
@@ -64,6 +67,7 @@
     <string name="signing_in">Signing in…</string>
     <string name="signing_up">Signing up…</string>
     <string name="skip">Skip</string>
+    <string name="locked_layers">Some layers inactive, authorization required</string>
     <string name="auth_title">Authorization required</string>
     <string name="full_name_phone_require">To post message to server you have to leave your full name and contact phone.</string>
     <string name="auth_require">Would you like to sign in/up?</string>
@@ -166,6 +170,7 @@
     <string name="permissions_deny">Permissions not granted, app can not work properly</string>
     <string name="grant_permissions">Grant</string>
     <string name="layers">Layers</string>
+    <string name="basemaps">Basemaps</string>
     <string name="legend">Legend</string>
     <string name="showcase_title">Main button</string>
     <string name="showcase_msg">Do you see the forest in trouble? Press it!</string>

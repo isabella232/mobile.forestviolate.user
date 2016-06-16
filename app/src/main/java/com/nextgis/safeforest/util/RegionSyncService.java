@@ -296,6 +296,7 @@ public class RegionSyncService extends Service {
                 MessageLayerUI messageLayer = new MessageLayerUI(getApplicationContext(), map.createLayerStorage(layerName));
                 messageLayer.setQueryRemoteId(mKeys.get(Constants.KEY_CITIZEN_FILTER_MESSAGES).getRemoteId());
                 ngwVectorLayer = messageLayer;
+                ngwVectorLayer.setVisible(true);
             } else
                 ngwVectorLayer = new NGWVectorLayerUI(getApplicationContext(), map.createLayerStorage(layerName));
 
@@ -303,7 +304,6 @@ public class RegionSyncService extends Service {
             ngwVectorLayer.setRemoteId(mKeys.get(layerName).getRemoteId());
             ngwVectorLayer.setServerWhere(String.format(Locale.US, "bbox=%f,%f,%f,%f",
                     mMinX, mMinY, mMaxX, mMaxY));
-            ngwVectorLayer.setVisible(true);
             ngwVectorLayer.setAccountName(accountName);
             ngwVectorLayer.setSyncType(com.nextgis.maplib.util.Constants.SYNC_ALL);
             ngwVectorLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
@@ -373,7 +373,6 @@ public class RegionSyncService extends Service {
                 layer.setTMSType(GeoConstants.TMSTYPE_OSM);
                 layer.setMaxZoom(GeoConstants.DEFAULT_MAX_ZOOM);
                 layer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
-                layer.setVisible(false);
                 map.addLayer(layer);
             }
 
@@ -397,7 +396,6 @@ public class RegionSyncService extends Service {
             mixerLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
             mixerLayer.setMaxZoom(GeoConstants.DEFAULT_MAX_ZOOM);
             mixerLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
-            mixerLayer.setVisible(true);
             map.addLayer(mixerLayer);
             //mMap.moveLayer(2, mixerLayer);
 
@@ -407,7 +405,6 @@ public class RegionSyncService extends Service {
             firesLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
             firesLayer.setMaxZoom(GeoConstants.DEFAULT_MAX_ZOOM);
             firesLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
-            firesLayer.setVisible(true);
             map.addLayer(firesLayer);
 
             long styleId = ((LayerWithStyles) mKeys.get(Constants.KEY_FV_LV)).getStyleId(0);

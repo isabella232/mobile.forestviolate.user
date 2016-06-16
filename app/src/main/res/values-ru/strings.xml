@@ -39,6 +39,9 @@
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2015]]></string>
     <string name="intro">Введение</string>
     <string name="action_about">О программе</string>
+    <string name="inspector_polygons">Полигоны инспекторов</string>
+    <string name="citizen_messages">Сообщения пользователей</string>
+    <string name="violations">Лесонарушения</string>
     <string name="fires">Пожары</string>
     <string name="lv">Лесничества</string>
     <string name="ulv">Участковые лесничества</string>
@@ -64,6 +67,7 @@
     <string name="signing_in">Вход…</string>
     <string name="signing_up">Регистрация…</string>
     <string name="skip">Пропустить</string>
+    <string name="locked_layers">Некоторые слои недоступны, требуется авторизация</string>
     <string name="auth_title">Требуется авторизация</string>
     <string name="full_name_phone_require">Для отправки сообщения на сервер нужно указать имя и контактный телефон.</string>
     <string name="auth_require">Вы хотите зарегистрироваться или войти в аккаунт?</string>
@@ -166,6 +170,7 @@
     <string name="permissions_deny">Разрешения не предоставлены, приложение не может работать корректно</string>
     <string name="grant_permissions">Разрешить</string>
     <string name="layers">Слои</string>
+    <string name="basemaps">Подложки</string>
     <string name="legend">Легенда</string>
     <string name="showcase_title">Основная кнопка</string>
     <string name="showcase_msg">Увидел, что лес в беде - нажми на кнопку!</string>

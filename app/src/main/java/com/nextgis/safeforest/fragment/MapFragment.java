@@ -43,6 +43,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -108,6 +109,7 @@ public class MapFragment
     protected int mCoordinatesFormat, mCoordinatesFraction;
 
     protected float mTolerancePX;
+    protected boolean mIsAuthorized;
 
     @Override
     public View onCreateView(
@@ -197,8 +199,8 @@ public class MapFragment
     }
 
     private void showLayersDialog() {
-        CharSequence[] layers = new CharSequence[]{"OSM + Kosmosnimki", "Dark Matter", "ESRI Terrain", "GenShtab", "Google Hybrid", "Mapbox Satellite",
-                "OpenTopoMap", "OSM Transport", "RosReestr", "TopoMap", "WikiMapia"};
+        CharSequence[] layers = new CharSequence[]{getString(R.string.citizen_messages), getString(R.string.violations), getString(R.string.fires),
+                getString(R.string.inspector_polygons), getString(R.string.forestry), "Landsat", getString(R.string.geomixer_fv_tiles)};
         final boolean[] visible = getLayersVisibility();
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), ((SFActivity) getActivity()).getDialogThemeId());
@@ -210,6 +212,13 @@ public class MapFragment
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, null)
+                .setNeutralButton(R.string.basemaps, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        saveLayerVisibility(visible);
+                        showBasemapsDialog();
+                    }
+                })
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -217,10 +226,95 @@ public class MapFragment
                     }
                 });
 
+        AlertDialog box = dialog.show();
+        box.setCanceledOnTouchOutside(false);
+        final ListView items = box.getListView();
+        items.post(new Runnable() {
+            @Override
+            public void run() {
+                if (!mIsAuthorized) {
+                    Toast.makeText(getActivity(), R.string.locked_layers, Toast.LENGTH_SHORT).show();
+                    items.getChildAt(3).setEnabled(false);
+                    items.getChildAt(4).setEnabled(false);
+                    items.getChildAt(5).setEnabled(false);
+                    items.getChildAt(6).setEnabled(false);
+                }
+            }
+        });
+    }
+
+    private void showBasemapsDialog() {
+        CharSequence[] layers = new CharSequence[]{"OSM + Kosmosnimki", "Dark Matter", "ESRI Terrain", "GenShtab", "Google Hybrid", "Mapbox Satellite",
+                "OpenTopoMap", "OSM Transport", "RosReestr", "TopoMap", "WikiMapia"};
+        final boolean[] visible = getBasemapsVisibility();
+        int layer = 0;
+        for (int i = 0; i < visible.length; i++)
+            if (visible[i]) {
+                layer = i;
+                break;
+            }
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), ((SFActivity) getActivity()).getDialogThemeId());
+        dialog.setTitle(R.string.basemaps)
+                .setSingleChoiceItems(layers, layer, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        for (int i = 0; i < visible.length; i++)
+                            visible[i] = i == which;
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .setNeutralButton(R.string.layers, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        saveBasemapVisibility(visible);
+                        showLayersDialog();
+                    }
+                })
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        saveBasemapVisibility(visible);
+                    }
+                });
+
         dialog.show().setCanceledOnTouchOutside(false);
     }
 
     private boolean[] getLayersVisibility() {
+        boolean citizen = true, fv, fires, docs, lv, landsat, geomixer;
+        fv = fires = docs = lv = landsat = geomixer = false;
+
+        final MapDrawable map = mMap.getMap();
+        ILayerView layer = (ILayerView) map.getLayerByName(Constants.KEY_CITIZEN_MESSAGES);
+        if (layer != null)
+            citizen = layer.isVisible();
+        layer = (ILayerView) map.getLayerByName(Constants.KEY_FV_FOREST);
+        if (layer != null)
+            fv = layer.isVisible();
+        layer = (ILayerView) map.getLayerByName(getString(R.string.fires));
+        if (layer != null)
+            fires = layer.isVisible();
+        layer = (ILayerView) map.getLayerByName(Constants.KEY_FV_DOCS);
+        if (layer != null)
+            docs = layer.isVisible();
+        layer = (ILayerView) map.getLayerByName(getString(R.string.ulv));
+        if (layer != null)
+            lv = layer.isVisible();
+        layer = (ILayerView) map.getLayerByName(getString(R.string.lv));
+        if (layer != null)
+            lv &= layer.isVisible();
+        layer = (ILayerView) map.getLayerByName(Constants.KEY_LANDSAT);
+        if (layer != null)
+            landsat = layer.isVisible();
+        layer = (ILayerView) map.getLayerByName(getString(R.string.geomixer_fv_tiles));
+        if (layer != null)
+            geomixer = layer.isVisible();
+
+        return new boolean[] {citizen, fv, fires, docs, lv, landsat, geomixer};
+    }
+
+    private boolean[] getBasemapsVisibility() {
         boolean osmKosmosnimki, darkMatter, esri, genshtab, google, mapbox, opentopomap, osmTransport, rosreestr, topomap, wikimapia;
         osmKosmosnimki = darkMatter = esri = genshtab = google = mapbox = opentopomap = osmTransport = rosreestr = topomap = wikimapia = false;
 
@@ -267,6 +361,39 @@ public class MapFragment
 
     private void saveLayerVisibility(boolean[] visible) {
         final MapDrawable map = mMap.getMap();
+        String[] NAMES = new String[] {Constants.KEY_CITIZEN_MESSAGES, Constants.KEY_FV_FOREST, getString(R.string.fires),
+                Constants.KEY_FV_DOCS, null, Constants.KEY_LANDSAT, getString(R.string.geomixer_fv_tiles)};
+        ILayerView layer = null;
+        for (int i = 0; i < visible.length; i++) {
+            switch (i) {
+                case 4:
+                    if (!mIsAuthorized)
+                        break;
+
+                    layer = (ILayerView) map.getLayerByName(getString(R.string.lv));
+                    if (layer != null)
+                        layer.setVisible(visible[i]);
+                    layer = (ILayerView) map.getLayerByName(getString(R.string.ulv));
+                    break;
+                case 3:
+                case 5:
+                case 6:
+                    if (!mIsAuthorized)
+                        break;
+                default:
+                    layer = (ILayerView) map.getLayerByName(NAMES[i]);
+                    break;
+            }
+
+            if (layer != null)
+                layer.setVisible(visible[i]);
+        }
+
+        map.save();
+    }
+
+    private void saveBasemapVisibility(boolean[] visible) {
+        final MapDrawable map = mMap.getMap();
         ILayerView layer;
         for (int i = 0; i < visible.length; i++) {
             switch (i) {
@@ -287,7 +414,6 @@ public class MapFragment
 
         map.save();
     }
-
 
     private void showLegend() {
         SFActivity activity = (SFActivity) getActivity();
@@ -452,28 +578,11 @@ public class MapFragment
     private void setLayers() {
         Account account = mApp.getAccount(getString(R.string.account_name));
         String auth = mApp.getAccountUserData(account, Constants.KEY_IS_AUTHORIZED);
-        boolean isAuthorized = auth != null && !auth.equals(Constants.ANONYMOUS);
+        mIsAuthorized = auth != null && !auth.equals(Constants.ANONYMOUS);
 
-        Layer layer = (RemoteTMSLayer) mApp.getMap().getLayerByName(Constants.KEY_LANDSAT);
-        if (layer != null)
-            layer.setVisible(isAuthorized);
-
-        layer = (RemoteTMSLayer) mApp.getMap().getLayerByName(getString(R.string.lv));
-        if (layer != null)
-            layer.setVisible(isAuthorized);
-
-        layer = (RemoteTMSLayer) mApp.getMap().getLayerByName(getString(R.string.ulv));
-        if (layer != null)
-            layer.setVisible(isAuthorized);
-
-        layer = (RemoteTMSLayer) mApp.getMap().getLayerByName(getString(R.string.geomixer_fv_tiles));
-        if (layer != null)
-            layer.setVisible(isAuthorized);
-
-        layer = (NGWVectorLayer) mApp.getMap().getLayerByName(Constants.KEY_FV_DOCS);
+        Layer layer = (NGWVectorLayer) mApp.getMap().getLayerByName(Constants.KEY_FV_DOCS);
         if (layer != null) {
-            layer.setVisible(isAuthorized);
-            int sync = isAuthorized ? com.nextgis.maplib.util.Constants.SYNC_ALL : com.nextgis.maplib.util.Constants.SYNC_NONE;
+            int sync = mIsAuthorized ? com.nextgis.maplib.util.Constants.SYNC_ALL : com.nextgis.maplib.util.Constants.SYNC_NONE;
             ((NGWVectorLayer) layer).setSyncType(sync);
         }
 
