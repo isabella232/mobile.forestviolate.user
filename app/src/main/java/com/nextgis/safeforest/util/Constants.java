@@ -35,6 +35,7 @@ public interface Constants
     int    MAX_DOCUMENTS                = 100;
     String TEMP_DOCUMENT_FEATURE_FOLDER = "temp_document";
     String ANONYMOUS                    = "anonymous";
+    String REGIONS_SERVERS              = "http://176.9.38.120/fvstatic/reg.geojson";
 
     /**
      * State constants

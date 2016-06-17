@@ -25,6 +25,7 @@ import android.accounts.Account;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 
@@ -43,6 +44,7 @@ import com.nextgis.maplib.util.NGException;
 import com.nextgis.maplib.util.NGWUtil;
 import com.nextgis.maplibui.mapui.NGWVectorLayerUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
+import com.nextgis.maplibui.mapui.VectorLayerUI;
 import com.nextgis.safeforest.BuildConfig;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
@@ -163,58 +165,55 @@ public class RegionSyncService extends Service {
                 // step 1: connect to server
                 mStep = 0;
                 final MainApplication app = (MainApplication) getApplication();
-                mAccount = app.getAccount(getString(R.string.account_name));
-                final String sLogin = app.getAccountLogin(mAccount);
-                final String sPassword = app.getAccountPassword(mAccount);
-                mURL = app.getAccountUrl(mAccount);
                 mMap = app.getMap();
 
-                if (null == mURL || null == sPassword || null == sLogin) {
-                    break;
-                }
+                if (!mIsRegionsOnly) {
+                    mAccount = app.getAccount(getString(R.string.account_name));
+                    final String sLogin = app.getAccountLogin(mAccount);
+                    final String sPassword = app.getAccountPassword(mAccount);
+                    mURL = app.getAccountUrl(mAccount);
 
-                Connection connection = new Connection("tmp", sLogin, sPassword, mURL);
-                publishProgress(getString(R.string.connecting), Constants.STEP_STATE_WORK);
+                    if (null == mURL || null == sPassword || null == sLogin) {
+                        break;
+                    }
 
-                if (!connection.connect(sLogin.equals(Constants.ANONYMOUS))) {
-                    publishProgress(getString(R.string.error_connect_failed), Constants.STEP_STATE_ERROR);
-                    break;
-                } else {
-                    publishProgress(getString(R.string.connected), Constants.STEP_STATE_WORK);
-                }
+                    Connection connection = new Connection("tmp", sLogin, sPassword, mURL);
+                    publishProgress(getString(R.string.connecting), Constants.STEP_STATE_WORK);
 
-                if (isCanceled())
-                    break;
+                    if (!connection.connect(sLogin.equals(Constants.ANONYMOUS))) {
+                        publishProgress(getString(R.string.error_connect_failed), Constants.STEP_STATE_ERROR);
+                        break;
+                    } else {
+                        publishProgress(getString(R.string.connected), Constants.STEP_STATE_WORK);
+                    }
 
-                // step 1: find keys
-                publishProgress(getString(R.string.check_tables_exist), Constants.STEP_STATE_WORK);
+                    if (isCanceled())
+                        break;
 
-                if (!MapUtil.checkServerLayers(connection, mKeys)) {
-                    publishProgress(getString(R.string.error_wrong_server), Constants.STEP_STATE_ERROR);
-                    break;
-                } else {
-                    publishProgress(getString(R.string.done), Constants.STEP_STATE_DONE);
-                }
+                    // step 1: find keys
+                    publishProgress(getString(R.string.check_tables_exist), Constants.STEP_STATE_WORK);
 
-                if (isCanceled())
-                    break;
+                    if (!MapUtil.checkServerLayers(connection, mKeys)) {
+                        publishProgress(getString(R.string.error_wrong_server), Constants.STEP_STATE_ERROR);
+                        break;
+                    } else {
+                        publishProgress(getString(R.string.done), Constants.STEP_STATE_DONE);
+                    }
 
-                // step 2: create base layers
-                mStep = 1;
+                    if (isCanceled())
+                        break;
 
-                if (mIsRegionsOnly)
-                    loadRegions();
-                else
+                    // step 2: create base layers
+                    mStep = 1;
                     loadRegion();
+                    MapUtil.setMessageRenderer(mMap, app);
+                } else
+                    loadRegions();
 
                 if (isCanceled())
                     break;
 
-                //TODO: load additional tables
-
-                MapUtil.setMessageRenderer(mMap, app);
                 mMap.save();
-
                 mStep++;
                 publishProgress(null, Constants.STEP_STATE_DONE);
                 mIsRunning = false;
@@ -231,17 +230,16 @@ public class RegionSyncService extends Service {
         }
 
         protected void loadRegions() {
-            NGWVectorLayerUI ngwVectorLayer = new NGWVectorLayerUI(getApplicationContext(), mMap.createLayerStorage(Constants.KEY_FV_REGIONS));
+            VectorLayerUI ngwVectorLayer = new VectorLayerUI(getApplicationContext(), mMap.createLayerStorage(Constants.KEY_FV_REGIONS));
             ngwVectorLayer.setName(Constants.KEY_FV_REGIONS);
-            ngwVectorLayer.setRemoteId(mKeys.get(Constants.KEY_FV_REGIONS).getRemoteId());
-            ngwVectorLayer.setAccountName(mAccount.name);
-            ngwVectorLayer.setSyncType(com.nextgis.maplib.util.Constants.SYNC_ALL);
             ngwVectorLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
             ngwVectorLayer.setMaxZoom(GeoConstants.DEFAULT_MAX_ZOOM);
+            Uri regions = Uri.parse(Constants.REGIONS_SERVERS);
 
             try {
-                ngwVectorLayer.createFromNGW(this);
+                ngwVectorLayer.createFromGeoJson(regions, this);
                 mMap.addLayer(ngwVectorLayer);
+                mMap.save();
             } catch (NGException | IOException | JSONException e) {
                 e.printStackTrace();
                 ngwVectorLayer.delete();

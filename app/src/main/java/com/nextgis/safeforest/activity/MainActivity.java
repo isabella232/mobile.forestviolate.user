@@ -55,6 +55,7 @@ import com.espian.showcaseview.ShowcaseView;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
+import com.nextgis.maplib.datasource.Feature;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.NGWVectorLayer;
@@ -159,8 +160,15 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         final MainApplication app = (MainApplication) getApplication();
         final Account account = app.getAccount(getString(R.string.account_name));
         if (account == null || mCurrentViewState == CURRENT_VIEW.ACCOUNT.ordinal()) {
-            Log.d(Constants.SFTAG, "No account. " + getString(R.string.account_name) + " created. Run first step.");
-            createFirstStartView();
+            RegionSyncFragment.createChooseRegionDialog(this, new RegionSyncFragment.onRegionReceive() {
+                @Override
+                public void onRegionChosen(String regionName) {
+                    Log.d(Constants.SFTAG, "No account. " + getString(R.string.account_name) + " created. Run first step.");
+                    VectorLayer regions = (VectorLayer) MapBase.getInstance().getLayerByName(Constants.KEY_FV_REGIONS);
+                    Feature feature = regions.getFeature(mPreferences.getLong(SettingsConstants.KEY_PREF_REGION, 0));
+                    createFirstStartView(feature.getFieldValueAsString("url"));
+                }
+            });
         } else {
             if (!hasBasicLayers(app.getMap()) || mCurrentViewState == CURRENT_VIEW.INITIAL.ordinal()) {
                 Log.d(Constants.SFTAG, "Account " + getString(R.string.account_name) + " created. Run second step.");
@@ -190,7 +198,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         outState.putInt(KEY_CURRENT_VIEW, mCurrentView);
     }
 
-    protected void createFirstStartView(){
+    protected void createFirstStartView(String server){
         mCurrentView = CURRENT_VIEW.ACCOUNT.ordinal();
         setContentView(R.layout.activity_main_first);
         setToolbar(R.id.main_toolbar);
@@ -207,6 +215,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         }
         ngwLoginFragment.setForNewAccount(true);
         ngwLoginFragment.setOnAddAccountListener(this);
+        ngwLoginFragment.setUrlText(server);
     }
 
     protected void createSecondStartView(){
@@ -483,12 +492,6 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             app.setUserData(account.name, SettingsConstants.KEY_PREF_USERMINY, "" + minY);
             app.setUserData(account.name, SettingsConstants.KEY_PREF_USERMAXX, "" + maxX);
             app.setUserData(account.name, SettingsConstants.KEY_PREF_USERMAXY, "" + maxY);
-
-            //free any map data here
-            MapBase map = app.getMap();
-
-            // delete all layers from map if any
-            map.delete();
 
             //set sync with server
             ContentResolver.setSyncAutomatically(account, app.getAuthority(), true);

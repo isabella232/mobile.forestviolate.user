@@ -55,7 +55,7 @@
     <string name="geomixer_fv_tiles">GeoMixer violation tiles</string>
     <string name="sf_login_title">Account</string>
     <string
-        name="sf_login_description"><![CDATA[Enter your information for account registration on server (registration can be skipped, but the application will have limited functionality). After that, selection of working area and the process of getting data to work offline will be started. This process need a lot of traffic, so Wi-Fi connection recommended.]]></string>
+        name="sf_login_description"><![CDATA[Enter your information for account registration on server (registration can be skipped, but the application will have limited functionality). After that, the process of getting data to work offline will be started. This need a lot of traffic, so Wi-Fi connection recommended.]]></string>
     <string name="first_run">First run</string>
     <string name="fi_url">Server URL</string>
     <string name="error_init">Failed to initialize</string>

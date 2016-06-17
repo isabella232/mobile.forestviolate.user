@@ -71,15 +71,12 @@ public class LoginFragment extends NGWLoginFragment {
             Bundle savedInstanceState)
     {
         final View view = inflater.inflate(R.layout.fragment_login, container, false);
-        mURL = (EditText) view.findViewById(R.id.url);
-        mUrlText = mURL.getText().toString().trim();
         mLogin = (EditText) view.findViewById(R.id.login);
         mPassword = (EditText) view.findViewById(R.id.password);
         mSignInButton = (Button) view.findViewById(R.id.signin);
         mSignUpButton = (Button) view.findViewById(R.id.signup);
         mSkipButton = (Button) view.findViewById(R.id.skip);
 
-        mURL.addTextChangedListener(new URLWatcher());
         mLogin.addTextChangedListener(new EmailWatcher());
         mPassword.addTextChangedListener(new PasswordWatcher());
 
@@ -103,17 +100,6 @@ public class LoginFragment extends NGWLoginFragment {
             ((TextInputLayout) mLogin.getParent()).setError(getString(R.string.email_not_valid));
         else
             ((TextInputLayout) mLogin.getParent()).setErrorEnabled(false);
-    }
-
-    private void validateURL(String url) {
-        if (!isValidURL(url) && url.length() > 0)
-            ((TextInputLayout) mURL.getParent()).setError(getString(R.string.error_invalid_url));
-        else
-            ((TextInputLayout) mURL.getParent()).setErrorEnabled(false);
-    }
-
-    private boolean isValidURL(String url) {
-        return android.util.Patterns.WEB_URL.matcher(url).matches();
     }
 
     @Override
@@ -144,11 +130,6 @@ public class LoginFragment extends NGWLoginFragment {
             return;
         }
 
-        if (!isValidURL(mURL.getText().toString())) {
-            Toast.makeText(getActivity(), R.string.error_invalid_url, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         switch (v.getId()) {
             case R.id.signin:
                 Runnable signIn = new Runnable() {
@@ -169,8 +150,7 @@ public class LoginFragment extends NGWLoginFragment {
                         Thread t = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                result[0] = NGWUtil.signUp(mURL.getText().toString().trim(),
-                                        mLogin.getText().toString(), mPassword.getText().toString(), null, null);
+                                result[0] = NGWUtil.signUp(mUrlText, mLogin.getText().toString(), mPassword.getText().toString(), null, null);
                             }
                         });
                         t.start();
@@ -247,13 +227,11 @@ public class LoginFragment extends NGWLoginFragment {
     {
         if (id == R.id.auth_token_loader) {
             return new HTTPLoader(
-                    getActivity().getApplicationContext(), mURL.getText().toString().trim(),
-                    mLogin.getText().toString(), mPassword.getText().toString());
+                    getActivity().getApplicationContext(), mUrlText, mLogin.getText().toString(), mPassword.getText().toString());
         }
         else if (id == R.id.non_auth_token_loader) {
             return new HTTPLoader(
-                    getActivity().getApplicationContext(), mURL.getText().toString().trim(),
-                    null, null);
+                    getActivity().getApplicationContext(), mUrlText, null, null);
         }
         return null;
     }
@@ -308,7 +286,7 @@ public class LoginFragment extends NGWLoginFragment {
 
         @Override
         public void afterTextChanged(Editable s) {
-            mUrlText = mURL.getText().toString().trim();
+
         }
     }
 
@@ -325,14 +303,6 @@ public class LoginFragment extends NGWLoginFragment {
         public void afterTextChanged(Editable s) {
             super.afterTextChanged(s);
             validateEmail(s.toString());
-        }
-    }
-
-    public class URLWatcher extends LocalTextWatcher {
-        @Override
-        public void afterTextChanged(Editable s) {
-            super.afterTextChanged(s);
-            validateURL(s.toString());
         }
     }
 }
