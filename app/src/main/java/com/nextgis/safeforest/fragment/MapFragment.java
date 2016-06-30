@@ -677,7 +677,8 @@ public class MapFragment
             items = layerFV.query(mapEnv);
             if (!items.isEmpty()) {
                 Feature feature = layerFV.getFeature(items.get(0));
-                showForestViolateFeatureDialog(feature);
+                if (feature != null)
+                    showForestViolateFeatureDialog(feature);
                 return;
             }
         }
@@ -686,7 +687,8 @@ public class MapFragment
             items = layerMessages.query(mapEnv);
             if (!items.isEmpty()) {
                 Feature feature = layerMessages.getFeature(items.get(0));
-                showCitizenMessageFeatureDialog(feature);
+                if (feature != null)
+                    showCitizenMessageFeatureDialog(feature);
             }
         }
     }

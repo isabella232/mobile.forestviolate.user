@@ -41,6 +41,9 @@ public class FVSyncAdapter extends SyncAdapter {
         if (!MapBase.getInstance().isValid() || layerGroup.getLayerCount() == 0)
             return;
 
+        MapUtil.removeOutdatedData((NGWVectorLayer) layerGroup.getLayerByName(Constants.KEY_CITIZEN_MESSAGES));
+        MapUtil.removeOutdatedData((NGWVectorLayer) layerGroup.getLayerByName(Constants.KEY_FV_FOREST));
+        MapUtil.removeOutdatedData((NGWVectorLayer) layerGroup.getLayerByName(Constants.KEY_FV_DOCS));
         MapUtil.removeOutdatedChanges((NGWVectorLayer) layerGroup.getLayerByName(Constants.KEY_CITIZEN_MESSAGES));
         super.sync(layerGroup, authority, syncResult);
     }

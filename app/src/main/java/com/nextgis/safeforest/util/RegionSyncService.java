@@ -53,7 +53,9 @@ import com.nextgis.safeforest.mapui.MessageLayerUI;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -290,22 +292,29 @@ public class RegionSyncService extends Service {
 
         private boolean loadNGWLayer(String layerName, String accountName, MapBase map) {
             NGWVectorLayerUI ngwVectorLayer;
+            String date = Constants.FIELD_FV_DATE;
             if (layerName.equals(Constants.KEY_CITIZEN_MESSAGES)) {
                 MessageLayerUI messageLayer = new MessageLayerUI(getApplicationContext(), map.createLayerStorage(layerName));
                 messageLayer.setQueryRemoteId(mKeys.get(Constants.KEY_CITIZEN_FILTER_MESSAGES).getRemoteId());
                 ngwVectorLayer = messageLayer;
                 ngwVectorLayer.setVisible(true);
+                date = Constants.FIELD_MDATE;
             } else
                 ngwVectorLayer = new NGWVectorLayerUI(getApplicationContext(), map.createLayerStorage(layerName));
 
             ngwVectorLayer.setName(layerName);
             ngwVectorLayer.setRemoteId(mKeys.get(layerName).getRemoteId());
-            ngwVectorLayer.setServerWhere(String.format(Locale.US, "bbox=%f,%f,%f,%f",
-                    mMinX, mMinY, mMaxX, mMaxY));
+            ngwVectorLayer.setServerWhere(String.format(Locale.US, "bbox=%f,%f,%f,%f", mMinX, mMinY, mMaxX, mMaxY));
             ngwVectorLayer.setAccountName(accountName);
             ngwVectorLayer.setSyncType(com.nextgis.maplib.util.Constants.SYNC_ALL);
             ngwVectorLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
             ngwVectorLayer.setMaxZoom(GeoConstants.DEFAULT_MAX_ZOOM);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.add(Calendar.MONTH, Constants.MONTH_TO_LOAD_DATA);
+            ngwVectorLayer.setServerWhere(date + "={\"gt\":\"" + sdf.format(calendar.getTime()) + "T00:00:00Z\"}");
 
             map.addLayer(ngwVectorLayer);
 

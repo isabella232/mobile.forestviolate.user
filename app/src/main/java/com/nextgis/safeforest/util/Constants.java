@@ -137,6 +137,7 @@ public interface Constants
     long MAX_DIFF_FIRE = 2 * 24 * 60 * 60 * 1000L;
     long MAX_DIFF_FELLING = 15 * 24 * 60 * 60 * 1000L;
     long MAX_DIFF_OTHER = 30 * 24 * 60 * 60 * 1000L;
+    int MONTH_TO_LOAD_DATA = -6;
 
     int MAX_LOCATION_MEASURES = 5;
     float MAX_LOCATION_ACCURACY = 5f;

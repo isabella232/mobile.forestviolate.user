@@ -25,6 +25,7 @@ import android.accounts.Account;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
 import com.nextgis.maplib.datasource.Feature;
@@ -34,6 +35,7 @@ import com.nextgis.maplib.datasource.ngw.Resource;
 import com.nextgis.maplib.datasource.ngw.ResourceGroup;
 import com.nextgis.maplib.datasource.ngw.ResourceWithoutChildren;
 import com.nextgis.maplib.map.MapBase;
+import com.nextgis.maplib.map.MapContentProviderHelper;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.FeatureChanges;
@@ -48,6 +50,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
@@ -134,6 +137,25 @@ public final class MapUtil {
         }
 
         return bIsFill;
+    }
+
+    public static void removeOutdatedData(NGWVectorLayer layer) {
+        if (layer == null)
+            return;
+
+        try {
+            String table = layer.getPath().getName();
+            String date = layer.getName().equals(Constants.KEY_CITIZEN_MESSAGES) ? Constants.FIELD_MDATE : Constants.FIELD_FV_DATE;
+            MapContentProviderHelper map = (MapContentProviderHelper) MapBase.getInstance();
+            SQLiteDatabase db = map.getDatabase(true);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.add(Calendar.MONTH, Constants.MONTH_TO_LOAD_DATA);
+            db.delete(table, date + " < " + calendar.getTimeInMillis(), null);
+            db.close();
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void removeOutdatedChanges(NGWVectorLayer layer) {
