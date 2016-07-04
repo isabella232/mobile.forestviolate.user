@@ -304,7 +304,6 @@ public class RegionSyncService extends Service {
 
             ngwVectorLayer.setName(layerName);
             ngwVectorLayer.setRemoteId(mKeys.get(layerName).getRemoteId());
-            ngwVectorLayer.setServerWhere(String.format(Locale.US, "bbox=%f,%f,%f,%f", mMinX, mMinY, mMaxX, mMaxY));
             ngwVectorLayer.setAccountName(accountName);
             ngwVectorLayer.setSyncType(com.nextgis.maplib.util.Constants.SYNC_ALL);
             ngwVectorLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
@@ -314,7 +313,8 @@ public class RegionSyncService extends Service {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
             calendar.add(Calendar.MONTH, Constants.MONTH_TO_LOAD_DATA);
-            ngwVectorLayer.setServerWhere(date + "={\"gt\":\"" + sdf.format(calendar.getTime()) + "T00:00:00Z\"}");
+            ngwVectorLayer.setServerWhere(date + "={\"gt\":\"" + sdf.format(calendar.getTime()) + "T00:00:00Z\"}&" +
+                    String.format(Locale.US, "bbox=%f,%f,%f,%f", mMinX, mMinY, mMaxX, mMaxY));
 
             map.addLayer(ngwVectorLayer);
 
