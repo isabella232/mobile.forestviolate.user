@@ -48,6 +48,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -102,6 +103,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     protected boolean mFirstRun = true;
     protected int mCurrentView;
     protected int mCurrentViewState;
+    protected TabLayout.ViewPagerOnTabSelectedListener mTabListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -264,9 +266,9 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mTabLayout = (TabLayout) findViewById(R.id.tabs);
+        mTabLayout = (TabLayout) View.inflate(this, R.layout.tabs, null);
         mTabLayout.setupWithViewPager(mViewPager);
-        mTabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager) {
+        mTabListener = new TabLayout.ViewPagerOnTabSelectedListener(mViewPager) {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 super.onTabSelected(tab);
@@ -290,7 +292,8 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             public void onTabReselected(TabLayout.Tab tab) {
                 super.onTabReselected(tab);
             }
-        });
+        };
+        mTabLayout.addOnTabSelectedListener(mTabListener);
 
         if(mTabLayout.getTabCount() < mSectionsPagerAdapter.getCount()) {
             // For each of the sections in the app, add a tab to the action bar.
@@ -302,6 +305,11 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
                 mTabLayout.addTab(mTabLayout.newTab().setText(mSectionsPagerAdapter.getPageTitle(i)));
             }
         }
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+            ((Toolbar) findViewById(R.id.main_toolbar)).addView(mTabLayout);
+        else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+            ((LinearLayout) findViewById(R.id.content)).addView(mTabLayout, 1);
 
         mViewPager.post(new Runnable() {
             @Override
@@ -315,6 +323,12 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         findViewById(R.id.add_felling).setOnClickListener(this);
         findViewById(R.id.add_garbage).setOnClickListener(this);
 //        findViewById(R.id.add_misc).setOnClickListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mTabLayout.removeOnTabSelectedListener(mTabListener);
     }
 
     @Override
