@@ -41,21 +41,22 @@ public class MessageMarkerStyle extends SimpleMarkerStyle {
             return;
 
         float scaledSize = (float) (mSize / display.getScale());
+        float width = (float) (mWidth / display.getScale());
         switch (mType) {
             case Constants.MSG_TYPE_FELLING:
-                drawCircleMarker(scaledSize, pt, display);
+                drawCircleMarker(scaledSize, width, pt, display);
                 break;
 
             case Constants.MSG_TYPE_FIRE:
-                drawDiamondMarker(scaledSize, pt, display);
+                drawDiamondMarker(scaledSize, width, pt, display);
                 break;
 
             case Constants.MSG_TYPE_GARBAGE:
-                drawTriangleMarker(scaledSize, pt, display);
+                drawTriangleMarker(scaledSize, width, pt, display);
                 break;
 
             case Constants.MSG_TYPE_MISC:
-                drawBoxMarker(scaledSize, pt, display);
+                drawBoxMarker(scaledSize, width, pt, display);
                 break;
         }
     }

@@ -24,6 +24,7 @@ package com.nextgis.safeforest.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -271,7 +272,9 @@ public class IntroActivity extends SFActivity implements PageFragmentCallbacks, 
                 @Override
                 public void run() {
                     InputStream is = getResources().openRawResource(image);
-                    Bitmap bitmap = ControlHelper.getBitmap(is, imageView.getMeasuredWidth(), imageView.getMeasuredWidth());
+                    BitmapFactory.Options options = ControlHelper.getOptions(is, imageView.getMeasuredWidth(), imageView.getMeasuredWidth());
+                    is = getResources().openRawResource(image);
+                    Bitmap bitmap = ControlHelper.getBitmap(is, options);
                     imageView.setImageBitmap(bitmap);
                 }
             });

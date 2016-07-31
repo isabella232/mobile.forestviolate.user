@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
-import android.support.v7.internal.widget.ThemeUtils;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
 import android.view.View;
@@ -42,6 +41,7 @@ import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.TextView;
 
+import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.safeforest.R;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
@@ -128,8 +128,8 @@ public class FloatingActionsMenu
         mLabelsMargin = getResources().getDimensionPixelSize(R.dimen.fab_labels_margin);
         mLabelsVerticalOffset = getResources().getDimensionPixelSize(R.dimen.fab_shadow_offset);
 
-        int primaryColor = ThemeUtils.getThemeAttrColor(context, R.attr.colorPrimary);
-        int accentColor = ThemeUtils.getThemeAttrColor(context, R.attr.colorAccent);
+        int primaryColor = ControlHelper.getColor(context, R.attr.colorPrimary);
+        int accentColor = ControlHelper.getColor(context, R.attr.colorAccent);
 
         TypedArray attr =
                 context.obtainStyledAttributes(attributeSet, R.styleable.FloatingActionsMenu, 0, 0);

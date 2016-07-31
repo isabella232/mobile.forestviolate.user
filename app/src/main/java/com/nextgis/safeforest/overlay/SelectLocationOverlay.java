@@ -29,7 +29,6 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.location.Location;
 import android.location.LocationManager;
-import android.support.v7.internal.widget.ThemeUtils;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
@@ -42,6 +41,7 @@ import com.nextgis.maplibui.api.MapViewEventListener;
 import com.nextgis.maplibui.api.Overlay;
 import com.nextgis.maplibui.mapui.MapViewOverlays;
 import com.nextgis.maplibui.util.ConstantsUI;
+import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.safeforest.R;
 
 public class SelectLocationOverlay extends Overlay implements MapViewEventListener {
@@ -73,8 +73,8 @@ public class SelectLocationOverlay extends Overlay implements MapViewEventListen
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
 
-        mFillColor = ThemeUtils.getThemeAttrColor(mContext, com.nextgis.maplibui.R.attr.colorPrimary);
-        mOutlineColor = ThemeUtils.getThemeAttrColor(mContext, com.nextgis.maplibui.R.attr.colorPrimaryDark);
+        mFillColor = ControlHelper.getColor(mContext, com.nextgis.maplibui.R.attr.colorPrimary);
+        mOutlineColor = ControlHelper.getColor(mContext, com.nextgis.maplibui.R.attr.colorPrimaryDark);
 
         mAnchor = BitmapFactory.decodeResource(mContext.getResources(), com.nextgis.maplibui.R.drawable.ic_action_anchor);
         mAnchorRectOffsetX = -mAnchor.getWidth() * 0.05f;

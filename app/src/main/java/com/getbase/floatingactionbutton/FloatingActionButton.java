@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@ package com.getbase.floatingactionbutton;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -49,12 +48,12 @@ import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
-import android.support.v7.internal.widget.ThemeUtils;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.safeforest.R;
 
 import java.lang.annotation.Retention;
@@ -124,8 +123,8 @@ public class FloatingActionButton
         TypedArray attr = context.obtainStyledAttributes(
                 attributeSet, R.styleable.FloatingActionButton, 0, 0);
 
-        int primaryColor = ThemeUtils.getThemeAttrColor(context, R.attr.colorPrimary);
-        int accentColor = ThemeUtils.getThemeAttrColor(context, R.attr.colorAccent);
+        int primaryColor = ControlHelper.getColor(context, R.attr.colorPrimary);
+        int accentColor = ControlHelper.getColor(context, R.attr.colorAccent);
 
         mColorNormal = attr.getColor(
                 R.styleable.FloatingActionButton_fab_colorNormal, primaryColor);
