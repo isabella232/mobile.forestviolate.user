@@ -328,7 +328,8 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mTabLayout.removeOnTabSelectedListener(mTabListener);
+        if (mTabLayout != null && mTabListener != null)
+            mTabLayout.removeOnTabSelectedListener(mTabListener);
     }
 
     @Override
