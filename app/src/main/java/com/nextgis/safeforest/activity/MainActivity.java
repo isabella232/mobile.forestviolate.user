@@ -45,6 +45,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,6 +62,7 @@ import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
+import com.nextgis.maplib.util.NGWUtil;
 import com.nextgis.maplibui.fragment.NGWLoginFragment;
 import com.nextgis.safeforest.BuildConfig;
 import com.nextgis.safeforest.MainApplication;
@@ -580,7 +582,8 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             ILayer layer = map.getLayer(i);
             if (layer instanceof NGWVectorLayer) {
                 ngwVectorLayer = (NGWVectorLayer) layer;
-                ngwVectorLayer.sync(application.getAuthority(), new SyncResult());
+                Pair<Integer, Integer> ver = NGWUtil.getNgwVersion(this, ngwVectorLayer.getAccountName());
+                ngwVectorLayer.sync(application.getAuthority(), ver, new SyncResult());
             }
         }
     }
@@ -597,10 +600,10 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
-        protected MapFragment mMapFragment;
-        protected MessageListFragment mMessageFragment;
+        MapFragment mMapFragment;
+        MessageListFragment mMessageFragment;
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -624,7 +627,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
             return fragment;
         }
 
-        public String getFragmentTag(int viewPagerId, int fragmentPosition) {
+        String getFragmentTag(int viewPagerId, int fragmentPosition) {
             return "android:switcher:" + viewPagerId + ":" + fragmentPosition;
         }
 

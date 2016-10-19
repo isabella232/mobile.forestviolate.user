@@ -129,18 +129,18 @@ public class RegionSyncService extends Service {
     }
 
     class InitialSync extends Thread implements IProgressor {
-        protected Map<String, Resource> mKeys = new HashMap<>();
-        protected Intent mMessageIntent;
-        protected Account mAccount;
-        protected MapBase mMap;
+        Map<String, Resource> mKeys = new HashMap<>();
+        Intent mMessageIntent;
+        Account mAccount;
+        MapBase mMap;
 
-        protected String mProgressMessage, mURL;
-        protected int mMaxProgress;
-        protected int mStep;
-        protected boolean mIsRegionsOnly;
-        protected float mMinX, mMinY, mMaxX, mMaxY;
+        String mProgressMessage, mURL;
+        int mMaxProgress;
+        int mStep;
+        boolean mIsRegionsOnly;
+        float mMinX, mMinY, mMaxX, mMaxY;
 
-        public InitialSync(boolean isRegionsOnly) {
+        InitialSync(boolean isRegionsOnly) {
             mIsRegionsOnly = isRegionsOnly;
 
             if (isRegionsOnly)
@@ -224,14 +224,14 @@ public class RegionSyncService extends Service {
             mIsRunning = false;
         }
 
-        public final void publishProgress(String message, int state) {
+        final void publishProgress(String message, int state) {
             mMessageIntent.putExtra(Constants.KEY_STEP, mStep);
             mMessageIntent.putExtra(Constants.KEY_STATE, state);
             mMessageIntent.putExtra(Constants.KEY_MESSAGE, message);
             sendBroadcast(mMessageIntent);
         }
 
-        protected void loadRegions() {
+        void loadRegions() {
             VectorLayerUI ngwVectorLayer = new VectorLayerUI(getApplicationContext(), mMap.createLayerStorage(Constants.KEY_FV_REGIONS));
             ngwVectorLayer.setName(Constants.KEY_FV_REGIONS);
             ngwVectorLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
@@ -255,7 +255,7 @@ public class RegionSyncService extends Service {
             }
         }
 
-        protected void loadRegion() {
+        void loadRegion() {
             createBasicLayers(mMap);
 
             if (isCanceled())
@@ -328,7 +328,7 @@ public class RegionSyncService extends Service {
             return true;
         }
 
-        protected void createBasicLayers(MapBase map) {
+        void createBasicLayers(MapBase map) {
             publishProgress(getString(R.string.working), Constants.STEP_STATE_WORK);
 
             //add OpenStreetMap layer on application first run

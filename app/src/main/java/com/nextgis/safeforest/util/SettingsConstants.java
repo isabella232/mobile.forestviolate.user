@@ -30,7 +30,7 @@ public interface SettingsConstants
     String OSM = "OpenStreetMap";
     String OSM_URL = "http://{a,b,c}.tile.openstreetmap.org/{z}/{x}/{y}.png";
     String KOSMOSNIMKI = "Topo";
-    String KOSMOSNIMKI_URL = "http://{a,b,c}.tile.cart.kosmosnimki.ru/rs/{z}/{x}/{y}.png";
+    String KOSMOSNIMKI_URL = "http://dev.citorus.ru/siren/relief/{z}/{x}/{y}.png";
     String DARK_MATTER = "DarkMatter";
     String DARK_MATTER_URL = "http://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png";
     String ESRI = "ESRITerrain";

@@ -107,10 +107,6 @@ public class RegionSyncFragment extends Fragment {
             Toast.makeText(activity, R.string.error_network_unavailable, Toast.LENGTH_SHORT).show();
     }
 
-    protected void retry() {
-
-    }
-
     protected static void stopSyncService(Activity activity) {
         Intent syncIntent = new Intent(activity, RegionSyncService.class);
         syncIntent.setAction(RegionSyncService.ACTION_STOP);
@@ -307,7 +303,7 @@ public class RegionSyncFragment extends Fragment {
         private Activity mActivity;
         private Intent mIntent;
 
-        public DeleteLayersTask(Activity activity, Intent intent) {
+        DeleteLayersTask(Activity activity, Intent intent) {
             mActivity = activity;
             mIntent = intent;
         }

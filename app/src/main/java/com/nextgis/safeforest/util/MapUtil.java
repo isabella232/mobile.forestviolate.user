@@ -39,7 +39,6 @@ import com.nextgis.maplib.map.MapContentProviderHelper;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.FeatureChanges;
-import com.nextgis.maplib.util.NGException;
 import com.nextgis.maplib.util.NetworkUtil;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
@@ -101,7 +100,7 @@ public final class MapUtil {
                                 queryLayer = new ResourceWithoutChildren(data, connection);
                             }
                         }
-                    } catch (IOException | JSONException | NGException e) {
+                    } catch (IOException | JSONException e) {
                         e.printStackTrace();
                     }
 
