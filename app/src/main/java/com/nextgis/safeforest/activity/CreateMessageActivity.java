@@ -42,6 +42,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -409,6 +410,10 @@ public class CreateMessageActivity
     }
 
     private void showPhotos() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (getCurrentFocus() != null)
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+
         mPhotos.setVisibility(View.VISIBLE);
         mToolbar.setDisplayHomeAsUpEnabled(false);
         mToolbar.setTitle(R.string.photo_add);
