@@ -338,7 +338,7 @@ public class RegionSyncService extends Service {
             osmLayer.setURL(SettingsConstants.OSM_URL);
             osmLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
             osmLayer.setMaxZoom(20);
-            osmLayer.setMinZoom(12.4f);
+            osmLayer.setMinZoom(11.4f);
             osmLayer.setVisible(true);
             map.addLayer(osmLayer);
             //mMap.moveLayer(0, osmLayer);
@@ -353,12 +353,11 @@ public class RegionSyncService extends Service {
             }
         }*/
 
-            RemoteTMSLayerUI ksLayer =
-                    new RemoteTMSLayerUI(getApplicationContext(), map.createLayerStorage());
+            RemoteTMSLayerUI ksLayer = new RemoteTMSLayerUI(getApplicationContext(), map.createLayerStorage());
             ksLayer.setName(SettingsConstants.KOSMOSNIMKI);
             ksLayer.setURL(SettingsConstants.KOSMOSNIMKI_URL);
             ksLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
-            ksLayer.setMaxZoom(12.4f);
+            ksLayer.setMaxZoom(11.4f);
             ksLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
             ksLayer.setVisible(true);
             map.addLayer(ksLayer);
@@ -367,7 +366,7 @@ public class RegionSyncService extends Service {
             if (extent.isInit()) {
                 //download
                 try {
-                    downloadTiles(ksLayer, extent, 5, 8);
+                    downloadTiles(ksLayer, extent, 5, 7);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
