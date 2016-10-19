@@ -49,8 +49,10 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.espian.showcaseview.ShowcaseView;
@@ -83,7 +85,7 @@ import com.nineoldandroids.view.ViewHelper;
 import java.util.Locale;
 
 public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAccountListener, View.OnClickListener {
-    enum CURRENT_VIEW {ACCOUNT, INITIAL, NORMAL}
+    enum CURRENT_VIEW {ACCOUNT, REGION, INITIAL, NORMAL}
     protected static final int PERMISSIONS_REQUEST = 1;
     protected static final String KEY_CURRENT_VIEW = "current_view";
 
@@ -103,7 +105,6 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     protected ViewPager mViewPager;
     protected TabLayout mTabLayout;
     protected boolean mFirstRun = true;
-    protected int mCurrentView;
     protected int mCurrentViewState;
     protected TabLayout.ViewPagerOnTabSelectedListener mTabListener;
 
@@ -131,6 +132,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     }
 
     protected void requestPermissions() {
+        mCurrentViewState = -1;
         String[] permissions = new String[] {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.GET_ACCOUNTS, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         requestPermissions(R.string.permissions, R.string.requested_permissions, PERMISSIONS_REQUEST, permissions);
@@ -158,25 +160,24 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     }
 
     private void start() {
-        // check if first run
-        // get from properties if first time
-        // and registered or guest user
         final MainApplication app = (MainApplication) getApplication();
         final Account account = app.getAccount(getString(R.string.account_name));
+        // check if has safe forest account
         if (account == null || mCurrentViewState == CURRENT_VIEW.ACCOUNT.ordinal()) {
-            RegionSyncFragment.createChooseRegionDialog(this, new RegionSyncFragment.onRegionReceive() {
-                @Override
-                public void onRegionChosen(String regionName) {
-                    Log.d(Constants.SFTAG, "No account. " + getString(R.string.account_name) + " created. Run first step.");
-                    VectorLayer regions = (VectorLayer) MapBase.getInstance().getLayerByName(Constants.KEY_FV_REGIONS);
-                    Feature feature = regions.getFeature(mPreferences.getLong(SettingsConstants.KEY_PREF_REGION, 0));
-                    createFirstStartView(feature.getFieldValueAsString("url"));
-                }
-            });
+            long regionId = mPreferences.getLong(SettingsConstants.KEY_PREF_REGION, -1);
+            // check if region is selected already
+            if (regionId == -1) {
+                ((TextView) findViewById(R.id.main_info)).setText(R.string.no_region_selected);
+                ((Button) findViewById(R.id.grant_permissions)).setText(R.string.select);
+                showChooseRegionDialog();
+            } else {
+                createAccountView();
+            }
         } else {
+            // check basic layers
             if (!hasBasicLayers(app.getMap()) || mCurrentViewState == CURRENT_VIEW.INITIAL.ordinal()) {
                 Log.d(Constants.SFTAG, "Account " + getString(R.string.account_name) + " created. Run second step.");
-                createSecondStartView();
+                createSetupView();
             } else {
                 Log.d(Constants.SFTAG, "Account " + getString(R.string.account_name) + " created. Layers created. Run normal view.");
                 mFirstRun = false;
@@ -193,17 +194,23 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     }
 
     protected boolean hasBasicLayers(MapBase map) {
-        return MapUtil.hasLayer(map, Constants.KEY_FV_REGIONS) && MapUtil.hasLayer(map, Constants.KEY_CITIZEN_MESSAGES);
+        return MapUtil.hasLayer(map, Constants.KEY_FV_REGIONS) &&
+                MapUtil.hasLayer(map, Constants.KEY_FV_DOCS) &&
+                MapUtil.hasLayer(map, Constants.KEY_CITIZEN_MESSAGES);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(KEY_CURRENT_VIEW, mCurrentView);
+        outState.putInt(KEY_CURRENT_VIEW, mCurrentViewState);
     }
 
-    protected void createFirstStartView(String server){
-        mCurrentView = CURRENT_VIEW.ACCOUNT.ordinal();
+    protected void createAccountView() {
+        VectorLayer regions = (VectorLayer) MapBase.getInstance().getLayerByName(Constants.KEY_FV_REGIONS);
+        long regionId = mPreferences.getLong(SettingsConstants.KEY_PREF_REGION, 0);
+        Feature feature = regions.getFeature(regionId);
+
+        mCurrentViewState = CURRENT_VIEW.ACCOUNT.ordinal();
         setContentView(R.layout.activity_main_first);
         setToolbar(R.id.main_toolbar);
         setTitle(getText(R.string.first_run));
@@ -211,19 +218,19 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         FragmentManager fm = getSupportFragmentManager();
         NGWLoginFragment ngwLoginFragment = (NGWLoginFragment) fm.findFragmentByTag(Constants.FRAGMENT_LOGIN);
 
-        if (ngwLoginFragment == null) {
+        if (ngwLoginFragment == null)
             ngwLoginFragment = new LoginFragment();
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.add(com.nextgis.maplibui.R.id.login_frame, ngwLoginFragment, Constants.FRAGMENT_LOGIN);
-            ft.commitAllowingStateLoss();
-        }
+
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(com.nextgis.maplibui.R.id.login_frame, ngwLoginFragment, Constants.FRAGMENT_LOGIN);
+        ft.commit();
         ngwLoginFragment.setForNewAccount(true);
         ngwLoginFragment.setOnAddAccountListener(this);
-        ngwLoginFragment.setUrlText(server);
+        ngwLoginFragment.setUrlText(feature.getFieldValueAsString("url"));
     }
 
-    protected void createSecondStartView(){
-        mCurrentView = CURRENT_VIEW.INITIAL.ordinal();
+    protected void createSetupView() {
+        mCurrentViewState = CURRENT_VIEW.INITIAL.ordinal();
         setContentView(R.layout.activity_main_first);
         setToolbar(R.id.main_toolbar);
         setTitle(getText(R.string.initialization));
@@ -241,7 +248,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
 
     protected void createNormalView() {
-        mCurrentView = CURRENT_VIEW.NORMAL.ordinal();
+        mCurrentViewState = CURRENT_VIEW.NORMAL.ordinal();
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         setContentView(R.layout.activity_main);
@@ -416,7 +423,10 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
         switch (v.getId()) {
             case R.id.grant_permissions:
-                requestPermissions();
+                if (mCurrentViewState == CURRENT_VIEW.REGION.ordinal())
+                    showChooseRegionDialog();
+                else
+                    requestPermissions();
                 break;
             case R.id.showcase_button:
                 showLabels();
@@ -447,6 +457,16 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 //                newMessage(Constants.MSG_TYPE_MISC);
 //                break;
         }
+    }
+
+    private void showChooseRegionDialog() {
+        mCurrentViewState = CURRENT_VIEW.REGION.ordinal();
+        RegionSyncFragment.createChooseRegionDialog(this, new RegionSyncFragment.onRegionReceive() {
+            @Override
+            public void onRegionChosen(String regionName) {
+                createAccountView();
+            }
+        });
     }
 
     private void showLabels() {
@@ -496,6 +516,8 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
     @Override
     public void onAddAccount(Account account, String token, boolean accountAdded) {
+        Log.d(Constants.SFTAG, "No account. " + getString(R.string.account_name) + " created. Run first step.");
+
         if(accountAdded) {
             final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
             float minX = prefs.getFloat(SettingsConstants.KEY_PREF_USERMINX, -2000.0f);

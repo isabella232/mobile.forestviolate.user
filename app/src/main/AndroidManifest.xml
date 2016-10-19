@@ -22,10 +22,8 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<manifest
-    package="com.nextgis.safeforest"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    >
+<manifest package="com.nextgis.safeforest"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -45,24 +43,19 @@
 
     <uses-feature
         android:name="android.hardware.location"
-        android:required="true"
-        />
+        android:required="true"/>
     <uses-feature
         android:name="android.hardware.telephony"
-        android:required="false"
-        />
+        android:required="false"/>
     <uses-feature
         android:name="android.hardware.wifi"
-        android:required="false"
-        />
+        android:required="false"/>
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false"
-        />
+        android:required="false"/>
     <uses-feature
         android:name="android.hardware.compass"
-        android:required="false"
-        />
+        android:required="false"/>
 
     <supports-screens
         android:anyDensity="true"
@@ -70,21 +63,19 @@
         android:normalScreens="true"
         android:resizeable="true"
         android:smallScreens="true"
-        android:xlargeScreens="true"
-        />
+        android:xlargeScreens="true"/>
 
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        >
+        android:theme="@style/AppTheme">
 
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
-            >
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -94,67 +85,53 @@
 
         <activity
             android:name=".activity.AboutActivity"
-            android:label="@string/action_about"
-            />
+            android:label="@string/action_about"/>
 
         <activity
             android:name=".activity.IntroActivity"
-            android:label="@string/intro"
-            />
+            android:label="@string/intro"/>
 
         <activity
             android:name=".activity.PreferencesActivity"
-            android:label="@string/action_settings"
-            />
+            android:label="@string/action_settings"/>
 
         <activity
             android:name=".activity.AccountActivity"
-            android:label="@string/sf_login_title"
-            />
+            android:label="@string/sf_login_title"/>
 
         <activity
             android:name=".activity.CreateMessageActivity"
-            android:windowSoftInputMode="stateHidden|adjustPan"
             android:label="@string/action_felling"
-            />
+            android:windowSoftInputMode="stateHidden|adjustPan"/>
 
         <activity
             android:name=".activity.MessageCompassActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize"
             android:label="@string/location_from_compass"
-            />
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
 
         <activity
             android:name=".activity.ViewMessageActivity"
-            android:label="@string/action_view_message"
-            />
+            android:label="@string/action_view_message"/>
 
         <service
             android:name="com.nextgis.safeforest.datasource.FVSyncService"
             android:exported="true"
-            android:process=":sync"
-            >
+            android:process=":sync">
             <intent-filter>
-                <action
-                    android:name="android.content.SyncAdapter"
-                    />
+                <action android:name="android.content.SyncAdapter"/>
             </intent-filter>
             <meta-data
                 android:name="android.content.SyncAdapter"
-                android:resource="@xml/syncadapter"
-                />
+                android:resource="@xml/syncadapter"/>
         </service>
 
-        <service
-            android:name=".util.RegionSyncService">
-        </service>
+        <service android:name=".util.RegionSyncService"/>
 
         <provider
             android:name="com.nextgis.maplib.datasource.LayerContentProvider"
             android:authorities="com.nextgis.safeforest.provider"
             android:exported="false"
-            android:syncable="true"
-            />
+            android:syncable="true"/>
 
     </application>
 
