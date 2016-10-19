@@ -41,6 +41,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -86,6 +87,10 @@ import java.util.Locale;
 public class MapFragment
         extends Fragment
         implements MapViewEventListener, GpsEventListener {
+    enum DIALOG {LEGEND, LAYERS, BASEMAPS, CITIZEN, FOREST}
+    private final static String KEY_DIALOG = "dialog";
+    private final static String KEY_VALUES = "values";
+    private final static String KEY_FEATURE = "feature";
     public static final int LAYERS_MENU_ID = 123;
     public static final int LEGEND_MENU_ID = 323;
 
@@ -110,6 +115,9 @@ public class MapFragment
 
     protected float mTolerancePX;
     protected boolean mIsAuthorized;
+    private int mDialog = -1;
+    private boolean[] mDialogValues;
+    private long mFeatureId;
 
     @Override
     public View onCreateView(
@@ -171,6 +179,23 @@ public class MapFragment
         }
 
         mStatusPanel = (FrameLayout) view.findViewById(R.id.fl_status_panel);
+        if (savedInstanceState != null) {
+            mFeatureId = savedInstanceState.getLong(KEY_FEATURE);
+            int dialog = savedInstanceState.getInt(KEY_DIALOG, -1);
+            if (dialog == DIALOG.LEGEND.ordinal())
+                showLegend();
+            else if (dialog == DIALOG.LAYERS.ordinal()) {
+                mDialogValues = savedInstanceState.getBooleanArray(KEY_VALUES);
+                showLayersDialog(mDialogValues);
+            } else if (dialog == DIALOG.BASEMAPS.ordinal()) {
+                mDialogValues = savedInstanceState.getBooleanArray(KEY_VALUES);
+                showBasemapsDialog(mDialogValues);
+            } else if (dialog == DIALOG.CITIZEN.ordinal()) {
+                showCitizenMessageFeatureDialog();
+            } else if (dialog == DIALOG.FOREST.ordinal()) {
+                showForestViolateFeatureDialog();
+            }
+        }
 
         return view;
     }
@@ -188,7 +213,8 @@ public class MapFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case LAYERS_MENU_ID:
-                showLayersDialog();
+                mDialogValues = getLayersVisibility();
+                showLayersDialog(mDialogValues);
                 return true;
             case LEGEND_MENU_ID:
                 showLegend();
@@ -198,10 +224,18 @@ public class MapFragment
         }
     }
 
-    private void showLayersDialog() {
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_DIALOG, mDialog);
+        outState.putBooleanArray(KEY_VALUES, mDialogValues);
+        outState.putLong(KEY_FEATURE, mFeatureId);
+    }
+
+    private void showLayersDialog(final boolean[] visible) {
+        mDialog = DIALOG.LAYERS.ordinal();
         CharSequence[] layers = new CharSequence[]{getString(R.string.citizen_messages), getString(R.string.violations), getString(R.string.fires),
                 getString(R.string.inspector_polygons), getString(R.string.forestry), "Landsat", getString(R.string.geomixer_fv_tiles)};
-        final boolean[] visible = getLayersVisibility();
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), ((SFActivity) getActivity()).getDialogThemeId());
         dialog.setTitle(R.string.layers)
@@ -211,17 +245,24 @@ public class MapFragment
                         visible[which] = isChecked;
                     }
                 })
-                .setNegativeButton(android.R.string.cancel, null)
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mDialog = -1;
+                    }
+                })
                 .setNeutralButton(R.string.basemaps, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         saveLayerVisibility(visible);
-                        showBasemapsDialog();
+                        mDialogValues = getBasemapsVisibility();
+                        showBasemapsDialog(mDialogValues);
                     }
                 })
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        mDialog = -1;
                         saveLayerVisibility(visible);
                     }
                 });
@@ -229,24 +270,41 @@ public class MapFragment
         AlertDialog box = dialog.show();
         box.setCanceledOnTouchOutside(false);
         final ListView items = box.getListView();
+        items.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (mIsAuthorized)
+                    return;
+
+                int firstVisibleRow = absListView.getFirstVisiblePosition();
+                int lastVisibleRow = absListView.getLastVisiblePosition();
+                for (int i = firstVisibleRow; i <= lastVisibleRow; i++) {
+                    boolean in = i == 3 || i == 4 || i == 5 || i == 6;
+                    View v = absListView.getChildAt(i - firstVisibleRow);
+                    if (v != null)
+                        v.setEnabled(!in);
+                }
+            }
+        });
         items.post(new Runnable() {
             @Override
             public void run() {
-                if (!mIsAuthorized) {
+                if (!mIsAuthorized)
                     Toast.makeText(getActivity(), R.string.locked_layers, Toast.LENGTH_SHORT).show();
-                    items.getChildAt(3).setEnabled(false);
-                    items.getChildAt(4).setEnabled(false);
-                    items.getChildAt(5).setEnabled(false);
-                    items.getChildAt(6).setEnabled(false);
-                }
             }
         });
     }
 
-    private void showBasemapsDialog() {
+    private void showBasemapsDialog(final boolean[] visible) {
+        mDialog = DIALOG.BASEMAPS.ordinal();
         CharSequence[] layers = new CharSequence[]{"OSM + Kosmosnimki", "Dark Matter", "ESRI Terrain", "GenShtab", "Google Hybrid", "Mapbox Satellite",
                 "OpenTopoMap", "OSM Transport", "RosReestr", "TopoMap", "WikiMapia"};
-        final boolean[] visible = getBasemapsVisibility();
+
         int layer = 0;
         for (int i = 0; i < visible.length; i++)
             if (visible[i]) {
@@ -263,17 +321,24 @@ public class MapFragment
                             visible[i] = i == which;
                     }
                 })
-                .setNegativeButton(android.R.string.cancel, null)
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mDialog = -1;
+                    }
+                })
                 .setNeutralButton(R.string.layers, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         saveBasemapVisibility(visible);
-                        showLayersDialog();
+                        mDialogValues = getLayersVisibility();
+                        showLayersDialog(mDialogValues);
                     }
                 })
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        mDialog = -1;
                         saveBasemapVisibility(visible);
                     }
                 });
@@ -416,9 +481,16 @@ public class MapFragment
     }
 
     private void showLegend() {
+        mDialog = DIALOG.LEGEND.ordinal();
         SFActivity activity = (SFActivity) getActivity();
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, activity.getDialogThemeId());
         builder.setTitle(R.string.legend).setPositiveButton(android.R.string.ok, null).setView(R.layout.dialog_legend);
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                mDialog = -1;
+            }
+        });
         builder.create().show();
     }
 
@@ -676,9 +748,8 @@ public class MapFragment
         if (null != layerFV) {
             items = layerFV.query(mapEnv);
             if (!items.isEmpty()) {
-                Feature feature = layerFV.getFeature(items.get(0));
-                if (feature != null)
-                    showForestViolateFeatureDialog(feature);
+                mFeatureId = items.get(0);
+                showForestViolateFeatureDialog();
                 return;
             }
         }
@@ -686,14 +757,19 @@ public class MapFragment
         if (null != layerMessages) {
             items = layerMessages.query(mapEnv);
             if (!items.isEmpty()) {
-                Feature feature = layerMessages.getFeature(items.get(0));
-                if (feature != null)
-                    showCitizenMessageFeatureDialog(feature);
+                mFeatureId = items.get(0);
+                showCitizenMessageFeatureDialog();
             }
         }
     }
 
-    private void showForestViolateFeatureDialog(Feature feature) {
+    private void showForestViolateFeatureDialog() {
+        VectorLayer layerFV = (VectorLayer) mApp.getMap().getLayerByName(Constants.KEY_FV_FOREST);
+        Feature feature = layerFV.getFeature(mFeatureId);
+        if (feature == null)
+            return;
+
+        mDialog = DIALOG.FOREST.ordinal();
         String message = getDate(feature, Constants.FIELD_FV_DATE);
         message += getString(R.string.region) + ": " + feature.getFieldValue(Constants.FIELD_FV_REGION) + "\r\n";
         message += getString(R.string.forestry) + ": " + feature.getFieldValue(Constants.FIELD_FV_FORESTRY) + "\r\n";
@@ -707,7 +783,13 @@ public class MapFragment
         dialog.show();
     }
 
-    private void showCitizenMessageFeatureDialog(Feature feature) {
+    private void showCitizenMessageFeatureDialog() {
+        VectorLayer layerMessages = (VectorLayer) mApp.getMap().getLayerByName(Constants.KEY_CITIZEN_MESSAGES);
+        Feature feature = layerMessages.getFeature(mFeatureId);
+        if (feature == null)
+            return;
+
+        mDialog = DIALOG.CITIZEN.ordinal();
         String message = getDate(feature, Constants.FIELD_MDATE);
         message += getString(R.string.type_paragraph) + ": " + feature.getFieldValue(Constants.FIELD_MTYPE_STR) + "\r\n";
         String status = MapUtil.getStatus(getContext(), ((Long) feature.getFieldValue(Constants.FIELD_STATUS)).intValue());

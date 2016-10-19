@@ -88,6 +88,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     enum CURRENT_VIEW {ACCOUNT, REGION, INITIAL, NORMAL}
     protected static final int PERMISSIONS_REQUEST = 1;
     protected static final String KEY_CURRENT_VIEW = "current_view";
+    protected static final String KEY_CURRENT_TAB = "current_tab";
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -105,7 +106,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     protected ViewPager mViewPager;
     protected TabLayout mTabLayout;
     protected boolean mFirstRun = true;
-    protected int mCurrentViewState;
+    protected int mCurrentViewState, mCurrentTab;
     protected TabLayout.ViewPagerOnTabSelectedListener mTabListener;
 
     @Override
@@ -123,6 +124,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         setTitle(getText(R.string.app_name));
 
         mCurrentViewState = savedInstanceState != null ? savedInstanceState.getInt(KEY_CURRENT_VIEW) : -1;
+        mCurrentTab = savedInstanceState != null ? savedInstanceState.getInt(KEY_CURRENT_TAB, 1) : 1;
         findViewById(R.id.grant_permissions).setOnClickListener(this);
 
         if (!hasPermissions())
@@ -203,6 +205,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_CURRENT_VIEW, mCurrentViewState);
+        outState.putInt(KEY_CURRENT_TAB, mViewPager != null ? mViewPager.getCurrentItem() : 1);
     }
 
     protected void createAccountView() {
@@ -304,7 +307,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         };
         mTabLayout.addOnTabSelectedListener(mTabListener);
 
-        if(mTabLayout.getTabCount() < mSectionsPagerAdapter.getCount()) {
+        if (mTabLayout.getTabCount() < mSectionsPagerAdapter.getCount()) {
             // For each of the sections in the app, add a tab to the action bar.
             for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
                 // Create a tab with text corresponding to the page title defined by
@@ -323,7 +326,8 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         mViewPager.post(new Runnable() {
             @Override
             public void run() {
-                showMap();
+                if (mCurrentTab == 1)
+                    showMap();
             }
         });
 

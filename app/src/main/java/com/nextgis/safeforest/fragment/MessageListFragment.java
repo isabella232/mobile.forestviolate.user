@@ -65,10 +65,11 @@ import java.io.IOException;
 import java.util.Arrays;
 
 
-public class MessageListFragment
-        extends Fragment
-        implements LoaderManager.LoaderCallbacks<Cursor>
+public class MessageListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
+    private final static String KEY_FILTER = "filter";
+    private final static String KEY_VALUES = "filter_values";
+
     private static final int LIST_LOADER = 12321;
     private static final int FILTER_MENU_ID = 321;
 
@@ -81,6 +82,8 @@ public class MessageListFragment
 
     protected boolean mIsAuthorized;
     protected boolean mShowFires, mShowFelling, mShowGarbage, mShowMisc, mShowDocs;
+    private boolean mFilterShown;
+    private boolean[] mFilterValues;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -127,7 +130,8 @@ public class MessageListFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == FILTER_MENU_ID) {
-            showFilter();
+            mFilterValues = getFilter();
+            showFilter(mFilterValues);
             return true;
         }
 
@@ -145,6 +149,13 @@ public class MessageListFragment
     public void onPause() {
         getContext().unregisterReceiver(mReceiver);
         super.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_FILTER, mFilterShown);
+        outState.putBooleanArray(KEY_VALUES, mFilterValues);
     }
 
     @Override
@@ -230,6 +241,9 @@ public class MessageListFragment
             }
         });
 
+        if (savedInstanceState != null && savedInstanceState.getBoolean(KEY_FILTER))
+            showFilter(savedInstanceState.getBooleanArray(KEY_VALUES));
+
         return rootView;
     }
 
@@ -263,8 +277,7 @@ public class MessageListFragment
         mAdapter.changeCursor(null);
     }
 
-    public void showFilter() {
-        final boolean[] values = getFilter();
+    public void showFilter(final boolean[] values) {
         CharSequence[] titles = new CharSequence[]{getString(R.string.fires), getString(R.string.action_felling),
                 getString(R.string.garbage), getString(R.string.misc), getString(R.string.documents)};
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), ((SFActivity) getActivity()).getDialogThemeId());
@@ -290,13 +303,34 @@ public class MessageListFragment
                     }
                 });
 
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                mFilterShown = false;
+            }
+        });
+
         AlertDialog box = dialog.show();
+        mFilterShown = true;
         box.setCanceledOnTouchOutside(false);
         final ListView items = box.getListView();
-        items.post(new Runnable() {
+        items.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
-            public void run() {
-                items.getChildAt(4).setEnabled(mIsAuthorized);
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                int firstVisibleRow = absListView.getFirstVisiblePosition();
+                int lastVisibleRow = absListView.getLastVisiblePosition();
+                for (int i = firstVisibleRow; i <= lastVisibleRow; i++) {
+                    if (i == 4) {
+                        View v = absListView.getChildAt(i - firstVisibleRow);
+                        if (v != null)
+                            v.setEnabled(mIsAuthorized);
+                    }
+                }
             }
         });
     }
