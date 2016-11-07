@@ -77,6 +77,12 @@ public class PreferencesActivity extends SFActivity {
     }
 
     @Override
+    public void finish() {
+        setResult(RESULT_OK);
+        super.finish();
+    }
+
+    @Override
     public void onBackPressed() {
         if (isRegionSyncStarted())
             getSupportFragmentManager().popBackStack();

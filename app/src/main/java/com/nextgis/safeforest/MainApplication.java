@@ -2,6 +2,7 @@
  * Project: Forest violations
  * Purpose: Mobile application for registering facts of the forest violations.
  * Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+ * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
  * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
  *
@@ -92,12 +93,7 @@ public class MainApplication
      * Show settings Activity
      */
     @Override
-    public void showSettings(String setting)
-    {
-        Intent intentSet = new Intent(this, PreferencesActivity.class);
-        intentSet.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intentSet);
-    }
+    public void showSettings(String setting) { }
 
 
     @Override

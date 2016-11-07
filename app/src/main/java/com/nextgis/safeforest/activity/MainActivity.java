@@ -85,6 +85,8 @@ import com.nineoldandroids.view.ViewHelper;
 import java.util.Locale;
 
 public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAccountListener, View.OnClickListener {
+    private static final int SETTINGS = 1;
+
     enum CURRENT_VIEW {ACCOUNT, REGION, INITIAL, NORMAL}
     protected static final int PERMISSIONS_REQUEST = 1;
     protected static final String KEY_CURRENT_VIEW = "current_view";
@@ -574,8 +576,6 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
         //noinspection SimplifiableIfStatement
 
-        final MainApplication app = (MainApplication) getApplication();
-
         switch (id) {
             case R.id.action_sync:
                 new Thread() {
@@ -587,7 +587,11 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
                 return true;
 
             case R.id.action_settings:
-                app.showSettings(null);
+                Intent settings = new Intent(this, PreferencesActivity.class);
+                startActivityForResult(settings, SETTINGS);
+                mSectionsPagerAdapter.removeMap();
+                mSectionsPagerAdapter = null;
+                mViewPager.setAdapter(null);
                 return true;
 
             case R.id.action_about:
@@ -597,6 +601,25 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case SETTINGS:
+                mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+                mViewPager.setAdapter(mSectionsPagerAdapter);
+                mViewPager.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mCurrentTab == 1)
+                            showMap();
+                    }
+                });
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private void testSync()
@@ -672,6 +695,12 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
                     return getString(R.string.title_map).toUpperCase(l);
             }
             return null;
+        }
+
+        void removeMap() {
+            FragmentManager fm = getSupportFragmentManager();
+            if (mMapFragment != null)
+                fm.beginTransaction().remove(mMapFragment).commit();
         }
     }
 
