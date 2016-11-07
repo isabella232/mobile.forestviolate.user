@@ -107,17 +107,11 @@ public class MessageListFragment extends Fragment implements LoaderManager.Loade
         mIntentFilter.addAction(com.nextgis.maplib.util.Constants.NOTIFY_FEATURE_ID_CHANGE);
         mIntentFilter.addAction(SyncAdapter.SYNC_FINISH);
 
-        MainApplication app = (MainApplication) getActivity().getApplication();
-        Account account = app.getAccount(getString(R.string.account_name));
-        String auth = app.getAccountUserData(account, com.nextgis.safeforest.util.Constants.KEY_IS_AUTHORIZED);
-        mIsAuthorized = auth != null && !auth.equals(com.nextgis.safeforest.util.Constants.ANONYMOUS);
-
         boolean[] filter = getFilter();
         mShowFires = filter[0];
         mShowFelling = filter[1];
         mShowGarbage = filter[2];
         mShowMisc = filter[3];
-        mShowDocs = mIsAuthorized && filter[4];
     }
 
     @Override
@@ -141,6 +135,13 @@ public class MessageListFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onResume() {
         super.onResume();
+
+        MainApplication app = (MainApplication) getActivity().getApplication();
+        Account account = app.getAccount(getString(R.string.account_name));
+        String auth = app.getAccountUserData(account, com.nextgis.safeforest.util.Constants.KEY_IS_AUTHORIZED);
+        mIsAuthorized = auth != null && !auth.equals(com.nextgis.safeforest.util.Constants.ANONYMOUS);
+        mShowDocs = mIsAuthorized && getFilter()[4];
+
         getContext().registerReceiver(mReceiver, mIntentFilter);
         getActivity().getSupportLoaderManager().restartLoader(LIST_LOADER, null, this).forceLoad();
     }
