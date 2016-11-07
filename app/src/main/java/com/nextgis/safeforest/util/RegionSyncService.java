@@ -175,7 +175,7 @@ public class RegionSyncService extends Service {
                     final String sPassword = app.getAccountPassword(mAccount);
                     mURL = app.getAccountUrl(mAccount);
 
-                    if (null == mURL || null == sPassword || null == sLogin) {
+                    if (null == mURL || null == sLogin) {
                         break;
                     }
 
