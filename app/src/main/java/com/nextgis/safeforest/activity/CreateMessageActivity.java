@@ -221,11 +221,11 @@ public class CreateMessageActivity
             mUserDataDialog = new UserDataDialog();
             mUserDataDialog.setCancelable(false);
             mUserDataDialog.setKeepInstance(true);
-            mUserDataDialog.setFullNameText(mFullNameText);
-            mUserDataDialog.setPhoneText(mPhoneText);
-            mUserDataDialog.setEmailText(mEmailText);
         }
 
+        mUserDataDialog.setFullNameText(mFullNameText);
+        mUserDataDialog.setPhoneText(mPhoneText);
+        mUserDataDialog.setEmailText(mEmailText);
         mUserDataDialog.setOnPositiveClickedListener(new YesNoDialog.OnPositiveClickedListener() {
             @Override
             public void onPositiveClicked() {
