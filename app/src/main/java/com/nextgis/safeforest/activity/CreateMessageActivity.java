@@ -165,7 +165,7 @@ public class CreateMessageActivity
     protected void onStart() {
         super.onStart();
 
-        Account account = mApp.getAccount(getString(R.string.account_name));
+        Account account = mApp.getAccount(Constants.ACCOUNT_NAME);
         String auth = mApp.getAccountUserData(account, Constants.KEY_IS_AUTHORIZED);
         mIsAuthorized = auth != null && !auth.equals(Constants.ANONYMOUS);
         mPhoneText = mApp.getAccountUserData(account, SettingsConstants.KEY_USER_PHONE);
@@ -250,10 +250,9 @@ public class CreateMessageActivity
                     }
                 }
 
-                String accountName = getString(R.string.account_name);
-                mApp.setUserData(accountName, SettingsConstants.KEY_USER_FULLNAME, mFullNameText);
-                mApp.setUserData(accountName, SettingsConstants.KEY_USER_PHONE, mPhoneText);
-                mApp.setUserData(accountName, SettingsConstants.KEY_USER_EMAIL, mEmailText);
+                mApp.setUserData(Constants.ACCOUNT_NAME, SettingsConstants.KEY_USER_FULLNAME, mFullNameText);
+                mApp.setUserData(Constants.ACCOUNT_NAME, SettingsConstants.KEY_USER_PHONE, mPhoneText);
+                mApp.setUserData(Constants.ACCOUNT_NAME, SettingsConstants.KEY_USER_EMAIL, mEmailText);
 
                 mUserDataDialog.dismiss();
             }

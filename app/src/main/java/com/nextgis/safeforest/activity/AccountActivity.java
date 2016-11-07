@@ -94,7 +94,7 @@ public class AccountActivity extends SFActivity {
             addPreferencesFromResource(R.xml.account);
             final SFActivity activity = (SFActivity) getActivity();
             mApp = (MainApplication) activity.getApplication();
-            mAccount = mApp.getAccount(getString(R.string.account_name));
+            mAccount = mApp.getAccount(Constants.ACCOUNT_NAME);
 
             EditTextPreference fullName = (EditTextPreference) findPreference(SettingsConstants.KEY_USER_FULLNAME);
             fullName.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {

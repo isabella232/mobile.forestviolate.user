@@ -246,7 +246,7 @@ public class LoginFragment extends NGWLoginFragment {
 
         if (loader.getId() == R.id.auth_token_loader) {
             if (token != null && token.length() > 0) {
-                onTokenReceived(getString(R.string.account_name), token);
+                onTokenReceived(Constants.ACCOUNT_NAME, token);
             } else {
                 Toast.makeText(getActivity(), R.string.error_login, Toast.LENGTH_SHORT).show();
 
@@ -256,7 +256,7 @@ public class LoginFragment extends NGWLoginFragment {
             }
         }
         else if(loader.getId() == R.id.non_auth_token_loader){
-            onTokenReceived(getString(R.string.account_name), Constants.ANONYMOUS);
+            onTokenReceived(Constants.ACCOUNT_NAME, Constants.ANONYMOUS);
         }
     }
 

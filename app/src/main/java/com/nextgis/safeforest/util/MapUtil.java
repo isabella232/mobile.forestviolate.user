@@ -224,9 +224,7 @@ public final class MapUtil {
         VectorLayer messages = ((VectorLayer) map.getLayerByName(Constants.KEY_CITIZEN_MESSAGES));
         if (messages != null) {
             MessageFeatureRenderer renderer = new MessageFeatureRenderer(messages);
-
-            Account account = app.getAccount(app.getString(R.string.account_name));
-
+            Account account = app.getAccount(Constants.ACCOUNT_NAME);
             if (account != null) {
                 String email = app.getAccountUserData(account, com.nextgis.safeforest.util.SettingsConstants.KEY_USER_EMAIL);
                 renderer.setAccount(email);

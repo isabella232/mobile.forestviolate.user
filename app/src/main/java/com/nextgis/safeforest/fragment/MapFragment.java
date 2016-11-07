@@ -648,7 +648,7 @@ public class MapFragment
     }
 
     private void setLayers() {
-        Account account = mApp.getAccount(getString(R.string.account_name));
+        Account account = mApp.getAccount(Constants.ACCOUNT_NAME);
         String auth = mApp.getAccountUserData(account, Constants.KEY_IS_AUTHORIZED);
         mIsAuthorized = auth != null && !auth.equals(Constants.ANONYMOUS);
 

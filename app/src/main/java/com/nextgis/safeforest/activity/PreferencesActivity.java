@@ -163,7 +163,7 @@ public class PreferencesActivity extends SFActivity {
 
                         MainApplication app = (MainApplication) activity.getApplication();
 
-                        final Account account = app.getAccount(getString(R.string.account_name));
+                        final Account account = app.getAccount(com.nextgis.safeforest.util.Constants.ACCOUNT_NAME);
                         ContentResolver.addPeriodicSync(
                                 account, app.getAuthority(), Bundle.EMPTY, value);
 

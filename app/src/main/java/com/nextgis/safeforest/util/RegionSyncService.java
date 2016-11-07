@@ -170,7 +170,7 @@ public class RegionSyncService extends Service {
                 mMap = app.getMap();
 
                 if (!mIsRegionsOnly) {
-                    mAccount = app.getAccount(getString(R.string.account_name));
+                    mAccount = app.getAccount(Constants.ACCOUNT_NAME);
                     final String sLogin = app.getAccountLogin(mAccount);
                     final String sPassword = app.getAccountPassword(mAccount);
                     mURL = app.getAccountUrl(mAccount);

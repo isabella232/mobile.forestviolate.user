@@ -137,7 +137,7 @@ public class MessageListFragment extends Fragment implements LoaderManager.Loade
         super.onResume();
 
         MainApplication app = (MainApplication) getActivity().getApplication();
-        Account account = app.getAccount(getString(R.string.account_name));
+        Account account = app.getAccount(com.nextgis.safeforest.util.Constants.ACCOUNT_NAME);
         String auth = app.getAccountUserData(account, com.nextgis.safeforest.util.Constants.KEY_IS_AUTHORIZED);
         mIsAuthorized = auth != null && !auth.equals(com.nextgis.safeforest.util.Constants.ANONYMOUS);
         mShowDocs = mIsAuthorized && getFilter()[4];

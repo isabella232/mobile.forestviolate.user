@@ -165,7 +165,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
     private void start() {
         final MainApplication app = (MainApplication) getApplication();
-        final Account account = app.getAccount(getString(R.string.account_name));
+        final Account account = app.getAccount(Constants.ACCOUNT_NAME);
         // check if has safe forest account
         if (account == null || mCurrentViewState == CURRENT_VIEW.ACCOUNT.ordinal()) {
             long regionId = mPreferences.getLong(SettingsConstants.KEY_PREF_REGION, -1);
@@ -180,10 +180,10 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         } else {
             // check basic layers
             if (!hasBasicLayers(app.getMap()) || mCurrentViewState == CURRENT_VIEW.INITIAL.ordinal()) {
-                Log.d(Constants.SFTAG, "Account " + getString(R.string.account_name) + " created. Run second step.");
+                Log.d(Constants.SFTAG, "Account " + Constants.ACCOUNT_NAME + " created. Run second step.");
                 createSetupView();
             } else {
-                Log.d(Constants.SFTAG, "Account " + getString(R.string.account_name) + " created. Layers created. Run normal view.");
+                Log.d(Constants.SFTAG, "Account " + Constants.ACCOUNT_NAME + " created. Layers created. Run normal view.");
                 mFirstRun = false;
                 createNormalView();
             }
@@ -522,7 +522,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
 
     @Override
     public void onAddAccount(Account account, String token, boolean accountAdded) {
-        Log.d(Constants.SFTAG, "No account. " + getString(R.string.account_name) + " created. Run first step.");
+        Log.d(Constants.SFTAG, "No account. " + Constants.ACCOUNT_NAME + " created. Run first step.");
 
         if(accountAdded) {
             final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
