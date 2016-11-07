@@ -46,7 +46,7 @@ public interface SettingsConstants
     String OSM_TRANSPORT = "OSMTransport";
     String OSM_TRANSPORT_URL = "http://tile.thunderforest.com/transport/{z}/{x}/{y}.png";
     String ROSREESTR = "RosReestr";
-    String ROSREESTR_URL = "http://maps.rosreestr.ru/arcgis/rest/services/BaseMaps/BaseMap/MapServer/tile/{z}/{y}/{x}";
+    String ROSREESTR_URL = "http://pkk5.rosreestr.ru/arcgis/rest/services/BaseMaps/BaseMap/MapServer/tile/{z}/{y}/{x}";
     String TOPOMAP = "TopoMap";
     String TOPOMAP_URL = "http://maps.marshruty.ru/ml.ashx?al=1&i=1&x={x}&y={y}&z={z}";
     String WIKIMAPIA = "Wikimapia";
