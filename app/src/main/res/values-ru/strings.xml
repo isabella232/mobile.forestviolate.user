@@ -36,7 +36,7 @@
     <string name="wwf_link">http://wwf.ru</string>
     <string name="credits_intro">Лицензии</string>
     <string name="credits">Иконка фильтра сделана Austin Andrews из <a href="http://materialdesignicons.com/icon/filter">Material Design Icons</a>, а также некоторые иконки взяты с сайта <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a>, <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
-    <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2015]]></string>
+    <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2015–2016]]></string>
     <string name="intro">Введение</string>
     <string name="action_about">О программе</string>
     <string name="inspector_polygons">Полигоны инспекторов</string>
