@@ -387,7 +387,7 @@ public class MapFragment
         ILayerView layer = (ILayerView) map.getLayerByName(SettingsConstants.OSM);
         if (layer != null)
             osmKosmosnimki = layer.isVisible();
-        layer = (ILayerView) map.getLayerByName(SettingsConstants.KOSMOSNIMKI);
+        layer = (ILayerView) map.getLayerByName(SettingsConstants.SPUTNIK);
         if (layer != null)
             osmKosmosnimki &= layer.isVisible();
         layer = (ILayerView) map.getLayerByName(SettingsConstants.DARK_MATTER);
@@ -466,7 +466,7 @@ public class MapFragment
                     layer = (ILayerView) map.getLayerByName(SettingsConstants.OSM);
                     if (layer != null)
                         layer.setVisible(visible[i]);
-                    layer = (ILayerView) map.getLayerByName(SettingsConstants.KOSMOSNIMKI);
+                    layer = (ILayerView) map.getLayerByName(SettingsConstants.SPUTNIK);
                     break;
                 default:
                     layer = (ILayerView) map.getLayerByName(SettingsConstants.LAYER_NAMES[i - 1]);

@@ -354,8 +354,8 @@ public class RegionSyncService extends Service {
         }*/
 
             RemoteTMSLayerUI ksLayer = new RemoteTMSLayerUI(getApplicationContext(), map.createLayerStorage());
-            ksLayer.setName(SettingsConstants.KOSMOSNIMKI);
-            ksLayer.setURL(SettingsConstants.KOSMOSNIMKI_URL);
+            ksLayer.setName(SettingsConstants.SPUTNIK);
+            ksLayer.setURL(SettingsConstants.SPUTNIK_URL);
             ksLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
             ksLayer.setMaxZoom(11.4f);
             ksLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
