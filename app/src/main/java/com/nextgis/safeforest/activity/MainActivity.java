@@ -154,7 +154,7 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
         switch (requestCode) {
             case PERMISSIONS_REQUEST:
                 if (isGrantedResult(grantResults))
-                    start();
+                    refreshActivityView();
                 else
                     Toast.makeText(this, R.string.permissions_deny, Toast.LENGTH_SHORT).show();
                 break;
