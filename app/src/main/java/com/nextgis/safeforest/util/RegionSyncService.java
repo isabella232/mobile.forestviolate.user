@@ -344,6 +344,7 @@ public class RegionSyncService extends Service {
                 map.addLayer(layer);
 
                 if (i == 0 && extent.isInit()) {
+                    layer.setVisible(true);
                     //download tiles for Sputnik 5-7 zoom levels
                     try {
                         downloadTiles(layer, extent, 5, 7);
