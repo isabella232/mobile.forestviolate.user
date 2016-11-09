@@ -302,8 +302,10 @@ public class MapFragment
 
     private void showBasemapsDialog(final boolean[] visible) {
         mDialog = DIALOG.BASEMAPS.ordinal();
-        CharSequence[] layers = new CharSequence[]{"OSM + Kosmosnimki", "Dark Matter", "ESRI Terrain", "GenShtab", "Google Hybrid", "Mapbox Satellite",
-                "OpenTopoMap", "OSM Transport", "RosReestr", "TopoMap", "WikiMapia"};
+        CharSequence[] layers = new CharSequence[]{getString(R.string.bm_sputnik), getString(R.string.bm_darkmatter), getString(R.string.bm_esri),
+                                                   getString(R.string.bm_genshtab), getString(R.string.bm_google), getString(R.string.bm_mapbox),
+                                                   getString(R.string.bm_opentopo), getString(R.string.bm_transport), getString(R.string.bm_rosreestr),
+                                                   getString(R.string.bm_topomap), getString(R.string.bm_wikimapia)};
 
         int layer = 0;
         for (int i = 0; i < visible.length; i++)
@@ -380,48 +382,17 @@ public class MapFragment
     }
 
     private boolean[] getBasemapsVisibility() {
-        boolean osmKosmosnimki, darkMatter, esri, genshtab, google, mapbox, opentopomap, osmTransport, rosreestr, topomap, wikimapia;
-        osmKosmosnimki = darkMatter = esri = genshtab = google = mapbox = opentopomap = osmTransport = rosreestr = topomap = wikimapia = false;
-
+        boolean[] visibility = new boolean[SettingsConstants.LAYER_NAMES.length];
         final MapDrawable map = mMap.getMap();
-        ILayerView layer = (ILayerView) map.getLayerByName(SettingsConstants.OSM);
-        if (layer != null)
-            osmKosmosnimki = layer.isVisible();
-        layer = (ILayerView) map.getLayerByName(SettingsConstants.SPUTNIK);
-        if (layer != null)
-            osmKosmosnimki &= layer.isVisible();
-        layer = (ILayerView) map.getLayerByName(SettingsConstants.DARK_MATTER);
-        if (layer != null)
-            darkMatter = layer.isVisible();
-        layer = (ILayerView) map.getLayerByName(SettingsConstants.ESRI);
-        if (layer != null)
-            esri = layer.isVisible();
-        layer = (ILayerView) map.getLayerByName(SettingsConstants.GENSHTAB);
-        if (layer != null)
-            genshtab = layer.isVisible();
-        layer = (ILayerView) map.getLayerByName(SettingsConstants.GOOGLE_HYBRID);
-        if (layer != null)
-            google = layer.isVisible();
-        layer = (ILayerView) map.getLayerByName(SettingsConstants.MAPBOX_SAT);
-        if (layer != null)
-            mapbox = layer.isVisible();
-        layer = (ILayerView) map.getLayerByName(SettingsConstants.OPENTOPOMAP);
-        if (layer != null)
-            opentopomap = layer.isVisible();
-        layer = (ILayerView) map.getLayerByName(SettingsConstants.OSM_TRANSPORT);
-        if (layer != null)
-            osmTransport = layer.isVisible();
-        layer = (ILayerView) map.getLayerByName(SettingsConstants.ROSREESTR);
-        if (layer != null)
-            rosreestr = layer.isVisible();
-        layer = (ILayerView) map.getLayerByName(SettingsConstants.TOPOMAP);
-        if (layer != null)
-            topomap = layer.isVisible();
-        layer = (ILayerView) map.getLayerByName(SettingsConstants.WIKIMAPIA);
-        if (layer != null)
-            wikimapia = layer.isVisible();
+        ILayerView layer;
 
-        return new boolean[] {osmKosmosnimki, darkMatter, esri, genshtab, google, mapbox, opentopomap, osmTransport, rosreestr, topomap, wikimapia};
+        for (int i = 0; i < visibility.length; i++) {
+            layer = (ILayerView) map.getLayerByName(SettingsConstants.LAYER_NAMES[i]);
+            if (layer != null)
+                visibility[i] = layer.isVisible();
+        }
+
+        return visibility;
     }
 
     private void saveLayerVisibility(boolean[] visible) {
@@ -461,18 +432,7 @@ public class MapFragment
         final MapDrawable map = mMap.getMap();
         ILayerView layer;
         for (int i = 0; i < visible.length; i++) {
-            switch (i) {
-                case 0:
-                    layer = (ILayerView) map.getLayerByName(SettingsConstants.OSM);
-                    if (layer != null)
-                        layer.setVisible(visible[i]);
-                    layer = (ILayerView) map.getLayerByName(SettingsConstants.SPUTNIK);
-                    break;
-                default:
-                    layer = (ILayerView) map.getLayerByName(SettingsConstants.LAYER_NAMES[i - 1]);
-                    break;
-            }
-
+            layer = (ILayerView) map.getLayerByName(SettingsConstants.LAYER_NAMES[i]);
             if (layer != null)
                 layer.setVisible(visible[i]);
         }

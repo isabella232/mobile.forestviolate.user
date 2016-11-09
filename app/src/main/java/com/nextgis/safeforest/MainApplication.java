@@ -22,7 +22,6 @@
 
 package com.nextgis.safeforest;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -34,7 +33,6 @@ import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.GISApplication;
 import com.nextgis.maplibui.mapui.LayerFactoryUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
-import com.nextgis.safeforest.activity.PreferencesActivity;
 import com.nextgis.safeforest.util.MapUtil;
 
 import java.io.File;

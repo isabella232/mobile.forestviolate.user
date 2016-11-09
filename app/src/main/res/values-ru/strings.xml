@@ -176,6 +176,17 @@
     <string name="own">Твое сообщение</string>
     <string name="others">Сообщение других людей</string>
     <string name="space">Информация из космоса</string>
+    <string name="bm_sputnik">Спутник</string>
+    <string name="bm_darkmatter">Dark Matter</string>
+    <string name="bm_esri">ESRI (земля)</string>
+    <string name="bm_genshtab">Генштаб</string>
+    <string name="bm_google">Google (гибридный)</string>
+    <string name="bm_mapbox">Mapbox (спутник)</string>
+    <string name="bm_opentopo">OpenTopoMap</string>
+    <string name="bm_transport">OSM Транспорт</string>
+    <string name="bm_rosreestr">Росреестр</string>
+    <string name="bm_topomap">TopoMap</string>
+    <string name="bm_wikimapia">Wikimapia</string>
     <string name="permissions">Разрешения</string>
     <string name="requested_permissions">Приложению требуются некоторые разрешения для корректной работы: запись на устройство (для хранения данных), доступ
         к местоположению и получение контактов (для создания и управления веб аккаунтами).</string>

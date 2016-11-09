@@ -331,47 +331,9 @@ public class RegionSyncService extends Service {
         void createBasicLayers(MapBase map) {
             publishProgress(getString(R.string.working), Constants.STEP_STATE_WORK);
 
-            //add OpenStreetMap layer on application first run
-            final RemoteTMSLayerUI osmLayer =
-                    new RemoteTMSLayerUI(getApplicationContext(), map.createLayerStorage());
-            osmLayer.setName(SettingsConstants.OSM);
-            osmLayer.setURL(SettingsConstants.OSM_URL);
-            osmLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
-            osmLayer.setMaxZoom(20);
-            osmLayer.setMinZoom(11.4f);
-            osmLayer.setVisible(true);
-            map.addLayer(osmLayer);
-            //mMap.moveLayer(0, osmLayer);
             GeoEnvelope extent = new GeoEnvelope(mMinX, mMaxX, mMinY, mMaxY);
 
-        /*
-        if(extent.isInit()) {
-            try {
-                downloadTiles(osmLayer, initAsyncTask, nStep, map.getFullBounds(), extent, 12, 13);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }*/
-
-            RemoteTMSLayerUI ksLayer = new RemoteTMSLayerUI(getApplicationContext(), map.createLayerStorage());
-            ksLayer.setName(SettingsConstants.SPUTNIK);
-            ksLayer.setURL(SettingsConstants.SPUTNIK_URL);
-            ksLayer.setTMSType(GeoConstants.TMSTYPE_OSM);
-            ksLayer.setMaxZoom(11.4f);
-            ksLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
-            ksLayer.setVisible(true);
-            map.addLayer(ksLayer);
-            //mMap.moveLayer(1, ksLayer);
-
-            if (extent.isInit()) {
-                //download
-                try {
-                    downloadTiles(ksLayer, extent, 5, 7);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
+            // add default layers on application first run
             for (int i = 0; i < SettingsConstants.LAYER_NAMES.length; i++) {
                 RemoteTMSLayerUI layer = new RemoteTMSLayerUI(getApplicationContext(), map.createLayerStorage());
                 layer.setName(SettingsConstants.LAYER_NAMES[i]);
@@ -380,6 +342,16 @@ public class RegionSyncService extends Service {
                 layer.setMaxZoom(GeoConstants.DEFAULT_MAX_ZOOM);
                 layer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
                 map.addLayer(layer);
+
+                if (i == 0 && extent.isInit()) {
+                    //download tiles for Sputnik 5-7 zoom levels
+                    try {
+                        downloadTiles(layer, extent, 5, 7);
+                    } catch (InterruptedException e) {
+                        if (BuildConfig.DEBUG)
+                            e.printStackTrace();
+                    }
+                }
             }
 
             long id = mKeys.get(Constants.KEY_LANDSAT).getRemoteId();
@@ -403,7 +375,6 @@ public class RegionSyncService extends Service {
             mixerLayer.setMaxZoom(GeoConstants.DEFAULT_MAX_ZOOM);
             mixerLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
             map.addLayer(mixerLayer);
-            //mMap.moveLayer(2, mixerLayer);
 
             RemoteTMSLayer firesLayer = new RemoteTMSLayer(getApplicationContext(), map.createLayerStorage());
             firesLayer.setName(getString(R.string.fires));

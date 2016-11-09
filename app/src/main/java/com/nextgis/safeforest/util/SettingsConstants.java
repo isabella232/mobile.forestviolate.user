@@ -27,9 +27,7 @@ public interface SettingsConstants
     String AUTHORITY             = "com.nextgis.safeforest.provider";
     String SITE_URL = "http://176.9.38.120/fv";
 
-    String OSM = "OpenStreetMap";
-    String OSM_URL = "http://{a,b,c}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-    String SPUTNIK = "Topo";
+    String SPUTNIK = "Sputnik";
     String SPUTNIK_URL = "http://tiles.maps.sputnik.ru/tiles/kmt2/{z}/{x}/{y}.png";
     String DARK_MATTER = "DarkMatter";
     String DARK_MATTER_URL = "http://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png";
@@ -52,11 +50,11 @@ public interface SettingsConstants
     String WIKIMAPIA = "Wikimapia";
     String WIKIMAPIA_URL = "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png";
 
-    String[] LAYER_NAMES = new String[]{SettingsConstants.DARK_MATTER, SettingsConstants.ESRI, SettingsConstants.GENSHTAB,
+    String[] LAYER_NAMES = new String[]{SettingsConstants.SPUTNIK, SettingsConstants.DARK_MATTER, SettingsConstants.ESRI, SettingsConstants.GENSHTAB,
             SettingsConstants.GOOGLE_HYBRID, SettingsConstants.MAPBOX_SAT, SettingsConstants.OPENTOPOMAP, SettingsConstants.OSM_TRANSPORT,
             SettingsConstants.ROSREESTR, SettingsConstants.TOPOMAP, SettingsConstants.WIKIMAPIA};
-    String[] LAYER_URLS = new String[]{SettingsConstants.DARK_MATTER_URL, SettingsConstants.ESRI_URL, SettingsConstants.GENSHTAB_URL,
-            SettingsConstants.GOOGLE_HYBRID_URL, SettingsConstants.MAPBOX_SAT_URL, SettingsConstants.OPENTOPOMAP_URL,
+    String[] LAYER_URLS = new String[]{SettingsConstants.SPUTNIK_URL, SettingsConstants.DARK_MATTER_URL, SettingsConstants.ESRI_URL,
+            SettingsConstants.GENSHTAB_URL, SettingsConstants.GOOGLE_HYBRID_URL, SettingsConstants.MAPBOX_SAT_URL, SettingsConstants.OPENTOPOMAP_URL,
             SettingsConstants.OSM_TRANSPORT_URL, SettingsConstants.ROSREESTR_URL, SettingsConstants.TOPOMAP_URL, SettingsConstants.WIKIMAPIA_URL};
 
     String VIOLATIONS_URL = "http://maps.kosmosnimki.ru/TileService.ashx?request=gettile&layername=96BBFFE869E14CE8B739874798E39B60&srs=EPSG:3857" +
