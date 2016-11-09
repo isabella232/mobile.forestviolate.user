@@ -42,10 +42,12 @@ public class MessageFeatureRenderer extends SimpleFeatureRenderer {
     protected Style getStyle(long featureId) {
         Feature feature = ((VectorLayer) mLayerRef.get()).getFeature(featureId);
         long type = (long) feature.getFieldValue(Constants.FIELD_MTYPE);
+        long status = (long) feature.getFieldValue(Constants.FIELD_STATUS);
         String account = (String) feature.getFieldValue(Constants.FIELD_AUTHOR);
         boolean isOwner = !TextUtils.isEmpty(account) && account.equals(mAccount);
         mStyle.setColor(isOwner ? Constants.COLOR_OWNER : Constants.COLOR_OTHERS);
         ((MessageMarkerStyle) mStyle).setType((int) type);
+        ((MessageMarkerStyle) mStyle).setText(status == Constants.MSG_STATUS_DELETED ? "" : null);
 
         return mStyle;
     }

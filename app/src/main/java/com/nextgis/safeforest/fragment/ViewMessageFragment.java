@@ -50,6 +50,7 @@ import com.nextgis.safeforest.util.UiUtil;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.Locale;
 
 import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.TAG;
@@ -162,7 +163,7 @@ public class ViewMessageFragment
             switch (type) {
                 case Constants.MSG_TYPE_UNKNOWN:
                 default:
-                    data = getString(R.string.unknown_message_type);
+                    data = getString(R.string.type_unknown);
                     break;
                 case Constants.MSG_TYPE_FIRE:
                     data = getString(R.string.fire);
@@ -225,31 +226,10 @@ public class ViewMessageFragment
 
         long timeInMillis = cursor.getLong(cursor.getColumnIndex(Constants.FIELD_DOC_DATE));
         dateView.setText(UiUtil.formatDate(timeInMillis, DateFormat.LONG));
-        idView.setText(String.format("%d", cursor.getLong(cursor.getColumnIndex(Constants.FIELD_DOC_ID))));
+        idView.setText(String.format(Locale.getDefault(), "%d", cursor.getLong(cursor.getColumnIndex(Constants.FIELD_DOC_ID))));
 
-        String data;
         int status = cursor.getInt(cursor.getColumnIndex(Constants.FIELD_DOC_STATUS));
-        switch (status) {
-            case Constants.MSG_STATUS_UNKNOWN:
-            default:
-                data = getString(R.string.unknown_message_status);
-                break;
-            case Constants.MSG_STATUS_NEW:
-                data = getString(R.string.new_message_status);
-                break;
-            case Constants.MSG_STATUS_SENT:
-                data = getString(R.string.sent_message_status);
-                break;
-            case Constants.MSG_STATUS_ACCEPTED:
-                data = getString(R.string.accepted_message_status);
-                break;
-            case Constants.MSG_STATUS_NOT_ACCEPTED:
-                data = getString(R.string.not_accepted_message_status);
-                break;
-            case Constants.MSG_STATUS_CHECKED:
-                data = getString(R.string.checked_message_status);
-                break;
-        }
+        String data = MapUtil.getStatus(getActivity(), status);
         statusView.setText(data);
 
         int type = cursor.getInt(cursor.getColumnIndex(Constants.FIELD_DOC_TYPE));

@@ -107,7 +107,7 @@ public class CreateMessageActivity
         Bundle extras = getIntent().getExtras();
         if (null != extras) {
             mMessageType = extras.getInt(Constants.FIELD_MTYPE);
-            mTitle = R.string.new_message_status;
+            mTitle = R.string.status_new;
 
             switch (mMessageType) {
                 case Constants.MSG_TYPE_FELLING:

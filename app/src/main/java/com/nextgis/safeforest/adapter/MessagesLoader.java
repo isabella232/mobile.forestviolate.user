@@ -21,6 +21,7 @@
 
 package com.nextgis.safeforest.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -34,8 +35,7 @@ public class MessagesLoader extends AsyncTaskLoader<Cursor> {
     private MapEventSource mMap;
     private boolean mShowFires, mShowFelling, mShowGarbage, mShowMisc, mShowDocs;
 
-    public MessagesLoader(Context context, boolean showFires, boolean showFelling,
-                          boolean showGarbage, boolean showMisc, boolean showDocs) {
+    public MessagesLoader(Context context, boolean showFires, boolean showFelling, boolean showGarbage, boolean showMisc, boolean showDocs) {
         super(context);
         mMap = (MapEventSource) MapBase.getInstance();
         mShowFelling = showFelling;
@@ -48,8 +48,7 @@ public class MessagesLoader extends AsyncTaskLoader<Cursor> {
     @Override
     public Cursor loadInBackground() {
         if (null == mMap || !mMap.isValid() ||
-                mMap.getLayerByName(Constants.KEY_CITIZEN_MESSAGES) == null || mMap.getLayerByName(Constants.KEY_FV_DOCS) ==
-                null)
+                mMap.getLayerByName(Constants.KEY_CITIZEN_MESSAGES) == null || mMap.getLayerByName(Constants.KEY_FV_DOCS) == null)
             return null;
 
         SQLiteDatabase db = mMap.getDatabase(true);
@@ -61,15 +60,18 @@ public class MessagesLoader extends AsyncTaskLoader<Cursor> {
         selection = addition(selection, mShowGarbage, Constants.MSG_TYPE_GARBAGE);
         selection = addition(selection, mShowMisc, Constants.MSG_TYPE_MISC);
 
-        String messages = String.format("select %s, %s, %s, %s, %s, %s, %s, 0 as %s from %s where %s in (%s)",
-                Constants.FIELD_ID, Constants.FIELD_MDATE, Constants.FIELD_AUTHOR, Constants.FIELD_STATUS, Constants.FIELD_MTYPE, Constants.FIELD_MESSAGE,
-                com.nextgis.maplib.util.Constants.FIELD_GEOM, Constants.FIELD_DATA_TYPE, Constants.KEY_CITIZEN_MESSAGES, Constants.FIELD_MTYPE, selection);
+        String messages =
+                String.format("select %s, %s, %s, %s, %s, %s, %s, 0 as %s from %s where %s in (%s) and %s != %d", Constants.FIELD_ID, Constants.FIELD_MDATE,
+                              Constants.FIELD_AUTHOR, Constants.FIELD_STATUS, Constants.FIELD_MTYPE, Constants.FIELD_MESSAGE,
+                              com.nextgis.maplib.util.Constants.FIELD_GEOM, Constants.FIELD_DATA_TYPE, Constants.KEY_CITIZEN_MESSAGES, Constants.FIELD_MTYPE,
+                              selection, Constants.FIELD_STATUS, Constants.MSG_STATUS_DELETED);
 
         String docs = String.format("select %s, %s as %s, %s as %s, %s as %s, %s as %s, %s as %s, %s, 1 as %s from %s where %s IN (%d, %d)",
-                Constants.FIELD_ID, Constants.FIELD_DOC_DATE, Constants.FIELD_MDATE, Constants.FIELD_DOC_USER, Constants.FIELD_AUTHOR,
-                Constants.FIELD_DOC_STATUS, Constants.FIELD_STATUS, Constants.FIELD_DOC_TYPE, Constants.FIELD_MTYPE,
-                Constants.FIELD_DOC_VIOLATE, Constants.FIELD_MESSAGE, com.nextgis.maplib.util.Constants.FIELD_GEOM, Constants.FIELD_DATA_TYPE,
-                Constants.KEY_FV_DOCS, Constants.FIELD_DOC_TYPE, Constants.DOC_TYPE_FIELD_WORKS, Constants.DOC_TYPE_INDICTMENT);
+                                    Constants.FIELD_ID, Constants.FIELD_DOC_DATE, Constants.FIELD_MDATE, Constants.FIELD_DOC_USER, Constants.FIELD_AUTHOR,
+                                    Constants.FIELD_DOC_STATUS, Constants.FIELD_STATUS, Constants.FIELD_DOC_TYPE, Constants.FIELD_MTYPE,
+                                    Constants.FIELD_DOC_VIOLATE, Constants.FIELD_MESSAGE, com.nextgis.maplib.util.Constants.FIELD_GEOM,
+                                    Constants.FIELD_DATA_TYPE, Constants.KEY_FV_DOCS, Constants.FIELD_DOC_TYPE, Constants.DOC_TYPE_FIELD_WORKS,
+                                    Constants.DOC_TYPE_INDICTMENT);
 
         boolean showMessages = mShowFires || mShowFelling || mShowGarbage || mShowMisc;
         if (showMessages && mShowDocs)

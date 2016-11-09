@@ -30,8 +30,11 @@
     <attr name="garbageIcon" format="reference"/>
     <attr name="docIcon" format="reference"/>
     <attr name="miscIcon" format="reference"/>
-    <attr name="newMailIcon" format="reference"/>
-    <attr name="sentMailIcon" format="reference"/>
+    <attr name="statusIconNew" format="reference"/>
+    <attr name="statusIconChecking" format="reference"/>
+    <attr name="statusIconAccepted" format="reference"/>
+    <attr name="statusIconNotAccepted" format="reference"/>
+    <attr name="statusIconInWork" format="reference"/>
 
     <!-- Base application theme. -->
     <style name="AppTheme.Light" parent="Theme.NextGIS.AppCompat.Light">
@@ -44,8 +47,11 @@
         <item name="garbageIcon">@drawable/ic_garbage_light</item>
         <item name="docIcon">@drawable/ic_doc_light</item>
         <item name="miscIcon">@drawable/ic_misc_light</item>
-        <item name="newMailIcon">@drawable/ic_new_mail_light</item>
-        <item name="sentMailIcon">@drawable/ic_sent_mail_light</item>
+        <item name="statusIconNew">@drawable/ic_status_new_light</item>
+        <item name="statusIconChecking">@drawable/ic_status_checking_light</item>
+        <item name="statusIconAccepted">@drawable/ic_status_accepted_light</item>
+        <item name="statusIconNotAccepted">@drawable/ic_status_not_accepted_light</item>
+        <item name="statusIconInWork">@drawable/ic_status_in_work_light</item>
     </style>
 
     <style name="AppTheme.Dark" parent="Theme.NextGIS.AppCompat.Dark">
@@ -58,8 +64,11 @@
         <item name="garbageIcon">@drawable/ic_garbage_dark</item>
         <item name="docIcon">@drawable/ic_doc_dark</item>
         <item name="miscIcon">@drawable/ic_misc_dark</item>
-        <item name="newMailIcon">@drawable/ic_new_mail_dark</item>
-        <item name="sentMailIcon">@drawable/ic_sent_mail_dark</item>
+        <item name="statusIconNew">@drawable/ic_status_new_dark</item>
+        <item name="statusIconChecking">@drawable/ic_status_checking_dark</item>
+        <item name="statusIconAccepted">@drawable/ic_status_accepted_dark</item>
+        <item name="statusIconNotAccepted">@drawable/ic_status_not_accepted_dark</item>
+        <item name="statusIconInWork">@drawable/ic_status_in_work_dark</item>
     </style>
 
     <style name="status_panel">

@@ -238,17 +238,41 @@ public final class MapUtil {
         switch (type) {
             case Constants.MSG_STATUS_UNKNOWN:
             default:
-                return context.getString(R.string.unknown_message_status);
+                return context.getString(R.string.status_unknown);
             case Constants.MSG_STATUS_NEW:
-                return context.getString(R.string.new_message_status);
-            case Constants.MSG_STATUS_SENT:
-                return context.getString(R.string.sent_message_status);
+                return context.getString(R.string.status_new);
             case Constants.MSG_STATUS_ACCEPTED:
-                return context.getString(R.string.accepted_message_status);
+                return context.getString(R.string.status_accepted);
             case Constants.MSG_STATUS_NOT_ACCEPTED:
-                return context.getString(R.string.not_accepted_message_status);
-            case Constants.MSG_STATUS_CHECKED:
-                return context.getString(R.string.checked_message_status);
+                return context.getString(R.string.status_not_accepted);
+            case Constants.MSG_STATUS_IN_WORK:
+                return context.getString(R.string.status_in_work);
+            case Constants.MSG_STATUS_CHECKING:
+                return context.getString(R.string.status_checking);
+            case Constants.MSG_STATUS_DELETED:
+                return context.getString(R.string.status_deleted);
+            case Constants.MSG_STATUS_POLICE:
+                return context.getString(R.string.status_police);
+            case Constants.MSG_STATUS_CRIMINAL:
+                return context.getString(R.string.status_criminal);
+            case Constants.MSG_STATUS_REFUSED:
+                return context.getString(R.string.status_refused);
+            case Constants.MSG_STATUS_GROWING:
+                return context.getString(R.string.status_growing);
+            case Constants.MSG_STATUS_ACTIVE:
+                return context.getString(R.string.status_active);
+            case Constants.MSG_STATUS_REDUCING:
+                return context.getString(R.string.status_reducing);
+            case Constants.MSG_STATUS_CONTROL:
+                return context.getString(R.string.status_control);
+            case Constants.MSG_STATUS_LOCALIZED:
+                return context.getString(R.string.status_localized);
+            case Constants.MSG_STATUS_RESUMED:
+                return context.getString(R.string.status_resumed);
+            case Constants.MSG_STATUS_LIQUIDATED:
+                return context.getString(R.string.status_liquidated);
+            case Constants.MSG_STATUS_PAUSED:
+                return context.getString(R.string.status_paused);
         }
     }
 }

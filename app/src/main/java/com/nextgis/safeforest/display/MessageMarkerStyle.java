@@ -37,7 +37,7 @@ public class MessageMarkerStyle extends SimpleMarkerStyle {
     }
 
     protected void onDraw(GeoPoint pt, GISDisplay display) {
-        if (null == pt)
+        if (null == pt || mText != null)
             return;
 
         float scaledSize = (float) (mSize / display.getScale());

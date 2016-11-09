@@ -786,7 +786,7 @@ public class MapFragment
     private void showCitizenMessageFeatureDialog() {
         VectorLayer layerMessages = (VectorLayer) mApp.getMap().getLayerByName(Constants.KEY_CITIZEN_MESSAGES);
         Feature feature = layerMessages.getFeature(mFeatureId);
-        if (feature == null)
+        if (feature == null || feature.getFieldValueAsInteger(Constants.FIELD_STATUS) == Constants.MSG_STATUS_DELETED)
             return;
 
         mDialog = DIALOG.CITIZEN.ordinal();

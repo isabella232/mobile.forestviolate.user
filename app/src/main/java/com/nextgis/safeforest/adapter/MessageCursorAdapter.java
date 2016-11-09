@@ -136,13 +136,33 @@ public class MessageCursorAdapter
         TextView dateView = (TextView) view.findViewById(R.id.date);
         dateView.setText(UiUtil.formatDate(cursor.getLong(mDateColumn), DateFormat.SHORT));
 
-        // TODO: get status from database
         ImageView stateIcon = (ImageView) view.findViewById(R.id.state_icon);
         int id = cursor.getInt(mIdColumn);
         if (id >= com.nextgis.maplib.util.Constants.MIN_LOCAL_FEATURE_ID)
-            icon = R.attr.newMailIcon;
-        else
-            icon = R.attr.sentMailIcon;
+            icon = R.attr.statusIconNew;
+        else {
+            int status = cursor.getInt(mStatusColumn);
+            switch (status) {
+                case Constants.MSG_STATUS_NEW:
+                    icon = R.attr.statusIconNew;
+                    break;
+                case Constants.MSG_STATUS_ACCEPTED:
+                    icon = R.attr.statusIconAccepted;
+                    break;
+                case Constants.MSG_STATUS_NOT_ACCEPTED:
+                    icon = R.attr.statusIconNotAccepted;
+                    break;
+                case Constants.MSG_STATUS_IN_WORK:
+                    icon = R.attr.statusIconInWork;
+                    break;
+                case Constants.MSG_STATUS_CHECKING:
+                    icon = R.attr.statusIconChecking;
+                    break;
+                default:
+                    icon = R.attr.statusIconInWork;
+                    break;
+            }
+        }
 
         TypedArray a = mContext.obtainStyledAttributes(new int[]{icon});
         stateIcon.setImageDrawable(a.getDrawable(0));

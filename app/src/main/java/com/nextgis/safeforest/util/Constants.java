@@ -121,12 +121,27 @@ public interface Constants
     String FIELD_FV_TERRITORY   = "territory";
     String FIELD_FV_STATUS      = "status";
 
+//    Общие
     int MSG_STATUS_UNKNOWN      = 0;
     int MSG_STATUS_NEW          = 1;
-    int MSG_STATUS_SENT         = 2;
-    int MSG_STATUS_ACCEPTED     = 3;
-    int MSG_STATUS_NOT_ACCEPTED = 4;
-    int MSG_STATUS_CHECKED      = 5;
+    int MSG_STATUS_ACCEPTED     = 2;
+    int MSG_STATUS_NOT_ACCEPTED = 3;
+    int MSG_STATUS_IN_WORK      = 4;
+    int MSG_STATUS_CHECKING     = 5;
+    int MSG_STATUS_DELETED      = 6;
+//    Если тип «Незаконная рубка леса»:
+    int MSG_STATUS_POLICE       = 7;
+    int MSG_STATUS_CRIMINAL     = 8;
+    int MSG_STATUS_REFUSED      = 9;
+//    Если тип «Лесной пожар»
+    int MSG_STATUS_GROWING      = 10;
+    int MSG_STATUS_ACTIVE       = 11;
+    int MSG_STATUS_REDUCING     = 12;
+    int MSG_STATUS_CONTROL      = 13;
+    int MSG_STATUS_LOCALIZED    = 14;
+    int MSG_STATUS_RESUMED      = 15;
+    int MSG_STATUS_LIQUIDATED   = 16;
+    int MSG_STATUS_PAUSED       = 17;
 
     int DOC_TYPE_FIELD_WORKS    = 1;
     int DOC_TYPE_INDICTMENT     = 2;
