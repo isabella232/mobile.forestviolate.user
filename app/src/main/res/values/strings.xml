@@ -39,6 +39,14 @@
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2015–2016]]></string>
     <string name="intro">Intro</string>
     <string name="action_about">About</string>
+    <string name="min_10">10 minutes</string>
+    <string name="min_30">30 minutes</string>
+    <string name="hour_1">1 hour</string>
+    <string name="hour_2">2 hours</string>
+    <string name="week_1">1 week</string>
+    <string name="month_1">1 month</string>
+    <string name="month_6">6 months</string>
+    <string name="history">Save history for</string>
     <string name="inspector_polygons">Inspectors\' polygons</string>
     <string name="citizen_messages">Citizen messages</string>
     <string name="violations">Forestry violations</string>

@@ -3,8 +3,9 @@
   ~ Project: Forest violations
   ~ Purpose: Mobile application for registering facts of the forest violations.
   ~ Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+  ~ Author:  Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2015-2015. NextGIS, info@nextgis.com
+  ~ Copyright (c) 2015-2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -21,16 +22,26 @@
   -->
 
 <resources>
-    <string-array name="sync_periods">
-        <item>10 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>2 hours</item>
+    <string-array name="sync_periods" translatable="false">
+        <item>@string/min_10</item>
+        <item>@string/min_30</item>
+        <item>@string/hour_1</item>
+        <item>@string/hour_2</item>
     </string-array>
     <string-array name="sync_periods_val" translatable="false">
         <item>600</item>
         <item>1800</item>
         <item>3600</item>
         <item>7200</item>
+    </string-array>
+    <string-array name="data_history" translatable="false">
+        <item>@string/week_1</item>
+        <item>@string/month_1</item>
+        <item>@string/month_6</item>
+    </string-array>
+    <string-array name="data_history_val" translatable="false">
+        <item>-1</item>
+        <item>-4</item>
+        <item>-24</item>
     </string-array>
 </resources>

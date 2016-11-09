@@ -70,6 +70,7 @@ public interface SettingsConstants
     String KEY_PREF_REGION_NAME   = "user_region_name";
     String KEY_PREF_CHANGE_REGION        = "change_region";
     String KEY_PREF_CHANGE_ACCOUNT       = "change_account";
+    String KEY_PREF_HISTORY = "data_history";
     String KEY_USER_FULLNAME = "user_full_name";
     String KEY_USER_PHONE = "user_phone";
     String KEY_USER_EMAIL = "user_email";

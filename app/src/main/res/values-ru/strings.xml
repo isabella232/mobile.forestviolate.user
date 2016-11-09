@@ -39,6 +39,14 @@
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2015–2016]]></string>
     <string name="intro">Введение</string>
     <string name="action_about">О программе</string>
+    <string name="min_10">10 минут</string>
+    <string name="min_30">30 минут</string>
+    <string name="hour_1">1 час</string>
+    <string name="hour_2">2 часа</string>
+    <string name="week_1">1 неделя</string>
+    <string name="month_1">1 месяц</string>
+    <string name="month_6">6 месяцев</string>
+    <string name="history">Хранить историю за</string>
     <string name="inspector_polygons">Полигоны инспекторов</string>
     <string name="citizen_messages">Сообщения пользователей</string>
     <string name="violations">Лесонарушения</string>

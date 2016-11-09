@@ -135,8 +135,7 @@ public class RegionSyncService extends Service {
         MapBase mMap;
 
         String mProgressMessage, mURL;
-        int mMaxProgress;
-        int mStep;
+        int mMaxProgress, mStep, mHistoryWeeks;
         boolean mIsRegionsOnly;
         float mMinX, mMinY, mMaxX, mMaxY;
 
@@ -159,6 +158,7 @@ public class RegionSyncService extends Service {
             mMinY = prefs.getFloat(SettingsConstants.KEY_PREF_USERMINY, -2000.0f);
             mMaxX = prefs.getFloat(SettingsConstants.KEY_PREF_USERMAXX, 2000.0f);
             mMaxY = prefs.getFloat(SettingsConstants.KEY_PREF_USERMAXY, 2000.0f);
+            mHistoryWeeks = Integer.parseInt(prefs.getString(SettingsConstants.KEY_PREF_HISTORY, Constants.WEEKS_TO_LOAD_DATA + ""));
         }
 
         public void run() {
@@ -312,7 +312,8 @@ public class RegionSyncService extends Service {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
-            calendar.add(Calendar.MONTH, Constants.MONTH_TO_LOAD_DATA);
+
+            calendar.add(Calendar.WEEK_OF_YEAR, mHistoryWeeks);
             ngwVectorLayer.setServerWhere(date + "={\"gt\":\"" + sdf.format(calendar.getTime()) + "T00:00:00Z\"}&" +
                     String.format(Locale.US, "bbox=%f,%f,%f,%f", mMinX, mMinY, mMaxX, mMaxY));
 

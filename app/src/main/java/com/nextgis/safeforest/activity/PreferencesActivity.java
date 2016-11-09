@@ -36,6 +36,9 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.view.MenuItem;
 
+import com.nextgis.maplib.datasource.GeoEnvelope;
+import com.nextgis.maplib.map.MapBase;
+import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
@@ -44,12 +47,16 @@ import com.nextgis.safeforest.R;
 import com.nextgis.safeforest.fragment.RegionSyncFragment;
 import com.nextgis.safeforest.util.SettingsConstants;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 /**
  * Application preference
  */
 public class PreferencesActivity extends SFActivity {
     @Override
-    public void onCreate(final Bundle savedInstanceState){
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_fragment);
@@ -58,8 +65,7 @@ public class PreferencesActivity extends SFActivity {
         final FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        PreferenceFragment preferenceFragment =
-                (PreferenceFragment) fm.findFragmentByTag(com.nextgis.safeforest.util.Constants.FRAGMENT_PREFERENCES);
+        PreferenceFragment preferenceFragment = (PreferenceFragment) fm.findFragmentByTag(com.nextgis.safeforest.util.Constants.FRAGMENT_PREFERENCES);
 
         if (preferenceFragment == null)
             preferenceFragment = new PreferenceFragment();
@@ -100,9 +106,9 @@ public class PreferencesActivity extends SFActivity {
         public void onCreatePreferences(Bundle bundle, String s) {
             addPreferencesFromResource(R.xml.preferences);
             final SFActivity activity = (SFActivity) getActivity();
-
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
-            final Preference changeRegion = findPreference(SettingsConstants.KEY_PREF_CHANGE_REGION);
+
+            Preference changeRegion = findPreference(SettingsConstants.KEY_PREF_CHANGE_REGION);
             changeRegion.setSummary(preferences.getString(SettingsConstants.KEY_PREF_REGION_NAME, null));
             changeRegion.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
@@ -113,15 +119,14 @@ public class PreferencesActivity extends SFActivity {
                             preference.setSummary(regionName);
 
                             FragmentManager fm = activity.getSupportFragmentManager();
-                            RegionSyncFragment regionSyncFragment = (RegionSyncFragment)
-                                    fm.findFragmentByTag(com.nextgis.safeforest.util.Constants.FRAGMENT_SYNC_REGION);
+                            RegionSyncFragment regionSyncFragment =
+                                    (RegionSyncFragment) fm.findFragmentByTag(com.nextgis.safeforest.util.Constants.FRAGMENT_SYNC_REGION);
 
                             if (regionSyncFragment == null)
                                 regionSyncFragment = new RegionSyncFragment();
 
                             FragmentTransaction ft = fm.beginTransaction();
-                            ft.replace(R.id.container, regionSyncFragment,
-                                    com.nextgis.safeforest.util.Constants.FRAGMENT_SYNC_REGION);
+                            ft.replace(R.id.container, regionSyncFragment, com.nextgis.safeforest.util.Constants.FRAGMENT_SYNC_REGION);
                             ft.addToBackStack(null).commit();
 
                             //noinspection ConstantConditions
@@ -132,78 +137,82 @@ public class PreferencesActivity extends SFActivity {
                 }
             });
 
-            final CheckBoxPreference syncSwitch = (CheckBoxPreference) findPreference(SettingsConstantsUI.KEY_PREF_SYNC_PERIODICALLY);
-            if(null != syncSwitch){
-                SharedPreferences settings = activity.getSharedPreferences(Constants.PREFERENCES, Constants.MODE_MULTI_PROCESS);
-                long timeStamp = settings.getLong(com.nextgis.maplib.util.SettingsConstants.KEY_PREF_LAST_SYNC_TIMESTAMP, 0);
-                if (timeStamp > 0) {
-                    syncSwitch.setSummary(ControlHelper.getSyncTime(activity, timeStamp));
+            CheckBoxPreference syncSwitch = (CheckBoxPreference) findPreference(SettingsConstantsUI.KEY_PREF_SYNC_PERIODICALLY);
+            SharedPreferences settings = activity.getSharedPreferences(Constants.PREFERENCES, Constants.MODE_MULTI_PROCESS);
+            long timeStamp = settings.getLong(com.nextgis.maplib.util.SettingsConstants.KEY_PREF_LAST_SYNC_TIMESTAMP, 0);
+            if (timeStamp > 0)
+                syncSwitch.setSummary(ControlHelper.getSyncTime(activity, timeStamp));
+
+            ListPreference historyRange = (ListPreference) findPreference(SettingsConstants.KEY_PREF_HISTORY);
+            historyRange.setSummary(historyRange.getEntry());
+            historyRange.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    int value = Integer.parseInt(newValue.toString());
+                    int id = ((ListPreference) preference).findIndexOfValue((String) newValue);
+                    CharSequence summary = ((ListPreference) preference).getEntries()[id];
+                    preference.setSummary(summary);
+                    preference.getSharedPreferences().edit().putLong(SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG, value).commit();
+
+                    MainApplication app = (MainApplication) activity.getApplication();
+                    MapBase map = app.getMap();
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(System.currentTimeMillis());
+                    calendar.add(Calendar.WEEK_OF_YEAR, value);
+
+                    String date = com.nextgis.safeforest.util.Constants.FIELD_FV_DATE;
+                    String time = sdf.format(calendar.getTime());
+                    NGWVectorLayer layer = (NGWVectorLayer) map.getLayerByName(com.nextgis.safeforest.util.Constants.KEY_FV_FOREST);
+                    setLayerWhere(layer, date, time);
+                    layer = (NGWVectorLayer) map.getLayerByName(com.nextgis.safeforest.util.Constants.KEY_FV_DOCS);
+                    setLayerWhere(layer, date, time);
+                    date = com.nextgis.safeforest.util.Constants.FIELD_MDATE;
+                    layer = (NGWVectorLayer) map.getLayerByName(com.nextgis.safeforest.util.Constants.KEY_CITIZEN_MESSAGES);
+                    setLayerWhere(layer, date, time);
+
+                    return true;
                 }
-            }
+            });
 
-            final ListPreference syncPeriod = (ListPreference) findPreference( SettingsConstantsUI.KEY_PREF_SYNC_PERIOD);
-            if(null != syncPeriod){
+            ListPreference syncPeriod = (ListPreference) findPreference(SettingsConstantsUI.KEY_PREF_SYNC_PERIOD);
+            syncPeriod.setSummary(syncPeriod.getEntry());
+            syncPeriod.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    long value = Long.parseLong(newValue.toString());
+                    int id = ((ListPreference) preference).findIndexOfValue((String) newValue);
+                    CharSequence summary = ((ListPreference) preference).getEntries()[id];
+                    preference.setSummary(summary);
+                    preference.getSharedPreferences().edit().putLong(SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG, value).commit();
 
-                int id = syncPeriod.findIndexOfValue(syncPeriod.getValue());
-                CharSequence summary = syncPeriod.getEntries()[id];
-                syncPeriod.setSummary(summary);
+                    MainApplication app = (MainApplication) activity.getApplication();
+                    final Account account = app.getAccount(com.nextgis.safeforest.util.Constants.ACCOUNT_NAME);
+                    ContentResolver.addPeriodicSync(account, app.getAuthority(), Bundle.EMPTY, value);
 
-                syncPeriod.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                    @Override
-                    public boolean onPreferenceChange(Preference preference, Object newValue) {
-                        long value = Long.parseLong(newValue.toString());
-                        int id = ((ListPreference) preference).findIndexOfValue((String) newValue);
-                        CharSequence summary = ((ListPreference) preference).getEntries()[id];
-                        preference.setSummary(summary);
+                    return true;
+                }
+            });
 
-                        preference.getSharedPreferences()
-                                .edit()
-                                .putLong(SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG, value)
-                                .commit();
+            ListPreference appTheme = (ListPreference) findPreference(SettingsConstantsUI.KEY_PREF_THEME);
+            appTheme.setSummary(appTheme.getEntry());
 
-                        MainApplication app = (MainApplication) activity.getApplication();
+            ListPreference lpCoordinateFormat = (ListPreference) findPreference(SettingsConstantsUI.KEY_PREF_COORD_FORMAT);
+            lpCoordinateFormat.setSummary(lpCoordinateFormat.getEntry());
+            lpCoordinateFormat.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    int value = Integer.parseInt(newValue.toString());
+                    CharSequence summary = ((ListPreference) preference).getEntries()[value];
+                    preference.setSummary(summary);
 
-                        final Account account = app.getAccount(com.nextgis.safeforest.util.Constants.ACCOUNT_NAME);
-                        ContentResolver.addPeriodicSync(
-                                account, app.getAuthority(), Bundle.EMPTY, value);
+                    String preferenceKey = preference.getKey() + "_int";
+                    preference.getSharedPreferences().edit().putInt(preferenceKey, value).commit();
 
-                        return true;
-                    }
-                });
-            }
-
-            final ListPreference appTheme = (ListPreference) findPreference( SettingsConstantsUI.KEY_PREF_THEME);
-            if(null != appTheme){
-                int id = appTheme.findIndexOfValue(appTheme.getValue());
-                CharSequence summary = appTheme.getEntries()[id];
-                appTheme.setSummary(summary);
-            }
-
-            final ListPreference lpCoordinateFormat = (ListPreference) findPreference( SettingsConstantsUI.KEY_PREF_COORD_FORMAT);
-            if (null != lpCoordinateFormat) {
-                lpCoordinateFormat.setSummary(lpCoordinateFormat.getEntry());
-
-                lpCoordinateFormat.setOnPreferenceChangeListener(
-                        new Preference.OnPreferenceChangeListener() {
-                            @Override
-                            public boolean onPreferenceChange(
-                                    Preference preference,
-                                    Object newValue) {
-                                int value = Integer.parseInt(newValue.toString());
-                                CharSequence summary =
-                                        ((ListPreference) preference).getEntries()[value];
-                                preference.setSummary(summary);
-
-                                String preferenceKey = preference.getKey() + "_int";
-                                preference.getSharedPreferences()
-                                        .edit()
-                                        .putInt(preferenceKey, value)
-                                        .commit();
-
-                                return true;
-                            }
-                        });
-            }
+                    return true;
+                }
+            });
 
             Preference changeAccount = findPreference(SettingsConstants.KEY_PREF_CHANGE_ACCOUNT);
             changeAccount.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -214,6 +223,27 @@ public class PreferencesActivity extends SFActivity {
                     return true;
                 }
             });
+
+            ListPreference showLocation = (ListPreference) findPreference(SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC);
+            showLocation.setSummary(showLocation.getEntry());
+            showLocation.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    int id = ((ListPreference) preference).findIndexOfValue((String) newValue);
+                    CharSequence summary = ((ListPreference) preference).getEntries()[id];
+                    preference.setSummary(summary);
+                    return true;
+                }
+            });
+        }
+
+        private void setLayerWhere(NGWVectorLayer layer, String date, String time) {
+            if (layer != null) {
+                String bbox = layer.getServerWhere();
+                int id = bbox.indexOf("&bbox");
+                bbox = id > -1 ? bbox.substring(id) : "";
+                layer.setServerWhere(date + "={\"gt\":\"" + time + "T00:00:00Z\"}" + bbox);
+            }
         }
     }
 }

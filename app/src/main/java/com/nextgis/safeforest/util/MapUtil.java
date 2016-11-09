@@ -138,7 +138,7 @@ public final class MapUtil {
         return bIsFill;
     }
 
-    public static void removeOutdatedData(NGWVectorLayer layer) {
+    public static void removeOutdatedData(NGWVectorLayer layer, int weeks) {
         if (layer == null)
             return;
 
@@ -149,7 +149,7 @@ public final class MapUtil {
             SQLiteDatabase db = map.getDatabase(true);
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
-            calendar.add(Calendar.MONTH, Constants.MONTH_TO_LOAD_DATA);
+            calendar.add(Calendar.WEEK_OF_YEAR, weeks);
             db.delete(table, date + " < " + calendar.getTimeInMillis(), null);
             db.close();
         } catch (SQLiteException e) {

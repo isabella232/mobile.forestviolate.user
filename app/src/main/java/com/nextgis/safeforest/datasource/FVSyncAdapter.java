@@ -22,7 +22,9 @@
 package com.nextgis.safeforest.datasource;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.SyncResult;
+import android.preference.PreferenceManager;
 
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.map.LayerGroup;
@@ -30,6 +32,7 @@ import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.safeforest.util.Constants;
 import com.nextgis.safeforest.util.MapUtil;
+import com.nextgis.safeforest.util.SettingsConstants;
 
 public class FVSyncAdapter extends SyncAdapter {
     public FVSyncAdapter(Context context, boolean autoInitialize) {
@@ -41,9 +44,11 @@ public class FVSyncAdapter extends SyncAdapter {
         if (!MapBase.getInstance().isValid() || layerGroup.getLayerCount() == 0)
             return;
 
-        MapUtil.removeOutdatedData((NGWVectorLayer) layerGroup.getLayerByName(Constants.KEY_CITIZEN_MESSAGES));
-        MapUtil.removeOutdatedData((NGWVectorLayer) layerGroup.getLayerByName(Constants.KEY_FV_FOREST));
-        MapUtil.removeOutdatedData((NGWVectorLayer) layerGroup.getLayerByName(Constants.KEY_FV_DOCS));
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(layerGroup.getContext());
+        int weeks = Integer.parseInt(preferences.getString(SettingsConstants.KEY_PREF_HISTORY, Constants.WEEKS_TO_LOAD_DATA + ""));
+        MapUtil.removeOutdatedData((NGWVectorLayer) layerGroup.getLayerByName(Constants.KEY_CITIZEN_MESSAGES), weeks);
+        MapUtil.removeOutdatedData((NGWVectorLayer) layerGroup.getLayerByName(Constants.KEY_FV_FOREST), weeks);
+        MapUtil.removeOutdatedData((NGWVectorLayer) layerGroup.getLayerByName(Constants.KEY_FV_DOCS), weeks);
         MapUtil.removeOutdatedChanges((NGWVectorLayer) layerGroup.getLayerByName(Constants.KEY_CITIZEN_MESSAGES));
         super.sync(layerGroup, authority, syncResult);
     }
