@@ -71,6 +71,7 @@ public class MainApplication
         mMap = new MapDrawable(bkBitmap, this, mapFullPath, new LayerFactoryUI());
         mMap.setName(mapName);
         mMap.load();
+        mMap.setMaxZoom(19);
         MapUtil.setMessageRenderer(mMap, this);
 
         return mMap;
