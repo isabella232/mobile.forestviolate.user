@@ -36,7 +36,6 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.view.MenuItem;
 
-import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.util.Constants;
@@ -50,6 +49,9 @@ import com.nextgis.safeforest.util.SettingsConstants;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+
+import static com.nextgis.safeforest.util.SettingsConstants.KEY_PREF_SYNC_PERIOD_SEC_LONG;
+
 
 /**
  * Application preference
@@ -152,7 +154,7 @@ public class PreferencesActivity extends SFActivity {
                     int id = ((ListPreference) preference).findIndexOfValue((String) newValue);
                     CharSequence summary = ((ListPreference) preference).getEntries()[id];
                     preference.setSummary(summary);
-                    preference.getSharedPreferences().edit().putLong(SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG, value).commit();
+                    preference.getSharedPreferences().edit().putLong(KEY_PREF_SYNC_PERIOD_SEC_LONG, value).commit();
 
                     MainApplication app = (MainApplication) activity.getApplication();
                     MapBase map = app.getMap();
@@ -185,7 +187,7 @@ public class PreferencesActivity extends SFActivity {
                     int id = ((ListPreference) preference).findIndexOfValue((String) newValue);
                     CharSequence summary = ((ListPreference) preference).getEntries()[id];
                     preference.setSummary(summary);
-                    preference.getSharedPreferences().edit().putLong(SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG, value).commit();
+                    preference.getSharedPreferences().edit().putLong(KEY_PREF_SYNC_PERIOD_SEC_LONG, value).commit();
 
                     MainApplication app = (MainApplication) activity.getApplication();
                     final Account account = app.getAccount(com.nextgis.safeforest.util.Constants.ACCOUNT_NAME);

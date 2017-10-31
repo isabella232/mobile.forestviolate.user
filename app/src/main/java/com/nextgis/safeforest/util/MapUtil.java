@@ -39,6 +39,7 @@ import com.nextgis.maplib.map.MapContentProviderHelper;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.FeatureChanges;
+import com.nextgis.maplib.util.HttpResponse;
 import com.nextgis.maplib.util.NetworkUtil;
 import com.nextgis.safeforest.MainApplication;
 import com.nextgis.safeforest.R;
@@ -84,20 +85,23 @@ public final class MapUtil {
                     try {
                         Connection connection = ngwResource.getConnection();
                         String url = connection.getURL() + "/resource/" + ngwResource.getRemoteId() + "/child/";
-                        String response = NetworkUtil.get(url, connection.getLogin(), connection.getPassword());
-                        if (null != response) {
-                            JSONArray children = new JSONArray(response);
+
+                        HttpResponse response = NetworkUtil.get(
+                                url, connection.getLogin(), connection.getPassword(), false);
+                        String data = response.getResponseBody();
+                        if (null != data) {
+                            JSONArray children = new JSONArray(data);
                             for (int k = 0; k < children.length(); ++k) {
-                                JSONObject data = children.getJSONObject(k);
+                                JSONObject jsonData = children.getJSONObject(k);
                                 try {
-                                    String type = data.getJSONObject("resource").getString("cls");
+                                    String type = jsonData.getJSONObject("resource").getString("cls");
                                     if (!type.equals("query_layer"))
                                         continue;
                                 } catch (JSONException e) {
                                     continue;
                                 }
 
-                                queryLayer = new ResourceWithoutChildren(data, connection);
+                                queryLayer = new ResourceWithoutChildren(jsonData, connection);
                             }
                         }
                     } catch (IOException | JSONException e) {

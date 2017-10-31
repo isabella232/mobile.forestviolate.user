@@ -470,7 +470,7 @@ public class RegionSyncService extends Service {
                                     public void run() {
                                         android.os.Process.setThreadPriority(
                                                 com.nextgis.maplib.util.Constants.DEFAULT_DRAW_THREAD_PRIORITY);
-                                        layer.downloadTile(tile);
+                                        layer.downloadTile(tile, false);
                                     }
                                 }));
             }

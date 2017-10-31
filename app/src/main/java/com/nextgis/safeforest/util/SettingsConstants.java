@@ -102,4 +102,6 @@ public interface SettingsConstants
     String KEY_PREF_ACCURATE_CE         = "accurate_type";
     String KEY_PREF_TILE_SIZE           = "map_tile_size";
     String KEY_PREF_SHOW_ZOOM_CONTROLS  = "show_zoom_controls";
+
+    String KEY_PREF_SYNC_PERIOD_SEC_LONG   = "sync_period_sec_long";
 }
