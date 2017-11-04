@@ -1,0 +1,211 @@
+<!--
+  ~ Project: Forest violations
+  ~ Purpose: Mobile application for registering facts of the forest violations.
+  ~ Author:  Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+  ~ Author:  NikitaFeodonit, nfeodonit@yandex.com
+  ~ Author:  Stanislav Petriakov, becomeglory@gmail.com
+  ~ ******************************************************************************
+  ~ Copyright (c) 2015-2016 NextGIS, info@nextgis.com
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="app_name">Safe forest</string>
+    <string name="account_name">Safe forest</string>
+    <string name="title_notes">Notifications</string>
+    <string name="title_map">Map</string>
+    <string name="title_current_location">Current location</string>
+    <string name="title_center_point">Center point</string>
+    <string name="title_orientation">Orientation</string>
+    <string name="action_settings">Settings</string>
+    <string name="app_description">The application for see the forest violations notifications, notify about new forest violations and check theirs status.</string>
+    <string name="wwf">The application is developed within the project with the WWF to identify forest violations.</string>
+    <string name="wwf_link">http://wwf.org</string>
+    <string name="credits_intro">Credits</string>
+    <string name="credits">Filter icon by Austin Andrews from <a href="http://materialdesignicons.com/icon/filter">Material Design Icons</a> and some icons used in the application are from <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a>, licensed under a <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
+    <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2015–2016]]></string>
+    <string name="intro">Intro</string>
+    <string name="action_about">About</string>
+    <string name="min_10">10 minutes</string>
+    <string name="min_30">30 minutes</string>
+    <string name="hour_1">1 hour</string>
+    <string name="hour_2">2 hours</string>
+    <string name="week_1">1 week</string>
+    <string name="month_1">1 month</string>
+    <string name="month_6">6 months</string>
+    <string name="history">Save history for</string>
+    <string name="inspector_polygons">Inspectors\' polygons</string>
+    <string name="citizen_messages">Citizen messages</string>
+    <string name="violations">Forestry violations</string>
+    <string name="fires">Fires</string>
+    <string name="lv">Forestry</string>
+    <string name="ulv">Divisional forestry</string>
+    <string name="docs">Get documents</string>
+    <string name="documents">Documents</string>
+    <string name="contact">Contact</string>
+    <string name="call">Call supervisor</string>
+    <string name="fire">Fire</string>
+    <string name="garbage">Garbage</string>
+    <string name="misc">Miscellaneous</string>
+    <string name="geomixer_fv_tiles">GeoMixer violation tiles</string>
+    <string name="sf_login_title">Account</string>
+    <string
+        name="sf_login_description"><![CDATA[Enter your information for account registration on server (registration can be skipped, but the application will have limited functionality). After that, the process of getting data to work offline will be started. This need a lot of traffic, so Wi-Fi connection recommended.]]></string>
+    <string name="first_run">First run</string>
+    <string name="fi_url">Server URL</string>
+    <string name="error_init">Failed to initialize</string>
+    <string name="initialization">Initial setup</string>
+    <string name="create_base_layers">Create base layers</string>
+    <string name="check_server">Check server</string>
+    <string name="sign_up">Sign up</string>
+    <string name="sign_in">Sign in</string>
+    <string name="signing_in">Signing in…</string>
+    <string name="signing_up">Signing up…</string>
+    <string name="skip">Skip</string>
+    <string name="locked_layers">Some layers inactive, authorization required</string>
+    <string name="auth_title">Authorization required</string>
+    <string name="full_name_phone_require">To post message to server you have to leave your full name and contact phone.</string>
+    <string name="auth_require">Would you like to sign in/up?</string>
+    <string name="sf_region_select">Select working territory</string>
+    <string name="sf_getting_regions">Fetching regions</string>
+    <string name="sync_region">Syncing region</string>
+    <string name="connecting">Connecting to server…</string>
+    <string name="connected">Connected</string>
+    <string name="check_tables_exist">Check tables exist</string>
+    <string name="error_wrong_server">The incompatible server</string>
+    <string name="done">Done</string>
+    <string name="working">Working…</string>
+    <string name="user_email_login">Login (email address)</string>
+    <string name="phone">Phone number</string>
+    <string name="password">Password</string>
+    <string name="downloaded">downloaded</string>
+    <string name="error_unexpected">Unexpected error occurred</string>
+    <string name="error_sign_up">Can not sign up\r\nTry choose another email or retry later</string>
+    <string name="error_weak_password">Weak password</string>
+    <string name="of">of</string>
+    <string name="show_status_panel">Status info panel</string>
+    <string name="show_status_panel_summary">Show current status info at bottom panel</string>
+    <string name="show_current_location">Show current location</string>
+    <string name="coordinates_format">Coordinates format</string>
+    <string name="select_coordinates_format">Select coordinates format</string>
+    <string name="coordinates_format_summary">Coordinate text format</string>
+    <string name="keep_screen_on">Keep screen on</string>
+    <string name="keep_screen_on_summary">Do not turn off screen</string>
+    <string name="show_zoom_controls">Show zoom controls</string>
+    <string name="show_zoom_controls_summary">Show zoom in/zoom out control on the map</string>
+    <string name="general">General</string>
+    <string name="click_to_change_account">Change account settings</string>
+    <string name="change_server">Change server</string>
+    <string name="pref_full_name">Full name</string>
+    <string name="pref_phone">Phone</string>
+    <string name="pref_full_name_summary">Enter your full name</string>
+    <string name="pref_phone_summary">Enter your contact phone</string>
+    <string name="pref_email_summary">Enter your email</string>
+    <string name="theme">Application theme</string>
+    <string name="sync_switch">Switch sync on/off</string>
+    <string name="get_citizen_messages">Get messages</string>
+    <string name="get_forest_points">Download forest violations</string>
+    <string name="date_paragraph">Date</string>
+    <string name="author_paragraph">Author</string>
+    <string name="status_paragraph">Status</string>
+    <string name="type_paragraph">Type</string>
+    <string name="message_paragraph">Message</string>
+    <string name="inspector">Inspector</string>
+    <string name="violate">Violation type</string>
+    <string name="place">Draft place</string>
+    <string name="date_pick">Date discovered</string>
+    <string name="date_violate">Violation date</string>
+    <string name="forest_category">Forest category</string>
+    <string name="territory">Territory</string>
+    <string name="region">Region</string>
+    <string name="forestry">Forestry</string>
+    <string name="precinct">Precinct</string>
+    <string name="set_location">Define location</string>
+    <string name="location_current">Current</string>
+    <string name="location_from_map">Map</string>
+    <string name="location_from_compass">Compass</string>
+    <string name="location_getting_current">Getting current location…</string>
+    <string name="location_distance_to">Distance to location (m)</string>
+    <string name="stmessage_paragraph">Manager\'s message</string>
+    <string name="coordinates_paragraph">Coordinates</string>
+    <string name="anonymous_hint">Enter your full name and phone number for supervisor callback.</string>
+    <string name="email_hint">E-mail</string>
+    <string name="email_not_valid">E-mail is not valid</string>
+    <string name="full_name_hint">Full name*</string>
+    <string name="phone_hint">Phone*</string>
+    <string name="phone_not_valid">Phone is not valid</string>
+    <string name="message_hint">Type a message</string>
+    <string name="action_felling">Illegal felling</string>
+    <string name="action_view_message">View a message</string>
+    <string name="message_created">Message created</string>
+    <string name="error_create_message">Create message error</string>
+    <string name="action_sync">Synchronization</string>
+    <string name="action_filter">Filter</string>
+    <string name="status_unknown">Unknown message</string>
+    <string name="status_new">New message</string>
+    <string name="status_accepted">Accepted</string>
+    <string name="status_not_accepted">Not accepted</string>
+    <string name="status_in_work">In work</string>
+    <string name="status_checking">Checking</string>
+    <string name="status_deleted">Deleted</string>
+    <string name="status_police">Transferred to police</string>
+    <string name="status_criminal">Criminal case</string>
+    <string name="status_refused">Police refused</string>
+    <string name="status_growing">Growing</string>
+    <string name="status_active">Active</string>
+    <string name="status_reducing">Reducing</string>
+    <string name="status_control">Under control</string>
+    <string name="status_localized">Localized</string>
+    <string name="status_resumed">Resumed</string>
+    <string name="status_liquidated">Liquidated</string>
+    <string name="status_paused">Paused by KCS</string>
+    <string name="type_unknown">Unknown type</string>
+    <string name="doc_type_indictment">Forestry violations</string>
+    <string name="doc_type_field_works">Field activities</string>
+    <string name="user_contact_info">Contact info</string>
+    <string name="no_region_selected">Region is not selected</string>
+    <string name="region_has_no_phone">No phone for this region</string>
+    <string name="felling_legend">Illegal logging</string>
+    <string name="fire_legend">Wildfire</string>
+    <string name="garbage_legend">Landfill in the depths of the forest</string>
+    <string name="own">Your message</string>
+    <string name="others">Posted by others</string>
+    <string name="space">Info from the space</string>
+    <string name="bm_sputnik">Sputnik</string>
+    <string name="bm_darkmatter">Dark Matter</string>
+    <string name="bm_esri">ESRI Terrain</string>
+    <string name="bm_genshtab">GenShtab</string>
+    <string name="bm_google">Google Hybrid</string>
+    <string name="bm_mapbox">Mapbox Satellite</string>
+    <string name="bm_opentopo">OpenTopoMap</string>
+    <string name="bm_transport">OSM Transport</string>
+    <string name="bm_rosreestr">RosReestr</string>
+    <string name="bm_topomap">TopoMap</string>
+    <string name="bm_wikimapia">Wikimapia</string>
+    <string name="permissions">Permissions</string>
+    <string name="requested_permissions">Application needs some permissions to work properly. It includes writing to external storage (to save data on card),
+        access to location services and getting contacts (to create and manage web accounts).</string>
+    <string name="permissions_deny">Permissions not granted, app can not work properly</string>
+    <string name="grant_permissions">Grant</string>
+    <string name="layers">Layers</string>
+    <string name="basemaps">Basemaps</string>
+    <string name="legend">Legend</string>
+    <string name="showcase_title">Main button</string>
+    <string name="showcase_msg">Do you see the forest in trouble? Press it!</string>
+    <string name="intro1">«Safe forest» application is intended for those who like traveling, fishing, hunting - thoughtful and courageous people willing to lend a helping hand to the nature of the Russian Far East.</string>
+    <string name="intro2">If you see a fire in the forest, illegal felling or illegal dumps, send a message. Supervisors of the Forestry Department and LesAviaOhrana will receive your message.</string>
+    <string name="intro3">Forest Rangers will go to extinguish the fire, detain forest poachers or look for culprits landfill. As soon as the measures to be taken, you will be immediately notified about it.</string>
+    <string name="intro4">This app is created by the World Wide Fund for Nature - WWF Russia, which protects environment of the Far East. If you are interested, you are willing to help, please visit us: taigastory.ru</string>
+</resources>
