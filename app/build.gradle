@@ -22,12 +22,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.3'
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.nextgis.safeforest"
-        minSdkVersion 9
-        targetSdkVersion 25
+        minSdkVersion 14
+        targetSdkVersion 26
         versionCode 3
         versionName '1.2'
     }
@@ -35,11 +35,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                    output.outputFile = new File(output.outputFile.parent, "fvu-" + defaultConfig.versionName + ".apk")
-                }
-            }
+// Do not work with gradle pluging version 3.0.0
+//            applicationVariants.all { variant ->
+//                variant.outputs.each { output ->
+//                    output.outputFile = new File(output.outputFile.parent, "fvu-" + defaultConfig.versionName + ".apk")
+//                }
+//            }
         }
     }
     compileOptions {
@@ -54,9 +55,9 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':maplibui')
     compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:preference-v7:25.3.1'
-    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:preference-v7:26.1.0'
+    compile 'com.android.support:design:26.1.0'
     compile project(path: ':ShowcaseView')
     compile 'com.github.TechFreak:WizardPager:1.0.3'
 }
