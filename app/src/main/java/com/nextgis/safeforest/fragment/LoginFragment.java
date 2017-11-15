@@ -61,6 +61,9 @@ public class LoginFragment extends NGWLoginFragment {
     protected ProgressDialog mProgressDialog;
     protected Button   mSkipButton, mSignUpButton;
     protected String mFullNameText, mPhoneText;
+    protected TextInputLayout mLoginLayout;
+    protected TextInputLayout mPasswordLayout;
+
 
     @Override
     public View onCreateView(
@@ -72,7 +75,9 @@ public class LoginFragment extends NGWLoginFragment {
     {
         final View view = inflater.inflate(R.layout.fragment_login, container, false);
         mLogin = (EditText) view.findViewById(R.id.login);
+        mLoginLayout = (TextInputLayout) view.findViewById(R.id.login_layout);
         mPassword = (EditText) view.findViewById(R.id.password);
+        mPasswordLayout = (TextInputLayout) view.findViewById(R.id.password_layout);
         mSignInButton = (Button) view.findViewById(R.id.signin);
         mSignUpButton = (Button) view.findViewById(R.id.signup);
         mSkipButton = (Button) view.findViewById(R.id.skip);
@@ -90,16 +95,16 @@ public class LoginFragment extends NGWLoginFragment {
 
     private void validatePassword(String password) {
         if (!Pattern.matches(Constants.PASSWORD_PATTERN, password) && password.length() > 0)
-            ((TextInputLayout) mPassword.getParent()).setError(getString(R.string.error_weak_password));
+            mPasswordLayout.setError(getString(R.string.error_weak_password));
         else
-            ((TextInputLayout) mPassword.getParent()).setErrorEnabled(false);
+            mPasswordLayout.setErrorEnabled(false);
     }
 
     private void validateEmail(String email) {
         if (!UiUtil.isEmailValid(email) && email.length() > 0)
-            ((TextInputLayout) mLogin.getParent()).setError(getString(R.string.email_not_valid));
+            mLoginLayout.setError(getString(R.string.email_not_valid));
         else
-            ((TextInputLayout) mLogin.getParent()).setErrorEnabled(false);
+            mLoginLayout.setErrorEnabled(false);
     }
 
     @Override
