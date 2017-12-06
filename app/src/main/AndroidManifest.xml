@@ -114,6 +114,20 @@
             android:label="@string/action_view_message"/>
 
         <service
+            android:name="com.nextgis.maplibui.account.NGWAuthenticatorService"
+            android:enabled="true"
+            android:exported="true"
+            >
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator"
+                />
+        </service>
+
+        <service
             android:name="com.nextgis.safeforest.datasource.FVSyncService"
             android:exported="true"
             android:process=":sync">
