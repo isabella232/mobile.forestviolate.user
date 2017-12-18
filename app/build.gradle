@@ -28,7 +28,7 @@ android {
         applicationId "com.nextgis.safeforest"
         minSdkVersion 14
         targetSdkVersion 26
-        versionCode 5
+        versionCode 6
         versionName '1.2'
         archivesBaseName = "fvu-$versionName"
     }
