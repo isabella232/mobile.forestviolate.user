@@ -36,7 +36,7 @@ public interface Constants
     String TEMP_DOCUMENT_FEATURE_FOLDER = "temp_document";
     String ACCOUNT_NAME                 = "SafeForest";
     String ANONYMOUS                    = "anonymous";
-    String REGIONS_SERVERS              = "http://176.9.38.120/fvstatic/reg.geojson";
+    String REGIONS_SERVERS              = "http://dev.nextgis.com/fvstatic/reg.geojson";
 
     /**
      * State constants

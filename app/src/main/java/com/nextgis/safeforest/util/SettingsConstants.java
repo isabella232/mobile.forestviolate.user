@@ -25,7 +25,7 @@ package com.nextgis.safeforest.util;
 public interface SettingsConstants
 {
     String AUTHORITY             = "com.nextgis.safeforest.provider";
-    String SITE_URL = "http://176.9.38.120/fv";
+    String SITE_URL = "http://dev.nextgis.com/fv";
 
     String SPUTNIK = "Sputnik";
     String SPUTNIK_URL = "http://tiles.maps.sputnik.ru/tiles/kmt2/{z}/{x}/{y}.png";

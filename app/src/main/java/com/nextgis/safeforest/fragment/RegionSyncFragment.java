@@ -217,6 +217,9 @@ public class RegionSyncFragment extends Fragment {
             @Override
             public Loader<Cursor> onCreateLoader(int id, Bundle args) {
                 ILayer regions = MapBase.getInstance().getLayerByName(Constants.KEY_FV_REGIONS);
+                if (regions == null) {
+                    return null;
+                }
                 Uri uri = Uri.parse("content://" + app.getAuthority() + "/" + regions.getPath().getName());
                 return new CursorLoader(activity, uri, new String[]{locale, Constants.FIELD_ID}, null, null, locale + " ASC");
             }
