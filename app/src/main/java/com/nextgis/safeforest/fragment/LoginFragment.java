@@ -231,12 +231,16 @@ public class LoginFragment extends NGWLoginFragment {
             Bundle args)
     {
         if (id == R.id.auth_token_loader) {
+            mLoginText = mLogin.getText().toString();
+            mPasswordText = mPassword.getText().toString();
             return new HTTPLoader(
-                    getActivity().getApplicationContext(), mUrlText, mLogin.getText().toString(), mPassword.getText().toString());
+                    getActivity().getApplicationContext(), mUrlText, mLoginText, mPasswordText);
         }
         else if (id == R.id.non_auth_token_loader) {
+            mLoginText = null;
+            mPasswordText = null;
             return new HTTPLoader(
-                    getActivity().getApplicationContext(), mUrlText, null, null);
+                    getActivity().getApplicationContext(), mUrlText, mLoginText, mPasswordText);
         }
         return null;
     }
