@@ -3,7 +3,7 @@
  * Purpose: Mobile application for registering facts of the forest violations.
  * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * ****************************************************************************
- * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2017 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -228,24 +228,18 @@ public class RegionSyncFragment extends Fragment {
             public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
                 waitDownload.dismiss();
                 final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
-                long regionId = preferences.getLong(SettingsConstants.KEY_PREF_REGION, 0);
-                int defaultPosition = 0;
+                if (!data.moveToFirst()) {
+                    Toast.makeText(activity, R.string.error_layer_not_inited, Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                if (data.moveToFirst())
-                    do {
-                        if (data.getLong(1) == regionId) {
-                            defaultPosition = data.getPosition();
-                            break;
-                        }
-                    } while (data.moveToNext());
-
-                data.moveToPosition(defaultPosition);
+                final int[] selected = {0};
                 AlertDialog.Builder dialog = new AlertDialog.Builder(activity, ((SFActivity) activity).getDialogThemeId());
                 dialog.setTitle(R.string.sf_region_select)
-                        .setSingleChoiceItems(data, defaultPosition, locale, new DialogInterface.OnClickListener() {
+                        .setSingleChoiceItems(data, 0, locale, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                data.moveToPosition(which);
+                                selected[0] = which;
                             }
                         })
                         .setNegativeButton(android.R.string.cancel, null)
@@ -253,6 +247,7 @@ public class RegionSyncFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 VectorLayer regions = (VectorLayer) MapBase.getInstance().getLayerByName(Constants.KEY_FV_REGIONS);
+                                data.moveToPosition(selected[0]);
                                 String regionName = data.getString(0);
                                 long id = data.getLong(1);
                                 GeoGeometry geometry = regions.getGeometryForId(id);

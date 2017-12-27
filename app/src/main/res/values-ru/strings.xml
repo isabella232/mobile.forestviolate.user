@@ -6,7 +6,7 @@
   ~ Author:  NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:  Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2015-2016 NextGIS, info@nextgis.com
+  ~ Copyright (c) 2015-2017 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -82,7 +82,7 @@
     <string name="sf_region_select">Выберите территорию</string>
     <string name="sf_getting_regions">Загрузка регионов</string>
     <string name="sync_region">Синхронизация региона</string>
-    <string name="connecting">подключение к серверу…</string>
+    <string name="connecting">Подключение к серверу…</string>
     <string name="connected">Подключено</string>
     <string name="check_tables_exist">Проверка таблиц</string>
     <string name="error_wrong_server">Неподдерживаемый сервер</string>

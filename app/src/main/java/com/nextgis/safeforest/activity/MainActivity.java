@@ -5,7 +5,7 @@
  * Author:  NikitaFeodonit, nfeodonit@yandex.com
  * Author:  Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2017 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -153,9 +153,14 @@ public class MainActivity extends SFActivity implements NGWLoginFragment.OnAddAc
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSIONS_REQUEST:
-                if (isGrantedResult(grantResults))
+                if (isGrantedResult(grantResults)) {
+                    final MainApplication app = (MainApplication) getApplication();
+                    final Account account = app.getAccount(Constants.ACCOUNT_NAME);
+                    if (account != null)
+                        app.removeAccount(account);
+
                     refreshActivityView();
-                else
+                } else
                     Toast.makeText(this, R.string.permissions_deny, Toast.LENGTH_SHORT).show();
                 break;
             default:
